@@ -1,0 +1,15 @@
+{strip}
+	{if !empty($assets) && is_array($assets)}
+		{if !empty($assets.css) && is_array($assets.css)}
+			{foreach $assets.css as $css}
+				<link rel="stylesheet" href="{$css|escape}">
+			{/foreach}
+		{/if}
+
+		{if !empty($assets.js) && is_array($assets.js)}
+			{foreach $assets.js as $js}
+				<script src="{$js|escape}"></script>
+			{/foreach}
+		{/if}
+	{/if}
+{/strip}

@@ -1,0 +1,14 @@
+{strip}
+	{include "./util/assets_includer.html" assets=$assets inline}
+
+	<div id="shipping-ecom-root"></div>
+
+	<script type="text/javascript">
+		(function() {
+			window.shipping_ecom.instance = new window.shipping_ecom.construct(
+				'#shipping-ecom-root',
+				{$params|json_encode}
+			);
+		})();
+	</script>
+{/strip}

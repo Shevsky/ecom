@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"target": "es5",
+		"baseUrl": ".",
+		"paths": {
+			"*": ["*", "src/*"]
+		},
+		"lib": [
+			"es5",
+			"es6",
+			"es2017",
+			"es2018",
+			"es2018.promise",
+			"dom"
+		],
+		"jsx": "react",
+		"experimentalDecorators": true
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
