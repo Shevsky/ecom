@@ -12,6 +12,7 @@ export class SettingsModel implements TSettingsModel {
 	mail_category: BehaviorSubject<ISettings['mail_category']>;
 	mail_type: BehaviorSubject<ISettings['mail_type']>;
 	pass_goods_value: BehaviorSubject<ISettings['pass_goods_value']>;
+	total_value_mode: BehaviorSubject<ISettings['total_value_mode']>;
 	payment_method: BehaviorSubject<ISettings['payment_method']>;
 	sms_notice_recipient: BehaviorSubject<ISettings['sms_notice_recipient']>;
 	with_fitting: BehaviorSubject<ISettings['with_fitting']>;

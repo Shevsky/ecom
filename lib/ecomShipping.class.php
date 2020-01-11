@@ -9,6 +9,21 @@ use Shevsky\Ecom\Plugin;
 class ecomShipping extends waShipping
 {
 	/**
+	 * @return string
+	 */
+	public static function getPublicPath()
+	{
+		try
+		{
+			return wa()->getRootUrl(true) . 'wa-plugins/shipping/ecom';
+		}
+		catch (waException $e)
+		{
+			return '';
+		}
+	}
+
+	/**
 	 *
 	 * @return string
 	 */
@@ -90,6 +105,8 @@ class ecomShipping extends waShipping
 		$template->assign(
 			[
 				'params' => [
+					'id' => $this->id,
+					'key' => (string)$this->key === $this->id ? null : (string)$this->key,
 					'settings' => $settings,
 				],
 			]

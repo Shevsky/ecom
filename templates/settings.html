@@ -1,11 +1,12 @@
 {strip}
+	{include "./util/public_path.html" inline}
 	{include "./util/assets_includer.html" assets=$assets inline}
 
 	<div id="shipping-ecom-root"></div>
 
-	<script type="text/javascript">
+	<script>
 		(function() {
-			window.shipping_ecom.instance = new window.shipping_ecom.construct(
+			window.shipping_ecom_settings.instance = new window.shipping_ecom_settings.construct(
 				'#shipping-ecom-root',
 				{$params|json_encode}
 			);

@@ -1,69 +1,25 @@
-declare enum DIMENSION_TYPE {
-	SMALL = 'S',
-	MEDIUM = 'M',
-	LARGE = 'L',
-	EXTRA_LARGE = 'XL',
-	OVERSIZED = 'OVERSIZED'
-}
-
-declare enum MAIL_CATEGORY {
-	SIMPLE = 'SIMPLE',
-	ORDERED = 'ORDERED',
-	ORDINARY = 'ORDINARY',
-	WITH_DECLARED_VALUE = 'WITH_DECLARED_VALUE',
-	WITH_DECLARED_VALUE_AND_CASH_ON_DELIVERY = 'WITH_DECLARED_VALUE_AND_CASH_ON_DELIVERY',
-	WITH_DECLARED_VALUE_AND_COMPULSORY_PAYMENT = 'WITH_DECLARED_VALUE_AND_COMPULSORY_PAYMENT',
-	WITH_COMPULSORY_PAYMENT = 'WITH_COMPULSORY_PAYMENT'
-}
-
-declare enum MAIL_TYPE {
-	POSTAL_PARCEL = 'POSTAL_PARCEL',
-	ONLINE_PARCEL = 'ONLINE_PARCEL',
-	ONLINE_COURIER = 'ONLINE_COURIER',
-	EMS = 'EMS',
-	EMS_OPTIMAL = 'EMS_OPTIMAL',
-	EMS_RT = 'EMS_RT',
-	EMS_TENDER = 'EMS_TENDER',
-	LETTER = 'LETTER',
-	LETTER_CLASS_1 = 'LETTER_CLASS_1',
-	BANDEROL = 'BANDEROL',
-	BUSINESS_COURIER = 'BUSINESS_COURIER',
-	BUSINESS_COURIER_ES = 'BUSINESS_COURIER_ES',
-	PARCEL_CLASS_1 = 'PARCEL_CLASS_1',
-	BANDEROL_CLASS_1 = 'BANDEROL_CLASS_1',
-	VGPO_CLASS_1 = 'VGPO_CLASS_1',
-	SMALL_PACKET = 'SMALL_PACKET',
-	EASY_RETURN = 'EASY_RETURN',
-	VSD = 'VSD',
-	ECOM = 'ECOM',
-	COMBINED = 'COMBINED'
-}
-
-declare enum PAYMENT_METHOD {
-	CASHLESS = 'CASHLESS',
-	STAMP = 'STAMP',
-	FRANKING = 'FRANKING',
-	TO_FRANKING = 'TO_FRANKING',
-	ONLINE_PAYMENT_MARK = 'ONLINE_PAYMENT_MARK'
-}
-
 declare interface ISettings {
 	api_login: string;
 	api_password: string;
 	api_token: string;
 
 	index_from: string;
-	dimension_type: DIMENSION_TYPE;
+	dimension_type: import('./enum').DIMENSION_TYPE;
 	pass_goods_value: boolean;
-	mail_category: MAIL_CATEGORY.ORDINARY | MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT;
-	mail_type: MAIL_TYPE.ECOM;
-	payment_method: PAYMENT_METHOD.CASHLESS;
+	total_value_mode: import('./enum').TOTAL_VALUE_MODE;
+	mail_category:
+		| import('./enum').MAIL_CATEGORY.ORDINARY
+		| import('./enum').MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT;
+	mail_type: import('./enum').MAIL_TYPE.ECOM;
+	payment_method: import('./enum').PAYMENT_METHOD.CASHLESS;
 	sms_notice_recipient: boolean;
 	with_fitting: boolean;
 	functionality_checking: boolean;
 	contents_checking: boolean;
 }
 
-declare interface ISettingsParams {
+declare interface IParams {
+	id: string;
+	key: string | null;
 	settings: ISettings;
 }

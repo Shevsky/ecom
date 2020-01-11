@@ -20,6 +20,9 @@ return [
 		'value' => '',
 		'control_type' => 'checkbox',
 	],
+	'total_value_mode' => [
+		'value' => 'with_discounts',
+	],
 	'mail_category' => [
 		'value' => 'ORDINARY',
 	],

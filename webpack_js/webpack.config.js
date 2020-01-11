@@ -67,7 +67,13 @@ module.exports = {
 				options: {
 					name: '[name].[ext]',
 					outputPath: 'img/',
-					publicPath: '../'
+					publicPath: (url, resourcePath, context) => {
+						if (/jsx-images/.test(resourcePath)) {
+							return `/img/${url}`;
+						}
+
+						return `../img/${url}`;
+					}
 				}
 			}
 		]

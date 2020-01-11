@@ -9,6 +9,7 @@ import React, {
 	createElement
 } from 'react';
 import { bem } from 'util/bem';
+import Cookies from 'js-cookie';
 
 const classname = bem('tabs');
 
@@ -19,10 +20,16 @@ interface ITabsOption {
 
 interface ITabsProps {
 	options: ITabsOption[];
+	id?: string | null;
 }
 
 export function Tabs(props: ITabsProps) {
-	const [selectedId, setSelectedId] = useState<number>(0);
+	let defaultSelectedId = props.id ? +Cookies.get(props.id) : undefined;
+	if (isNaN(defaultSelectedId) || defaultSelectedId === undefined) {
+		defaultSelectedId = 0;
+	}
+
+	const [selectedId, setSelectedId] = useState<number>(defaultSelectedId);
 	const selectedComponent =
 		selectedId in props.options ? props.options[selectedId].component : null;
 
@@ -35,10 +42,13 @@ export function Tabs(props: ITabsProps) {
 			} = event;
 
 			setSelectedId(+id);
+			if (props.id) {
+				Cookies.set(props.id, id);
+			}
 
 			event.preventDefault();
 		},
-		[]
+		[props.id]
 	);
 
 	return (
