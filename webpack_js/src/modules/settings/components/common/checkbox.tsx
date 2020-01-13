@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-	Checkbox as UICheckbox,
-	ICheckboxProps as UICheckboxProps
-} from 'common/components/checkbox';
+import { Checkbox as UICheckbox, ICheckboxProps as UICheckboxProps } from 'common/components';
 import { useSetting } from 'modules/settings/util/use-setting';
 
 type TBooleanSettingKeys = {

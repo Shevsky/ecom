@@ -1,11 +1,11 @@
 import React from 'react';
-import { Field } from 'common/components/field';
-import { INPUT_SIZE } from 'common/components/input';
+import { CheckboxGroup, Field, INPUT_SIZE } from 'common/components';
 import { Checkbox, Input, Select } from 'modules/settings/components/common';
+import { DimensionType } from 'modules/settings/components/dimension-type';
 import { useSetting } from 'modules/settings/util/use-setting';
 import { TOTAL_VALUE_MODE } from 'modules/settings/enum';
 
-export function DepartureTab(): JSX.Element {
+export function DepartureScreen(): JSX.Element {
 	const [isPassGoodsValue] = useSetting('pass_goods_value');
 
 	return (
@@ -30,6 +30,16 @@ export function DepartureTab(): JSX.Element {
 					/>
 				</Field>
 			)}
+			<Field name="Дополнительные услуги">
+				<CheckboxGroup>
+					<Checkbox name="sms_notice_recipient" label="SMS-уведомление получателя" />
+					<Checkbox name="with_fitting" label="Услуга примерки" />
+					<Checkbox name="contents_checking" label="Проверка комплектности" />
+				</CheckboxGroup>
+			</Field>
+			<Field name="Типоразмер отправления">
+				<DimensionType />
+			</Field>
 		</>
 	);
 }

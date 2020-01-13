@@ -3,6 +3,10 @@ declare interface ISettings {
 	api_password: string;
 	api_token: string;
 
+	tracking_login: string;
+	tracking_password: string;
+	tracking_cache_lifetime: number;
+
 	index_from: string;
 	dimension_type: import('./enum').DIMENSION_TYPE;
 	pass_goods_value: boolean;
@@ -21,5 +25,7 @@ declare interface ISettings {
 declare interface IParams {
 	id: string;
 	key: string | null;
+	sync_points_url: string;
+	points_handbook_count: number;
 	settings: ISettings;
 }

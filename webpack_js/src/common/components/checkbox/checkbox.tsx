@@ -23,14 +23,16 @@ export function Checkbox({ onChange, ...props }: ICheckboxProps): JSX.Element {
 
 	return (
 		<div className={classname()}>
-			<input
-				{...props}
-				type="checkbox"
-				className={classname('input')}
-				onChange={handleChange}
-			/>
+			<label className={classname('label')}>
+				<input
+					{...props}
+					type="checkbox"
+					className={classname('input')}
+					onChange={handleChange}
+				/>
 
-			{props.label && <div className={classname('label')}>{props.label}</div>}
+				{props.label && <div className={classname('label-content')}>{props.label}</div>}
+			</label>
 		</div>
 	);
 }

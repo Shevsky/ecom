@@ -1,6 +1,9 @@
 <?php
 
+use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
 use Shevsky\Ecom\Autoloader;
+use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
+use Shevsky\Ecom\Domain\PointStorage\PointStorage;
 use Shevsky\Ecom\Domain\SettingsValidator\SettingsValidator;
 use Shevsky\Ecom\Domain\Template\SettingsTemplate;
 use Shevsky\Ecom\Domain\Template\TrackingTemplate;
@@ -107,12 +110,21 @@ class ecomShipping extends waShipping
 				'params' => [
 					'id' => $this->id,
 					'key' => (string)$this->key === $this->id ? null : (string)$this->key,
+					'sync_points_url' => $this->getInteractionUrl('syncPoints', 'backend'),
+					'points_handbook_count' => (new PointStorage())->count(),
 					'settings' => $settings,
 				],
 			]
 		);
 
-		return $template->render();
+		$output = $template->render();
+
+		if (method_exists($this, 'getNoticeHtml'))
+		{
+			$output = $this->getNoticeHtml($params) . $output;
+		}
+
+		return $output;
 	}
 
 	/**
@@ -123,11 +135,60 @@ class ecomShipping extends waShipping
 		// TODO: Implement calculate() method.
 	}
 
+	/**
+	 * @return bool|null
+	 */
+	protected function sync()
+	{
+		try
+		{
+			$otpravka_api = $this->getOtpravkaApi();
+
+			(new SyncPointsChain($otpravka_api))->execute();
+
+			return true;
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
+	}
+
 	protected function init()
 	{
 		self::registerAutoloader();
 
 		parent::init();
+	}
+
+	/**
+	 * @return OtpravkaApi
+	 * @throws \Exception
+	 */
+	protected function getOtpravkaApi()
+	{
+		if (!$this->verifyOtpravkaApi())
+		{
+			throw new \Exception('Параметры для API сервиса Отправка не указаны');
+		}
+
+		return new OtpravkaApi($this->api_login, $this->api_password, $this->api_token);
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function verifyOtpravkaApi()
+	{
+		return !!$this->api_login && !!$this->api_password && !!$this->api_token;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function verifyTrackingApi()
+	{
+		return !!$this->tracking_login && !!$this->tracking_password;
 	}
 
 	private static function registerAutoloader()

@@ -20,6 +20,7 @@ class SettingsValidator implements ISettingsValidator
 			'api_login' => $api_validator,
 			'api_password' => $api_validator,
 			'api_token' => $api_validator,
+			'tracking_cache_lifetime' => new TrackingCacheLifetimeSettingValidator(),
 			'index_from' => new IndexFromSettingValidator(),
 		];
 	}

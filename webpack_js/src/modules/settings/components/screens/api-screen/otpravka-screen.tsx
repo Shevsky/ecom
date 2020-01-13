@@ -1,15 +1,11 @@
 import React from 'react';
-import { Field } from 'common/components/field';
-import { Paragraph } from 'common/components/paragraph';
-import { Container } from 'common/components/container';
+import { Container, Field, Paragraph, InlineLink } from 'common/components';
 import { Input } from 'modules/settings/components/common';
-import { ApiHelp } from 'modules/settings/components/help';
-import { useWindowOpen } from 'modules/settings/util/use-window-open';
-import { InlineLink } from 'common/components/inline-link/inline-link';
-import { Icon } from '../../../../common/components/icon';
+import { OtpravkaApiHelp } from 'modules/settings/components/help';
+import { useWindowOpen } from 'util/use-window-open';
 
-export function ApiTab(): JSX.Element {
-	const openApiHelp = useWindowOpen(<ApiHelp />);
+export function OtpravkaScreen(): JSX.Element {
+	const openHelp = useWindowOpen(<OtpravkaApiHelp />);
 
 	return (
 		<>
@@ -36,7 +32,7 @@ export function ApiTab(): JSX.Element {
 			</Field>
 
 			<Field paddedTop>
-				<InlineLink icon={{ name: 'info' }} onClick={openApiHelp}>
+				<InlineLink icon={{ name: 'info' }} onClick={openHelp}>
 					Где взять эти данные?
 				</InlineLink>
 			</Field>

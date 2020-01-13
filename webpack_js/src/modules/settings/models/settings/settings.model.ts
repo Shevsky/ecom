@@ -2,6 +2,9 @@ import { BehaviorSubject } from 'rxjs';
 import { TSettingsModel } from './settings.type';
 
 export class SettingsModel implements TSettingsModel {
+	tracking_cache_lifetime: BehaviorSubject<ISettings['tracking_cache_lifetime']>;
+	tracking_login: BehaviorSubject<ISettings['tracking_login']>;
+	tracking_password: BehaviorSubject<ISettings['tracking_password']>;
 	api_login: BehaviorSubject<ISettings['api_login']>;
 	api_password: BehaviorSubject<ISettings['api_password']>;
 	api_token: BehaviorSubject<ISettings['api_token']>;

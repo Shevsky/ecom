@@ -1,0 +1,13 @@
+.list
+	&__item
+		position: relative
+		padding-left: 20px
+
+		&:before
+			content: "\2022"
+			font-size: 20px
+			position: absolute
+			left: 0
+
+		&:not(:last-child)
+			margin-bottom: 5px

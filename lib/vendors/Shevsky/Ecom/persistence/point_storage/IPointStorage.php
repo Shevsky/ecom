@@ -20,4 +20,9 @@ interface IPointStorage
 	 * @return IPoint[]
 	 */
 	public function receive();
+
+	/**
+	 * @return number
+	 */
+	public function count();
 }

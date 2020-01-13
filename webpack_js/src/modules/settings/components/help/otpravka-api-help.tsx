@@ -1,7 +1,8 @@
 import React from 'react';
-import ApiTokenImageUrl from './jsx-images/api-token.png';
+import OtpravkaApiTokenImageUrl from './jsx-images/otpravka-api-token.png';
+import { getPublicPath } from 'util/get-public-path';
 
-export function ApiHelp(): JSX.Element {
+export function OtpravkaApiHelp(): JSX.Element {
 	return (
 		<div>
 			<p>
@@ -29,7 +30,7 @@ export function ApiHelp(): JSX.Element {
 					<div style={{ margin: '10px 0' }}>
 						<img
 							style={{ border: '1px solid #ccc', display: 'inline-block' }}
-							src={window.shipping_ecom_public_path + ApiTokenImageUrl}
+							src={getPublicPath(OtpravkaApiTokenImageUrl)}
 						/>
 					</div>
 				</li>

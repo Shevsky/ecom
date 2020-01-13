@@ -1,0 +1,27 @@
+@keyframes button-loading-state
+	0%
+		background-position: 0 0
+
+	100%
+		background-position: -28px 0
+
+.button
+	display: inline-block
+	box-sizing: border-box
+	cursor: pointer
+
+	&_size_small
+		font-size: 12px !important
+		line-height: 15px
+		height: 26px
+		padding: 2px 11px 3px
+
+	&_type_delete
+		background: linear-gradient(#fff, #ffd6d6)
+		border-color: #ff1a00
+
+	&_style_loading
+		background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.05)), repeating-linear-gradient(-45deg,#eee,#eee 11px,#fff 10px,#fff 20px)
+		background-size: 28px 28px
+		animation: button-loading-state .75s linear infinite
+		color: #999 !important

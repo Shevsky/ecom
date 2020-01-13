@@ -1,6 +1,6 @@
 import './inline-link.sass';
 
-import React, { HTMLProps } from 'react';
+import React, { HTMLProps, MouseEvent, useCallback } from 'react';
 import { Icon, IIconProps } from 'common/components';
 import ClassNames from 'classnames';
 import { bem } from 'util/bem';
@@ -14,12 +14,30 @@ const classname = bem('inline-link');
 export function InlineLink({
 	className,
 	children,
-	href = 'javascript: void 0;',
+	href = '#',
 	icon,
 	...props
 }: IInlineLinkProps): JSX.Element {
+	const handleClick = useCallback(
+		(event: MouseEvent<HTMLAnchorElement>): void => {
+			if (href === '#') {
+				event.preventDefault();
+			}
+
+			if (props.onClick) {
+				props.onClick(event);
+			}
+		},
+		[href, props.onClick]
+	);
+
 	return (
-		<a {...props} className={ClassNames('inline-link', classname(), className)}>
+		<a
+			{...props}
+			href={href}
+			className={ClassNames('inline-link', classname(), className)}
+			onClick={handleClick}
+		>
 			{icon ? <Icon className={classname('icon')} {...icon} paddedRight /> : ''}
 
 			<b>

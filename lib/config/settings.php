@@ -10,6 +10,15 @@ return [
 	'api_token' => [
 		'value' => '',
 	],
+	'tracking_login' => [
+		'value' => '',
+	],
+	'tracking_password' => [
+		'value' => '',
+	],
+	'tracking_cache_lifetime' => [
+		'value' => 3600,
+	],
 	'index_from' => [
 		'value' => '',
 	],

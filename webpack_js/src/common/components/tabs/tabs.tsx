@@ -21,6 +21,7 @@ interface ITabsOption {
 interface ITabsProps {
 	options: ITabsOption[];
 	id?: string | null;
+	disabled?: boolean;
 }
 
 export function Tabs(props: ITabsProps) {
@@ -35,6 +36,12 @@ export function Tabs(props: ITabsProps) {
 
 	const handleClick = useCallback(
 		(event: MouseEvent<HTMLAnchorElement> & { target: { dataset: { id: string } } }): void => {
+			event.preventDefault();
+
+			if (props.disabled) {
+				return;
+			}
+
 			const {
 				target: {
 					dataset: { id }
@@ -45,14 +52,12 @@ export function Tabs(props: ITabsProps) {
 			if (props.id) {
 				Cookies.set(props.id, id);
 			}
-
-			event.preventDefault();
 		},
-		[props.id]
+		[props.id, props.disabled]
 	);
 
 	return (
-		<div className={classname()}>
+		<div className={classname({ disabled: !!props.disabled })}>
 			<ul className="tabs">
 				{props.options.map(
 					(option: ITabsOption, id: number): JSX.Element => {

@@ -20,7 +20,7 @@ class IndexFromSettingValidator implements ISettingValidator
 
 		if (!preg_match('/^\d{6}$/', $value))
 		{
-			throw new \Exception('Индекс должен состоять из 6 цифр');
+			throw new \Exception('Индекс места приема должен состоять из 6 цифр');
 		}
 
 		return true;
