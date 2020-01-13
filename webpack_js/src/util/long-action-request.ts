@@ -100,7 +100,7 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 		$.post(
 			this.url,
 			{
-				process_id: this.processId,
+				processId: this.processId,
 				cleanup: true
 			},
 			this.handleFinishResponse,
