@@ -113,6 +113,8 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 			(data: ISyncPointsData): void => {
 				updateState(data);
 				setStep(SYNC_POINTS_STEP.FINISH);
+
+				isNavigationDisabled.next(false);
 			}
 		);
 
