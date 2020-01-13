@@ -95,6 +95,8 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 			(rawError: string): void => {
 				setError(rawError);
 				setStep(SYNC_POINTS_STEP.ERROR);
+
+				isNavigationDisabled.next(false);
 			}
 		);
 
@@ -102,6 +104,8 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 			(): void => {
 				setError('');
 				setStep(SYNC_POINTS_STEP.ERROR);
+
+				isNavigationDisabled.next(false);
 			}
 		);
 
