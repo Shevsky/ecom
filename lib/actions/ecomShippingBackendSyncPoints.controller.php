@@ -9,7 +9,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	private $otpravka_api;
 	private $points_model;
 
-	const CHUNK_SIZE = 1000;
+	const CHUNK_SIZE = 100;
 
 	public function __construct()
 	{
