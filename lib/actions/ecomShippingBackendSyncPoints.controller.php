@@ -38,10 +38,8 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 		try
 		{
-			$points = array_values(
-				$this->getOtpravkaApi()->execute(
-					new MethodDeliveryPointGetAll()
-				)
+			$points = $this->getOtpravkaApi()->execute(
+				new MethodDeliveryPointGetAll()
 			);
 			$points_count = count($points);
 		}
@@ -105,6 +103,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 		if (($this->data['points']) === null || !is_array($this->data['points']))
 		{
 			$this->data['error'] = 'Не удалось получить список пунктов выдачи';
+
 			return false;
 		}
 
@@ -160,7 +159,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 				'offset' => ifset($this->data, 'offset', -1),
 				'process_id' => $this->processId,
 				'ready' => $this->isDone(),
-				'error' => ifset($this->data, 'error', null)
+				'error' => ifset($this->data, 'error', null),
 			]
 		);
 	}
@@ -168,7 +167,8 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	/**
 	 * @return bool
 	 */
-	private function isCleanup() {
+	private function isCleanup()
+	{
 		return !!waRequest::post('cleanup');
 	}
 

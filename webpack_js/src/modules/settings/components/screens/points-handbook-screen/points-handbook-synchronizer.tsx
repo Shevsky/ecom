@@ -12,6 +12,7 @@ import { bem } from 'util/bem';
 
 enum SYNC_POINTS_STEP {
 	WAITING = 'waiting',
+	PREPARING = 'preparing',
 	INIT = 'init',
 	SYNC = 'sync',
 	FINISH = 'finish',
@@ -62,6 +63,8 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 
 	const isUnavailable = !login || !password || !token;
 	const isRunning = [SYNC_POINTS_STEP.INIT, SYNC_POINTS_STEP.SYNC].includes(step);
+	const isPreparing = step === SYNC_POINTS_STEP.PREPARING;
+	const isProcessRunned = step !== SYNC_POINTS_STEP.WAITING;
 	const isDone = step === SYNC_POINTS_STEP.FINISH;
 
 	const request = useMemo(
@@ -94,7 +97,10 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 		request.error$.pipe(takeUntil(unsubscribe$)).subscribe(
 			(rawError: string): void => {
 				setError(rawError);
-				setStep(SYNC_POINTS_STEP.ERROR);
+
+				if (!!rawError) {
+					setStep(SYNC_POINTS_STEP.ERROR);
+				}
 
 				isNavigationDisabled.next(false);
 			}
@@ -106,6 +112,13 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 				setStep(SYNC_POINTS_STEP.ERROR);
 
 				isNavigationDisabled.next(false);
+			}
+		);
+
+		request.runTap$.pipe(takeUntil(unsubscribe$)).subscribe(
+			(): void => {
+				setStep(SYNC_POINTS_STEP.INIT);
+				pointsHandbookCount.next(0);
 			}
 		);
 
@@ -132,9 +145,7 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 		}
 
 		isNavigationDisabled.next(true);
-
-		setStep(SYNC_POINTS_STEP.INIT);
-		pointsHandbookCount.next(0);
+		setStep(SYNC_POINTS_STEP.PREPARING);
 
 		request.run();
 	}, [request]);
@@ -160,8 +171,8 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 			<Button
 				onClick={handleClickSync}
 				type={BUTTON_TYPE.PRIMARY}
-				disabled={isRunning || isDone || isUnavailable}
-				loading={isRunning}
+				disabled={isRunning || isDone || isUnavailable || isPreparing}
+				loading={isRunning || isPreparing}
 			>
 				Запустить синхронизацию справочника
 			</Button>
@@ -180,10 +191,12 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 				</div>
 			)}
 
-			{step !== SYNC_POINTS_STEP.WAITING && (
+			{isProcessRunned && (
 				<div className={classname('progressbar')}>
 					<div className={classname('progressbar-step', { step })}>
-						{step in PROGRESSBAR_STEP_TEXT
+						{!!error
+							? error
+							: step in PROGRESSBAR_STEP_TEXT
 							? PROGRESSBAR_STEP_TEXT[step]
 							: 'Инициализация...'}
 

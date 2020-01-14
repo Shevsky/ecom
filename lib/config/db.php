@@ -15,7 +15,7 @@ return array(
 		'longitude' => array('varchar', 255),
 		'location_type' => array('enum', "'DEFAULT','BOX','DEMAND','HOTEL'"),
 		'region' => array('varchar', 255),
-		'region_code' => array('int', 9, 'null' => 0),
+		'region_code' => array('varchar', 8, 'null' => 0),
 		'place' => array('varchar', 255),
 		'city_name' => array('varchar', 255, 'null' => 0),
 		'micro_district' => array('varchar', 255),

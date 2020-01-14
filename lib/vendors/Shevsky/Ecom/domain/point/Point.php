@@ -27,7 +27,7 @@ class Point implements IPoint
 	 *  'longitude' => string,
 	 *  'location_type' => string,
 	 *  'region' => string,
-	 *  'region_code' => number,
+	 *  'region_code' => string,
 	 *  'place' => string,
 	 *  'city_name' => string,
 	 *  'micro_district' => string,

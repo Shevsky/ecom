@@ -11,7 +11,7 @@ class PointLocationPlace implements IPointLocationPlace
 	/**
 	 * @param array $data = [
 	 *  'region' => string,
-	 *  'region_code' => int,
+	 *  'region_code' => string,
 	 *  'place' => string,
 	 *  'city_name' => string,
 	 *  'micro_district' => string,
@@ -32,11 +32,11 @@ class PointLocationPlace implements IPointLocationPlace
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
 	public function getRegionCode()
 	{
-		return (int)$this->data['region_code'];
+		return $this->data['region_code'];
 	}
 
 	/**

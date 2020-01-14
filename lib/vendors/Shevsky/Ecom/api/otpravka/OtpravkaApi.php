@@ -59,8 +59,6 @@ class OtpravkaApi
 	 */
 	public function execute(IMethod $method)
 	{
-		\waLog::log('executing otpravka method: ' . $method->getUrl(), 'ecom.log');
-
 		$net = $this->getNet();
 
 		$url = Constants::URL . $method->getUrl();
@@ -68,6 +66,9 @@ class OtpravkaApi
 		try
 		{
 			$result = $net->query($url, $method->content, $method->getMethod());
+
+			// \waFiles::write(\wa()->getDataPath('pochta-response.json'), json_encode($result, JSON_UNESCAPED_UNICODE));
+			// for test mock
 
 			return $result;
 		}

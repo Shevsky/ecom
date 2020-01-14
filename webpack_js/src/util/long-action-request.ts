@@ -30,6 +30,9 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 	private storeFinish$: Subject<TFinishResponse> = new Subject();
 	finish$: Observable<TFinishResponse> = this.storeFinish$.asObservable();
 
+	private storeRunTap$: Subject<void> = new Subject();
+	runTap$: Observable<void> = this.storeRunTap$.asObservable();
+
 	private storeTerminateTap$: Subject<void> = new Subject();
 	terminateTap$: Observable<void> = this.storeTerminateTap$.asObservable();
 
@@ -45,6 +48,7 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 
 	run(): void {
 		this.isCancelled = false;
+		this.storeError$.next('');
 
 		$.post(this.url, this.params, this.handleRunResponse, 'json').fail(
 			(): void => this.terminate()
@@ -57,11 +61,11 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 	}
 
 	private terminate(error?: string): void {
+		this.storeTerminateTap$.next();
+
 		if (error) {
 			this.storeError$.next(error);
 		}
-
-		this.storeTerminateTap$.next();
 
 		this.processId = undefined;
 	}
@@ -118,10 +122,11 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 			return;
 		}
 
-		if (response && response.process_id) {
-			this.storeProcessId$.next(response.process_id);
-		} else if (response && response.error) {
+		if (response && response.error) {
 			this.terminate(response.error);
+		} else if (response && response.process_id) {
+			this.storeRunTap$.next();
+			this.storeProcessId$.next(response.process_id);
 		} else {
 			this.terminate();
 		}

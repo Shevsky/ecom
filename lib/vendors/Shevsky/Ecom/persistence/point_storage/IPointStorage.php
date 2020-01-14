@@ -7,7 +7,7 @@ use Shevsky\Ecom\Persistence\Point\IPoint;
 interface IPointStorage
 {
 	/**
-	 * @param int $region_code
+	 * @param string $region_code
 	 */
 	public function filterByRegionCode($region_code);
 

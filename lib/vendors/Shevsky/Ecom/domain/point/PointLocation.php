@@ -18,7 +18,7 @@ class PointLocation implements IPointLocation
 	 *  'longitute' => string,
 	 *  'type' => string,
 	 *  'region' => string,
-	 *  'region_code' => int,
+	 *  'region_code' => string,
 	 *  'place' => string,
 	 *  'city_name' => string,
 	 *  'micro_district' => string,
