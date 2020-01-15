@@ -8,9 +8,9 @@ import {
 	DepartureScreen,
 	PointsHandbookScreen
 } from 'modules/settings/components/screens';
-import { GlobalFormPool } from 'modules/settings/components/global-form-pool';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { GlobalParamsContext } from 'modules/settings/services/global-params-context';
+import { GlobalFormPool } from './global-form-pool';
 
 const classname = bem('main-screen');
 

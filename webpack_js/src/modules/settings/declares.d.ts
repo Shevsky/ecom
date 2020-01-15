@@ -8,6 +8,7 @@ declare interface ISettings {
 	tracking_cache_lifetime: number;
 
 	index_from: string;
+	undefined_dimension_case: import('./enum').UNDEFINED_DIMENSION_CASE;
 	dimension_type: import('./enum').DIMENSION_TYPE;
 	pass_goods_value: boolean;
 	total_value_mode: import('./enum').TOTAL_VALUE_MODE;

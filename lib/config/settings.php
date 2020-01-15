@@ -22,8 +22,11 @@ return [
 	'index_from' => [
 		'value' => '',
 	],
+	'undefined_dimension_case' => [
+		'value' => 'fixed_dimension_type',
+	],
 	'dimension_type' => [
-		'value' => '',
+		'value' => 'S',
 	],
 	'pass_goods_value' => [
 		'value' => '',

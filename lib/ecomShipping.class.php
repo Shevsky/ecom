@@ -3,6 +3,9 @@
 use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
 use Shevsky\Ecom\Autoloader;
 use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
+use Shevsky\Ecom\Enum;
+use Shevsky\Ecom\Domain\Order\Order;
+use Shevsky\Ecom\Domain\Order\OrderDimensionTypeClassificator;
 use Shevsky\Ecom\Domain\PointStorage\PointStorage;
 use Shevsky\Ecom\Domain\SettingsValidator\SettingsValidator;
 use Shevsky\Ecom\Domain\Template\SettingsTemplate;
@@ -128,11 +131,37 @@ class ecomShipping extends waShipping
 	}
 
 	/**
-	 *
+	 * @return array|string
 	 */
 	protected function calculate()
 	{
-		// TODO: Implement calculate() method.
+		$order = new Order(
+			[
+				'total_weight' => $this->getTotalWeight(),
+				'total_height' => $this->getTotalHeight(),
+				'total_length' => $this->getTotalLength(),
+				'total_width' => $this->getTotalWidth(),
+				'total_price' => $this->getTotalPrice(),
+				'total_raw_price' => $this->getTotalRawPrice(),
+				'items' => $this->getItems(),
+			]
+		);
+
+		try
+		{
+			$dimension_type = (new OrderDimensionTypeClassificator($order))->getDimensionType();
+		}
+		catch (\Exception $e)
+		{
+			if ($this->undefined_dimension_case === Enum\UndefinedDimensionCase::FIXED_DIMENSION_TYPE)
+			{
+				$dimension_type = $this->dimension_type;
+			}
+			else
+			{
+				return 'undefined dimension case, forbidden';
+			}
+		}
 	}
 
 	/**
@@ -167,7 +196,7 @@ class ecomShipping extends waShipping
 	 */
 	protected function getOtpravkaApi()
 	{
-		if (!$this->verifyOtpravkaApi())
+		if (!$this->hasOtpravkaApiParams())
 		{
 			throw new \Exception('Параметры для API сервиса Отправка не указаны');
 		}
@@ -178,7 +207,7 @@ class ecomShipping extends waShipping
 	/**
 	 * @return bool
 	 */
-	private function verifyOtpravkaApi()
+	private function hasOtpravkaApiParams()
 	{
 		return !!$this->api_login && !!$this->api_password && !!$this->api_token;
 	}

@@ -2,6 +2,8 @@
 
 namespace Shevsky\Ecom\Api\Otpravka;
 
+use Shevsky\Ecom\Enum;
+
 class MethodDeliveryPointGetAll implements IMethod
 {
 	public $content = [];
@@ -11,7 +13,7 @@ class MethodDeliveryPointGetAll implements IMethod
 	 */
 	public function getMethod()
 	{
-		return EnumMethod::GET;
+		return Enum\RequestMethod::GET;
 	}
 
 	/**

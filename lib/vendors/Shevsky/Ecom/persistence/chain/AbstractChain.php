@@ -10,14 +10,15 @@ abstract class AbstractChain
 	abstract protected function getResponsibilities();
 
 	/**
+	 * @param array[] $args
 	 * @return mixed[]
 	 * @throws \Exception
 	 */
-	public function execute()
+	public function execute(array ...$args)
 	{
 		$responsibilities = $this->getResponsibilities();
 
-		$last_result = [];
+		$last_result = $args;
 
 		foreach ($responsibilities as $responsibility)
 		{

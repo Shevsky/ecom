@@ -9,6 +9,7 @@ export class SettingsModel implements TSettingsModel {
 	api_password: BehaviorSubject<ISettings['api_password']>;
 	api_token: BehaviorSubject<ISettings['api_token']>;
 	contents_checking: BehaviorSubject<ISettings['contents_checking']>;
+	undefined_dimension_case: BehaviorSubject<ISettings['undefined_dimension_case']>;
 	dimension_type: BehaviorSubject<ISettings['dimension_type']>;
 	functionality_checking: BehaviorSubject<ISettings['functionality_checking']>;
 	index_from: BehaviorSubject<ISettings['index_from']>;

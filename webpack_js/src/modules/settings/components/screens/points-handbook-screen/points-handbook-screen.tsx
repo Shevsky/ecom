@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Field, Paragraph } from 'common/components';
 import { GlobalParamsContext } from 'modules/settings/services/global-params-context';
-import { PointsHandbookSynchronizer } from './points-handbook-synchronizer';
 import { numericDeclension } from 'util/numeric-declension';
 import { formatNumeric } from 'util/format-numeric';
+import { PointsHandbookSynchronizer } from './points-handbook-synchronizer';
 
 export function PointsHandbookScreen(): JSX.Element {
 	const globalParams = useContext(GlobalParamsContext);

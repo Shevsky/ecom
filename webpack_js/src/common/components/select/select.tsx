@@ -1,6 +1,7 @@
 import './select.sass';
 
 import React, { ChangeEvent, HTMLProps, useCallback } from 'react';
+import ClassNames from 'classnames';
 import { bem } from 'util/bem';
 
 const classname = bem('select');
@@ -8,7 +9,8 @@ const classname = bem('select');
 export enum SELECT_SIZE {
 	SMALL = 'small',
 	MEDIUM = 'medium',
-	LARGE = 'large'
+	LARGE = 'large',
+	AUTO = 'auto'
 }
 
 export interface ISelectProps
@@ -31,7 +33,12 @@ export function Select({ onChange, size, options, ...props }: ISelectProps): JSX
 	return (
 		<select
 			{...props}
-			className={classname({ size: size || SELECT_SIZE.MEDIUM })}
+			className={ClassNames(
+				classname({
+					size: size || SELECT_SIZE.MEDIUM
+				}),
+				{ [props.className]: !!props.className }
+			)}
 			onChange={handleChange}
 		>
 			{Object.entries(options).map(

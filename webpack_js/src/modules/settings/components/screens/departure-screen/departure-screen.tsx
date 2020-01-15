@@ -1,9 +1,10 @@
 import React from 'react';
 import { CheckboxGroup, Field, INPUT_SIZE } from 'common/components';
 import { Checkbox, Input, Select } from 'modules/settings/components/common';
-import { DimensionType } from 'modules/settings/components/dimension-type';
 import { useSetting } from 'modules/settings/util/use-setting';
 import { TOTAL_VALUE_MODE } from 'modules/settings/enum';
+import { DimensionType } from './dimension-type';
+import { UndefinedDimensionCase } from './undefined-dimension-case';
 
 export function DepartureScreen(): JSX.Element {
 	const [isPassGoodsValue] = useSetting('pass_goods_value');
@@ -39,6 +40,9 @@ export function DepartureScreen(): JSX.Element {
 			</Field>
 			<Field name="Типоразмер отправления">
 				<DimensionType />
+			</Field>
+			<Field name="Типоразмер по умолчанию">
+				<UndefinedDimensionCase />
 			</Field>
 		</>
 	);

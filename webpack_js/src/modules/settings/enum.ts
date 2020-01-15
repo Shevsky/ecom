@@ -1,3 +1,8 @@
+export enum UNDEFINED_DIMENSION_CASE {
+	DISABLE_SHIPPING = 'disable_shipping',
+	FIXED_DIMENSION_TYPE = 'fixed_dimension_type'
+}
+
 export enum DIMENSION_TYPE {
 	SMALL = 'S',
 	MEDIUM = 'M',

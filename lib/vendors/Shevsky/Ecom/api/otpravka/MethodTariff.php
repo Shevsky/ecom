@@ -2,6 +2,8 @@
 
 namespace Shevsky\Ecom\Api\Otpravka;
 
+use Shevsky\Ecom\Enum;
+
 class MethodTariff implements IMethod
 {
 	public $content;
@@ -9,7 +11,7 @@ class MethodTariff implements IMethod
 	/**
 	 * @param array $content = [
 	 *  'delivery-point-index' => string,
-	 *  'dimension-type' => EnumDimensionType,
+	 *  'dimension-type' => Enum\DimensionType,
 	 *  'index-from' => string,
 	 *  'goods-value' => int,
 	 *  'index-to' => string,
@@ -25,7 +27,7 @@ class MethodTariff implements IMethod
 	 */
 	public function getMethod()
 	{
-		return EnumMethod::POST;
+		return Enum\RequestMethod::POST;
 	}
 
 	/**

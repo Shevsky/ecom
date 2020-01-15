@@ -1,8 +1,8 @@
 <?php
 
-namespace Shevsky\Ecom\Api\Otpravka;
+namespace Shevsky\Ecom\Enum;
 
-class EnumMethod
+class RequestMethod
 {
 	const GET = 'GET';
 	const POST = 'POST';
