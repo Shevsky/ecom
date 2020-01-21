@@ -223,7 +223,15 @@ trait Calculator
 	{
 		$result = $tarifficator->calculate($point);
 
-		$datetime_interval = $this->getDeliveryDateTimeInterval($point->getSchedule());
+		try
+		{
+			$datetime_interval = $this->getDeliveryDateTimeInterval($point->getSchedule());
+		}
+		catch (\Exception $e)
+		{
+			$datetime_interval = [];
+		}
+
 		$delivery_interval = array_map(
 			[__CLASS__, 'formatDateTimeISO'],
 			$datetime_interval
