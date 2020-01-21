@@ -24,15 +24,16 @@ class ScheduleFormatter
 
 	/**
 	 * @param string $raw_schedule
-	 * @return string[]
+	 * @return string[]|[string, null]
 	 * @throws \Exception
 	 */
 	public static function parseSchedule($raw_schedule)
 	{
-		$day_locales_string = implode('|', self::DAY_LOCALES);
+		$day_locales_string = implode('|', array_keys(self::DAY_LOCALES));
 
 		if (preg_match(
-			'/(' . $day_locales_string . ').*?([0-9]{1,2}):([0-9]{1,2}).*?([0-9]{1,2}):([0-9]{1,2})/iu',
+			'/(' . $day_locales_string
+			. ')(?:\,?\s?открыто\:?)?.*?([0-9]{1,2}):([0-9]{1,2}).*?([0-9]{1,2}):([0-9]{1,2})/iu',
 			$raw_schedule,
 			$matches
 		))
@@ -49,6 +50,19 @@ class ScheduleFormatter
 			return [
 				$day,
 				$schedule_daily,
+			];
+		}
+		elseif (preg_match(
+			'/(' . $day_locales_string . ')(?:\,?\s?(?:закрыто|выходной))/iu',
+			$raw_schedule,
+			$matches
+		))
+		{
+			$day = self::DAY_LOCALES[$matches[1]];
+
+			return [
+				$day,
+				null,
 			];
 		}
 

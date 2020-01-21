@@ -1,11 +1,11 @@
 <?php
 
-namespace Shevsky\Ecom;
+namespace Shevsky\Ecom\Plugin;
 
-class Plugin
+class Config
 {
 	const ID = 'ecom';
-	const CURRENCY = 'rub';
+	const CURRENCY = 'RUB';
 	const WEIGHT_UNIT = 'kg';
 	const LINEAR_UNIT = 'cm';
 	const COUNTRY = 'rus';

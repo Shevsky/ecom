@@ -9,8 +9,6 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	private $otpravka_api;
 	private $points_model;
 
-	const CHUNK_SIZE = 100;
-
 	public function __construct()
 	{
 		$this->points_model = new ecomShippingPointsModel();
@@ -28,6 +26,8 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 			'login' => $login,
 			'password' => $password,
 			'token' => $token,
+
+			'chunk_size' => $this->getChunkSizeFromRequest(),
 
 			'points' => null,
 			'points_count' => -1,
@@ -110,7 +110,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 		$points = &$this->data['points'];
 		$offset = &$this->data['offset'];
 
-		$chunk = array_slice($points, $offset, self::CHUNK_SIZE);
+		$chunk = array_slice($points, $offset, $this->getChunkSize());
 
 		foreach ($chunk as $point)
 		{
@@ -190,6 +190,22 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	private function getApiData()
 	{
 		return [$this->data['login'], $this->data['password'], $this->data['token']];
+	}
+
+	/**
+	 * @return int
+	 */
+	private function getChunkSizeFromRequest()
+	{
+		return (int)waRequest::post('chunk_size', 100, 'int');
+	}
+
+	/**
+	 * @return int
+	 */
+	private function getChunkSize()
+	{
+		return (int)$this->data['chunk_size'];
 	}
 
 	/**

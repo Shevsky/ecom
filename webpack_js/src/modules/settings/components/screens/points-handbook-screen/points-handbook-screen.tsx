@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Field, Paragraph } from 'common/components';
-import { GlobalParamsContext } from 'modules/settings/services/global-params-context';
+import { GlobalContext } from 'modules/settings/services/global-context';
 import { numericDeclension } from 'util/numeric-declension';
 import { formatNumeric } from 'util/format-numeric';
 import { PointsHandbookSynchronizer } from './points-handbook-synchronizer';
 
 export function PointsHandbookScreen(): JSX.Element {
-	const globalParams = useContext(GlobalParamsContext);
+	const global = useContext(GlobalContext);
 	const [pointsHandbookCount, setPointsHandbookCount] = useState(
-		globalParams.pointsHandbookCount.getValue()
+		global.pointsHandbookCount.getValue()
 	);
 	useEffect((): VoidFunction => {
-		const subscription = globalParams.pointsHandbookCount.subscribe(setPointsHandbookCount);
+		const subscription = global.pointsHandbookCount.subscribe(setPointsHandbookCount);
 
 		return (): void => subscription.unsubscribe();
 	}, []);

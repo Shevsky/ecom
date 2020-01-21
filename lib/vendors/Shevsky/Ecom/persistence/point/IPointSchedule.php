@@ -38,4 +38,9 @@ interface IPointSchedule
 	 * @return IPointScheduleDaily
 	 */
 	public function getSunday();
+
+	/**
+	 * @return IPointScheduleDaily[]
+	 */
+	public function toArray();
 }

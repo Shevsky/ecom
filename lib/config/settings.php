@@ -22,11 +22,20 @@ return [
 	'index_from' => [
 		'value' => '',
 	],
+	'region_code_from' => [
+		'value' => '',
+	],
+	'city_name_from' => [
+		'value' => '',
+	],
 	'undefined_dimension_case' => [
 		'value' => 'fixed_dimension_type',
 	],
 	'dimension_type' => [
 		'value' => 'S',
+	],
+	'weight' => [
+		'value' => '0.1',
 	],
 	'pass_goods_value' => [
 		'value' => '',

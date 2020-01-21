@@ -40,12 +40,12 @@ class OtpravkaApi
 		if (!isset($this->net))
 		{
 			$this->net = new waNet(
-				array(
+				[
 					'format' => waNet::FORMAT_JSON,
-				), array(
+				], [
 					'Authorization' => 'AccessToken ' . $this->token,
 					'X-User-Authorization' => 'Basic ' . $this->getAuthorization(),
-				)
+				]
 			);
 		}
 
@@ -74,7 +74,9 @@ class OtpravkaApi
 		}
 		catch (waException $e)
 		{
-			throw new \Exception($e->getMessage());
+			// TODO log this?
+
+			throw new \Exception($e->getMessage(), $e->getCode(), $e);
 		}
 	}
 }

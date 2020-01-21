@@ -16,6 +16,7 @@ class PointLocation implements IPointLocation
 	 * @param array $data = [
 	 *  'latitude' => string,
 	 *  'longitute' => string,
+	 *  'way' => string,
 	 *  'type' => string,
 	 *  'region' => string,
 	 *  'region_code' => string,
@@ -54,6 +55,14 @@ class PointLocation implements IPointLocation
 	public function getLongitude()
 	{
 		return (float)$this->data['longitute'];
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getWay()
+	{
+		return $this->data['way'];
 	}
 
 	/**
@@ -110,5 +119,92 @@ class PointLocation implements IPointLocation
 		}
 
 		return $this->building;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAddress()
+	{
+		$address_parts = [];
+
+		if ($this->getBuilding()->getStreet())
+		{
+			$address_parts[] = $this->data['street'];
+		}
+
+		if ($this->getBuilding()->getHouse())
+		{
+			$address_part = "д. {$this->getBuilding()->getHouse()}";
+
+			if ($this->getBuilding()->getLetter())
+			{
+				$address_part .= $this->getBuilding()->getLetter();
+			}
+
+			if ($this->getBuilding()->getSlash())
+			{
+				$address_part .= "/{$this->getBuilding()->getSlash()}";
+			}
+
+			if ($this->getBuilding()->getCorpus())
+			{
+				$address_part .= " корпус {$this->getBuilding()->getCorpus()}";
+			}
+
+			if ($this->getBuilding()->getBuilding())
+			{
+				$address_part .= " строение {$this->getBuilding()->getBuilding()}";
+			}
+
+			if ($this->getBuilding()->getVladenie())
+			{
+				$address_part .= " владение {$this->getBuilding()->getVladenie()}";
+			}
+
+			$address_parts[] = $address_part;
+		}
+
+		if ($this->getBuilding()->getHotel())
+		{
+			$address_parts[] = $this->getBuilding()->getHotel();
+		}
+
+		if ($this->getBuilding()->getOffice())
+		{
+			$address_parts[] = "оф. {$this->getBuilding()->getOffice()}";
+		}
+
+		if ($this->getBuilding()->getRoom())
+		{
+			$address_parts[] = $this->getBuilding()->getRoom();
+		}
+
+		return implode(', ', $address_parts);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFullAddress()
+	{
+		$full_address_parts = [$this->getAddress()];
+
+		if ($this->getPlace()->getRegion())
+		{
+			$full_address_parts[] = $this->getPlace()->getRegion();
+		}
+
+		if ($this->getPlace()->getMicroDistrict())
+		{
+			$full_address_parts[] = $this->getPlace()->getMicroDistrict();
+		}
+
+		if ($this->getPlace()->getCityName())
+		{
+			$full_address_parts[] = $this->getPlace()->getCityName();
+		}
+
+		return implode(', ', $full_address_parts);
 	}
 }

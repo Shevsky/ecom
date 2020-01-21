@@ -7,7 +7,7 @@ export namespace SettingStringify {
 
 		switch (type) {
 			case 'number':
-				return (+rawValue as unknown) as ISettings[keyof ISettings];
+				return (+rawValue.replace(',', '.') as unknown) as ISettings[keyof ISettings];
 			case 'object':
 				return JSON.parse(rawValue);
 			default:

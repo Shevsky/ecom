@@ -1,13 +1,22 @@
 import './points-handbook-synchronizer.sass';
 
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Button, BUTTON_TYPE, Icon } from 'common/components';
+import {
+	Button,
+	BUTTON_TYPE,
+	Container,
+	Icon,
+	InlineLink,
+	Input,
+	INPUT_SIZE,
+	Paragraph
+} from 'common/components';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { useSetting } from 'modules/settings/util/use-setting';
 import { LongActionRequest } from 'util/long-action-request';
-import { GlobalParamsContext } from 'modules/settings/services/global-params-context';
+import { GlobalContext } from 'modules/settings/services/global-context';
 import { bem } from 'util/bem';
 
 enum SYNC_POINTS_STEP {
@@ -42,7 +51,24 @@ const classname = bem('points-handbook-synchronizer');
 
 export function PointsHandbookSynchronizer(): JSX.Element {
 	const params = useContext(ParamsContext);
-	const { pointsHandbookCount, isNavigationDisabled } = useContext(GlobalParamsContext);
+	const { pointsHandbookCount, isNavigationDisabled } = useContext(GlobalContext);
+
+	const [isAdditional, setIsAdditional] = useState<boolean>(false);
+	const handleClickAdditional = useCallback((): void => setIsAdditional(true), []);
+
+	const [chunkSize, setChunkSize] = useState<number>(100);
+	const handleChangeChunkSize = useCallback((newChunkSize: string): void => {
+		setChunkSize(+newChunkSize);
+	}, []);
+	const handleBlurChunkSize = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
+		const { value } = event.target;
+
+		if (+value < 10) {
+			setChunkSize(10);
+		} else if (+value > 10000) {
+			setChunkSize(10000);
+		}
+	}, []);
 
 	const [login] = useSetting('api_login');
 	const [password] = useSetting('api_password');
@@ -72,9 +98,10 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 			new LongActionRequest<ISyncPointsData, ISyncPointsData>(params.sync_points_url, {
 				login,
 				password,
-				token
+				token,
+				chunk_size: chunkSize
 			}),
-		[params, login, password, token]
+		[params, login, password, token, chunkSize]
 	);
 
 	const updateState = useCallback((data: ISyncPointsData): void => {
@@ -168,28 +195,61 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 
 	return (
 		<div className={classname()}>
-			<Button
-				onClick={handleClickSync}
-				type={BUTTON_TYPE.PRIMARY}
-				disabled={isRunning || isDone || isUnavailable || isPreparing}
-				loading={isRunning || isPreparing}
-			>
-				Запустить синхронизацию справочника
-			</Button>
+			<Paragraph disabledBottomPadding={isUnavailable}>
+				<Button
+					onClick={handleClickSync}
+					type={BUTTON_TYPE.PRIMARY}
+					disabled={isRunning || isDone || isUnavailable || isPreparing}
+					loading={isRunning || isPreparing}
+				>
+					Запустить синхронизацию справочника
+				</Button>
 
-			{isRunning && (
-				<div className={classname('cancel-box')}>
-					<Button onClick={handleClickCancel} type={BUTTON_TYPE.DELETE}>
-						Отменить синхронизацию
-					</Button>
-				</div>
-			)}
+				{isRunning && (
+					<div className={classname('cancel-box')}>
+						<Button onClick={handleClickCancel} type={BUTTON_TYPE.DELETE}>
+							Отменить синхронизацию
+						</Button>
+					</div>
+				)}
+				{isUnavailable && (
+					<div className={classname('unavailable-box')}>
+						Недоступно. Укажите параметры API сервиса Отправка Почта России
+					</div>
+				)}
+			</Paragraph>
 
-			{isUnavailable && (
-				<div className={classname('unavailable-box')}>
-					Недоступно. Укажите параметры API сервиса Отправка Почта России
-				</div>
-			)}
+			{!isUnavailable &&
+				(isAdditional ? (
+					<>
+						<Container>
+							<Paragraph>
+								Процесс синхронизации будет разбит на несколько итераций
+								(обрабатывается N количество пунктов выдачи за итерацию). Вы можете
+								изменить количество обрабатываемых пунктов выдачи за итерацию, так
+								процесс будет происходить быстрее, но он может блокироваться Вашей
+								конфигурацией PHP. Увеличивайте это число только если знаете, что
+								делаете.
+							</Paragraph>
+						</Container>
+						<Paragraph disabledBottomPadding>
+							<Input
+								value={chunkSize.toString()}
+								onChange={handleChangeChunkSize}
+								onBlur={handleBlurChunkSize}
+								size={INPUT_SIZE.SMALL}
+								type="number"
+								min="10"
+								max="1000"
+							/>{' '}
+							пунктов выдачи за итерацию
+						</Paragraph>
+					</>
+				) : (
+					<Paragraph disabledBottomPadding>
+						<InlineLink onClick={handleClickAdditional}>Дополнительно...</InlineLink>
+					</Paragraph>
+				))}
 
 			{isProcessRunned && (
 				<div className={classname('progressbar')}>

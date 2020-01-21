@@ -22,6 +22,8 @@ class SettingsValidator implements ISettingsValidator
 			'api_token' => $api_validator,
 			'tracking_cache_lifetime' => new TrackingCacheLifetimeSettingValidator(),
 			'index_from' => new IndexFromSettingValidator(),
+			'region_code_from' => new RegionCodeFromSettingValidator(),
+			'city_name_from' => new CityNameFromSettingValidator(),
 		];
 	}
 

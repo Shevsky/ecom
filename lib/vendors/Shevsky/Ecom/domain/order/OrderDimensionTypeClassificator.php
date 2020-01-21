@@ -54,7 +54,7 @@ class OrderDimensionTypeClassificator implements IOrderDimensionTypeClassificato
 				return Enum\DimensionType::OVERSIZED;
 			}
 
-			throw new \Exception('Не удалось определить типоразмер отправления');
+			throw new \Exception('Не удалось определить типоразмер отправления', $e->getCode(), $e);
 		}
 	}
 

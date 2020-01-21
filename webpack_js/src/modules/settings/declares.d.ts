@@ -8,8 +8,11 @@ declare interface ISettings {
 	tracking_cache_lifetime: number;
 
 	index_from: string;
+	region_code_from: string;
+	city_name_from: string;
 	undefined_dimension_case: import('./enum').UNDEFINED_DIMENSION_CASE;
 	dimension_type: import('./enum').DIMENSION_TYPE;
+	weight: number;
 	pass_goods_value: boolean;
 	total_value_mode: import('./enum').TOTAL_VALUE_MODE;
 	mail_category:
@@ -23,10 +26,22 @@ declare interface ISettings {
 	contents_checking: boolean;
 }
 
+declare interface ICountry {
+	iso3letter: string;
+	name: string;
+}
+
+declare type TRegions = {
+	entities: Record<string, string>;
+	order: string[];
+};
+
 declare interface IParams {
 	id: string;
 	key: string | null;
 	sync_points_url: string;
+	get_regions_url: string;
 	points_handbook_count: number;
+	countries: ICountry[];
 	settings: ISettings;
 }

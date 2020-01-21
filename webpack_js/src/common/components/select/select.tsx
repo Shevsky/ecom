@@ -1,6 +1,6 @@
 import './select.sass';
 
-import React, { ChangeEvent, HTMLProps, useCallback } from 'react';
+import React, { ChangeEvent, HTMLProps, useCallback, Fragment } from 'react';
 import ClassNames from 'classnames';
 import { bem } from 'util/bem';
 
@@ -18,11 +18,20 @@ export interface ISelectProps
 	onChange(value: string, name: string): void;
 	value: string;
 	options: Record<string, string>;
+	order?: string[];
 	name?: string;
 	size?: SELECT_SIZE;
+	withEmpty?: boolean;
 }
 
-export function Select({ onChange, size, options, ...props }: ISelectProps): JSX.Element {
+export function Select({
+	onChange,
+	size,
+	options,
+	order,
+	withEmpty,
+	...props
+}: ISelectProps): JSX.Element {
 	const handleChange = useCallback(
 		(event: ChangeEvent<HTMLSelectElement>): void => {
 			onChange(event.target.value, event.target.name);
@@ -41,13 +50,23 @@ export function Select({ onChange, size, options, ...props }: ISelectProps): JSX
 			)}
 			onChange={handleChange}
 		>
-			{Object.entries(options).map(
-				([value, label]: [string, string]): JSX.Element => (
-					<option key={value} value={value}>
-						{label}
-					</option>
-				)
-			)}
+			{!!withEmpty && <option value="" />}
+
+			{!!order && order.length > 0
+				? order.map(
+						(key: string): JSX.Element => (
+							<Fragment key={key}>
+								{key in options && <option value={key}>{options[key]}</option>}
+							</Fragment>
+						)
+				  )
+				: Object.entries(options).map(
+						([value, label]: [string, string]): JSX.Element => (
+							<option key={value} value={value}>
+								{label}
+							</option>
+						)
+				  )}
 		</select>
 	);
 }

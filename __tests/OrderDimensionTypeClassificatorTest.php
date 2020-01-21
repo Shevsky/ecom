@@ -34,6 +34,22 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 		$classificator->getDimensionType();
 	}
 
+	public function testEmptyCase()
+	{
+		$this->expectException(\Exception::class);
+
+		$order = new Order(
+			[
+				'total_weight' => 0,
+				'total_height' => 0,
+				'total_length' => 0,
+				'total_width' => 0,
+			]
+		);
+		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator->getDimensionType();
+	}
+
 	public function testSmallCase()
 	{
 		$order = new Order(

@@ -9,19 +9,19 @@ import {
 	PointsHandbookScreen
 } from 'modules/settings/components/screens';
 import { ParamsContext } from 'modules/settings/services/params-context';
-import { GlobalParamsContext } from 'modules/settings/services/global-params-context';
+import { GlobalContext } from 'modules/settings/services/global-context';
 import { GlobalFormPool } from './global-form-pool';
 
 const classname = bem('main-screen');
 
 export function MainScreen(): JSX.Element {
 	const params = useContext(ParamsContext);
-	const globalParams = useContext(GlobalParamsContext);
+	const global = useContext(GlobalContext);
 	const [isNavigationDisabled, setIsNavigationDisabled] = useState(
-		globalParams.isNavigationDisabled.getValue()
+		global.isNavigationDisabled.getValue()
 	);
 	useEffect((): VoidFunction => {
-		const subscription = globalParams.isNavigationDisabled.subscribe(setIsNavigationDisabled);
+		const subscription = global.isNavigationDisabled.subscribe(setIsNavigationDisabled);
 
 		return (): void => subscription.unsubscribe();
 	}, []);

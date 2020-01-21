@@ -90,7 +90,8 @@ class PointFormatter
 		$ret = [
 			'object_id' => $point['id'],
 			'name' => ifset($point, 'brand-name', ''),
-			'description' => ifset($point, 'getto', ''),
+			'description' => '',
+			'way' => ifset($point, 'getto', ''),
 			'legal_name' => ifset($point, 'legal-name', ''),
 			'legal_short_name' => ifset($point, 'legal-short-name', ''),
 			'status' => !empty(ifset($point, 'closed', false)) ? 0 : 1,

@@ -7,7 +7,7 @@ use Shevsky\Ecom\Plugin;
 
 class Env implements IEnv
 {
-	public $id = Plugin::ID;
+	public $id = Plugin\Config::ID;
 
 	/**
 	 * @return string

@@ -33,4 +33,9 @@ interface IOrder
 	 * @return float
 	 */
 	public function getPriceWithoutDiscounts();
+
+	/**
+	 * @return string
+	 */
+	public function getDimensionType();
 }

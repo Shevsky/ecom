@@ -21,6 +21,7 @@ class PointStorage implements IPointStorage
 
 	/**
 	 * @param string $region_code
+	 * @return self
 	 */
 	public function filterByRegionCode($region_code)
 	{
@@ -31,10 +32,13 @@ class PointStorage implements IPointStorage
 
 		$this->filters['region_code'][] = $region_code;
 		$this->filters['region_code'] = array_unique($this->filters['region_code']);
+
+		return $this;
 	}
 
 	/**
 	 * @param string $city_name
+	 * @return self
 	 */
 	public function filterByCityName($city_name)
 	{
@@ -44,7 +48,9 @@ class PointStorage implements IPointStorage
 		}
 
 		$this->filters['city_name'][] = $city_name;
-		$this->filters['city_name'] = array_unique($this->filters['region_code']);
+		$this->filters['city_name'] = array_unique($this->filters['city_name']);
+
+		return $this;
 	}
 
 	/**
@@ -61,7 +67,7 @@ class PointStorage implements IPointStorage
 		{
 			try
 			{
-				$raw_points = $this->points_model->getByField($this->getFiltersToModelConditions());
+				$raw_points = $this->points_model->getByField($this->getFiltersToModelConditions(), true);
 			}
 			catch (waException $e)
 			{

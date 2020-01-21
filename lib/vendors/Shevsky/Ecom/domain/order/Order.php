@@ -9,6 +9,7 @@ class Order implements IOrder
 {
 	private $params;
 	private $package_calculator;
+	private $dimension_type;
 
 	/**
 	 * @param array $params = [
@@ -152,6 +153,22 @@ class Order implements IOrder
 		{
 			return 0;
 		}
+	}
+
+	/**
+	 * @param string $dimension_type
+	 */
+	public function setDimensionType($dimension_type)
+	{
+		$this->dimension_type = $dimension_type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDimensionType()
+	{
+		return $this->dimension_type;
 	}
 
 	/**

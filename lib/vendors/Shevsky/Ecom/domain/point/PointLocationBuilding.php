@@ -32,7 +32,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getStreet()
 	{
-		return $this->data['street'];
+		return (string)$this->data['street'];
 	}
 
 	/**
@@ -40,7 +40,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getHouse()
 	{
-		return $this->data['house'];
+		return (string)$this->data['house'];
 	}
 
 	/**
@@ -48,7 +48,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getBuilding()
 	{
-		return $this->data['building'];
+		return (string)$this->data['building'];
 	}
 
 	/**
@@ -56,7 +56,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getCorpus()
 	{
-		return $this->data['corpus'];
+		return (string)$this->data['corpus'];
 	}
 
 	/**
@@ -64,7 +64,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getLetter()
 	{
-		return $this->data['letter'];
+		return (string)$this->data['letter'];
 	}
 
 	/**
@@ -72,7 +72,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getHotel()
 	{
-		return $this->data['hotel'];
+		return (string)$this->data['hotel'];
 	}
 
 	/**
@@ -80,7 +80,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getRoom()
 	{
-		return $this->data['room'];
+		return (string)$this->data['room'];
 	}
 
 	/**
@@ -88,7 +88,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getSlash()
 	{
-		return $this->data['slash'];
+		return (string)$this->data['slash'];
 	}
 
 	/**
@@ -96,7 +96,7 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getOffice()
 	{
-		return $this->data['office'];
+		return (string)$this->data['office'];
 	}
 
 	/**
@@ -104,6 +104,6 @@ class PointLocationBuilding implements IPointLocationBuilding
 	 */
 	public function getVladenie()
 	{
-		return $this->data['vladenie'];
+		return (string)$this->data['vladenie'];
 	}
 }

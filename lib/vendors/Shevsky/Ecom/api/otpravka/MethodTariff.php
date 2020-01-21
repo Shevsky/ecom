@@ -15,6 +15,14 @@ class MethodTariff implements IMethod
 	 *  'index-from' => string,
 	 *  'goods-value' => int,
 	 *  'index-to' => string,
+	 *  'mail-category' => string,
+	 *  'mail-type' => string,
+	 *  'mass' => int,
+	 *  'payment-method' => string,
+	 *  'sms-notice-recipient' => int,
+	 *  'with-fitting' => bool,
+	 *  'functionality-checking' => bool,
+	 *  'contents-checking' => bool,
 	 * ]
 	 */
 	public function __construct(array $content)

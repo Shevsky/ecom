@@ -80,4 +80,20 @@ class PointSchedule implements IPointSchedule
 	{
 		return $this->data['sunday'];
 	}
+
+	/**
+	 * @return IPointScheduleDaily[]
+	 */
+	public function toArray()
+	{
+		return [
+			$this->getSunday(),
+			$this->getMonday(),
+			$this->getTuesday(),
+			$this->getWednesday(),
+			$this->getThursday(),
+			$this->getFriday(),
+			$this->getSaturday()
+		];
+	}
 }

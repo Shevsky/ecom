@@ -1,11 +1,27 @@
 <?php
 
-use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
+if (!trait_exists('\Shevsky\Ecom\Plugin\Address'))
+{
+	require_once 'vendors/Shevsky/Ecom/plugin/Address.php';
+}
+
+if (!trait_exists('\Shevsky\Ecom\Plugin\Api'))
+{
+	require_once 'vendors/Shevsky/Ecom/plugin/Api.php';
+}
+
+if (!trait_exists('\Shevsky\Ecom\Plugin\Calculator'))
+{
+	require_once 'vendors/Shevsky/Ecom/plugin/Calculator.php';
+}
+
+if (!trait_exists('\Shevsky\Ecom\Plugin\ShopScript'))
+{
+	require_once 'vendors/Shevsky/Ecom/plugin/ShopScript.php';
+}
+
 use Shevsky\Ecom\Autoloader;
 use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
-use Shevsky\Ecom\Enum;
-use Shevsky\Ecom\Domain\Order\Order;
-use Shevsky\Ecom\Domain\Order\OrderDimensionTypeClassificator;
 use Shevsky\Ecom\Domain\PointStorage\PointStorage;
 use Shevsky\Ecom\Domain\SettingsValidator\SettingsValidator;
 use Shevsky\Ecom\Domain\Template\SettingsTemplate;
@@ -14,6 +30,11 @@ use Shevsky\Ecom\Plugin;
 
 class ecomShipping extends waShipping
 {
+	use Plugin\Address;
+	use Plugin\Api;
+	use Plugin\Calculator;
+	use Plugin\ShopScript;
+
 	/**
 	 * @return string
 	 */
@@ -35,7 +56,7 @@ class ecomShipping extends waShipping
 	 */
 	public function allowedCurrency()
 	{
-		return Plugin::CURRENCY;
+		return Plugin\Config::CURRENCY;
 	}
 
 	/**
@@ -44,7 +65,7 @@ class ecomShipping extends waShipping
 	 */
 	public function allowedWeightUnit()
 	{
-		return Plugin::WEIGHT_UNIT;
+		return Plugin\Config::WEIGHT_UNIT;
 	}
 
 	/**
@@ -52,7 +73,7 @@ class ecomShipping extends waShipping
 	 */
 	public function allowedLinearUnit()
 	{
-		return Plugin::LINEAR_UNIT;
+		return Plugin\Config::LINEAR_UNIT;
 	}
 
 	/**
@@ -62,7 +83,7 @@ class ecomShipping extends waShipping
 	{
 		return [
 			[
-				'country' => Plugin::COUNTRY,
+				'country' => Plugin\Config::COUNTRY,
 			],
 		];
 	}
@@ -76,6 +97,11 @@ class ecomShipping extends waShipping
 		return (new TrackingTemplate($tracking_id))->render();
 	}
 
+	/**
+	 * @param array $settings
+	 * @return array
+	 * @throws waException
+	 */
 	public function saveSettings($settings = [])
 	{
 		$settings_validator = new SettingsValidator($settings);
@@ -90,12 +116,12 @@ class ecomShipping extends waShipping
 				}
 				catch (Exception $e)
 				{
-					throw new waException($e->getMessage());
+					throw new waException($e->getMessage(), $e->getCode(), $e);
 				}
 			}
 		}
 
-		parent::saveSettings($settings);
+		return parent::saveSettings($settings);
 	}
 
 	/**
@@ -106,6 +132,24 @@ class ecomShipping extends waShipping
 	{
 		$template = new SettingsTemplate();
 
+		try
+		{
+			$get_regions_url = wa()->getAppUrl('webasyst') . '?module=backend&action=regions';
+		}
+		catch (waException $e)
+		{
+			$get_regions_url = '';
+		}
+
+		try
+		{
+			$countries = array_values((new waCountryModel())->allWithFav());
+		}
+		catch (waException $e)
+		{
+			$countries = [];
+		}
+
 		$settings = $this->getSettings();
 
 		$template->assign(
@@ -114,7 +158,9 @@ class ecomShipping extends waShipping
 					'id' => $this->id,
 					'key' => (string)$this->key === $this->id ? null : (string)$this->key,
 					'sync_points_url' => $this->getInteractionUrl('syncPoints', 'backend'),
+					'get_regions_url' => $get_regions_url,
 					'points_handbook_count' => (new PointStorage())->count(),
+					'countries' => $countries,
 					'settings' => $settings,
 				],
 			]
@@ -124,44 +170,16 @@ class ecomShipping extends waShipping
 
 		if (method_exists($this, 'getNoticeHtml'))
 		{
-			$output = $this->getNoticeHtml($params) . $output;
+			try
+			{
+				$output = $this->getNoticeHtml($params) . $output;
+			}
+			catch (\waException $e)
+			{
+			}
 		}
 
 		return $output;
-	}
-
-	/**
-	 * @return array|string
-	 */
-	protected function calculate()
-	{
-		$order = new Order(
-			[
-				'total_weight' => $this->getTotalWeight(),
-				'total_height' => $this->getTotalHeight(),
-				'total_length' => $this->getTotalLength(),
-				'total_width' => $this->getTotalWidth(),
-				'total_price' => $this->getTotalPrice(),
-				'total_raw_price' => $this->getTotalRawPrice(),
-				'items' => $this->getItems(),
-			]
-		);
-
-		try
-		{
-			$dimension_type = (new OrderDimensionTypeClassificator($order))->getDimensionType();
-		}
-		catch (\Exception $e)
-		{
-			if ($this->undefined_dimension_case === Enum\UndefinedDimensionCase::FIXED_DIMENSION_TYPE)
-			{
-				$dimension_type = $this->dimension_type;
-			}
-			else
-			{
-				return 'undefined dimension case, forbidden';
-			}
-		}
 	}
 
 	/**
@@ -171,9 +189,7 @@ class ecomShipping extends waShipping
 	{
 		try
 		{
-			$otpravka_api = $this->getOtpravkaApi();
-
-			(new SyncPointsChain($otpravka_api))->execute();
+			(new SyncPointsChain($this->getOtpravkaApi()))->execute();
 
 			return true;
 		}
@@ -188,36 +204,6 @@ class ecomShipping extends waShipping
 		self::registerAutoloader();
 
 		parent::init();
-	}
-
-	/**
-	 * @return OtpravkaApi
-	 * @throws \Exception
-	 */
-	protected function getOtpravkaApi()
-	{
-		if (!$this->hasOtpravkaApiParams())
-		{
-			throw new \Exception('Параметры для API сервиса Отправка не указаны');
-		}
-
-		return new OtpravkaApi($this->api_login, $this->api_password, $this->api_token);
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function hasOtpravkaApiParams()
-	{
-		return !!$this->api_login && !!$this->api_password && !!$this->api_token;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function verifyTrackingApi()
-	{
-		return !!$this->tracking_login && !!$this->tracking_password;
 	}
 
 	private static function registerAutoloader()

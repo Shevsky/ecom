@@ -5,6 +5,7 @@ return array(
 		'object_id' => array('int', 11, 'null' => 0, 'default' => '0'),
 		'name' => array('varchar', 255),
 		'description' => array('text'),
+		'way' => array('text'),
 		'legal_name' => array('varchar', 255),
 		'legal_short_name' => array('varchar', 255),
 		'status' => array('tinyint', 1, 'null' => 0, 'default' => '1'),

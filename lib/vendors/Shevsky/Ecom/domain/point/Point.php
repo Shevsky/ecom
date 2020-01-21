@@ -18,6 +18,7 @@ class Point implements IPoint
 	 *  'object_id' => number,
 	 *  'name' => string,
 	 *  'description' => string,
+	 *  'way' => string,
 	 *  'legal_name' => string,
 	 *  'legal_short_name' => string,
 	 *  'status' => int,
@@ -156,6 +157,7 @@ class Point implements IPoint
 				[
 					'latitude' => $this->data['latitude'],
 					'longitute' => $this->data['longitude'],
+					'way' => $this->data['way'],
 					'type' => $this->data['location_type'],
 					'region' => $this->data['region'],
 					'region_code' => $this->data['region_code'],

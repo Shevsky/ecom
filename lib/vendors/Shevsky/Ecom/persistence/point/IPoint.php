@@ -34,6 +34,7 @@ interface IPoint
 	 */
 	public function getDescription();
 
+
 	/**
 	 * @return string
 	 */

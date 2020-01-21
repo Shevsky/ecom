@@ -1,4 +1,5 @@
 import { Observable, Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface IRunnerResponse {
 	process_id?: string;
@@ -39,16 +40,19 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 	private storeError$: Subject<string> = new Subject();
 	error$: Observable<string> = this.storeError$.asObservable();
 
+	private unsubscribe$: Subject<void> = new Subject();
+
 	constructor(url: string, params: object = {}) {
 		this.url = url;
 		this.params = params;
-
-		this.processId$.subscribe(this.handleProcessId);
 	}
 
 	run(): void {
 		this.isCancelled = false;
 		this.storeError$.next('');
+
+		this.unsubscribe$ = new Subject();
+		this.processId$.pipe(takeUntil(this.unsubscribe$)).subscribe(this.handleProcessId);
 
 		$.post(this.url, this.params, this.handleRunResponse, 'json').fail(
 			(): void => this.terminate()
@@ -61,6 +65,9 @@ export class LongActionRequest<TProcessData extends object, TFinishResponse exte
 	}
 
 	private terminate(error?: string): void {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
+
 		this.storeTerminateTap$.next();
 
 		if (error) {

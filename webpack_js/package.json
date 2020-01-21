@@ -3,7 +3,8 @@
 	"version": "1.0.0",
 	"scripts": {
 		"dev": "webpack --config webpack.watch.js",
-		"save-php-settings": "gulp save-php-settings"
+		"save-php-settings": "gulp save-php-settings",
+		"parse-delivery-dates": "gulp parse-delivery-dates"
 	},
 	"dependencies": {
 		"@bem-react/classname": "^1.5.6",
@@ -22,6 +23,7 @@
 	"devDependencies": {
 		"@types/jquery": "^3.3.31",
 		"@types/js-cookie": "^2.2.4",
+		"@types/lodash": "^4.14.149",
 		"@types/react-dom": "^16.9.4",
 		"@types/react-input-mask": "^2.0.5",
 		"autoprefixer": "^9.6.1",
@@ -29,6 +31,7 @@
 		"css-loader": "^2.1.1",
 		"file-loader": "^4.2.0",
 		"gulp": "^4.0.2",
+		"lodash": "^4.17.15",
 		"mini-css-extract-plugin": "^0.8.0",
 		"postcss-loader": "^3.0.0",
 		"react": "^16.12.0",

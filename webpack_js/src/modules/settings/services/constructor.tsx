@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { MainScreen } from 'modules/settings/components/screens';
-import { GlobalParamsModel, SettingsModel } from 'modules/settings/models';
+import { GlobalModel, SettingsModel } from 'modules/settings/models';
 import { SettingsContext } from './settings-context';
 import { ParamsContext } from './params-context';
-import { GlobalParamsContext } from './global-params-context';
+import { GlobalContext } from './global-context';
 
 export class Constructor {
 	private readonly root: HTMLElement;
 	private readonly params: Omit<IParams, 'settings'>;
 
 	private readonly settingsModel: SettingsModel;
-	private readonly globalParamsModel: GlobalParamsModel;
+	private readonly globalModel: GlobalModel;
 
 	constructor(selector: string, { settings, ...params }: IParams) {
 		this.root = document.querySelector(selector);
@@ -22,7 +22,7 @@ export class Constructor {
 		this.params = params;
 
 		this.settingsModel = new SettingsModel(settings);
-		this.globalParamsModel = new GlobalParamsModel(params);
+		this.globalModel = new GlobalModel(params);
 
 		this.build();
 	}
@@ -31,9 +31,9 @@ export class Constructor {
 		ReactDOM.render(
 			<ParamsContext.Provider value={this.params}>
 				<SettingsContext.Provider value={this.settingsModel}>
-					<GlobalParamsContext.Provider value={this.globalParamsModel}>
+					<GlobalContext.Provider value={this.globalModel}>
 						<MainScreen />
-					</GlobalParamsContext.Provider>
+					</GlobalContext.Provider>
 				</SettingsContext.Provider>
 			</ParamsContext.Provider>,
 			this.root

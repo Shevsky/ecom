@@ -17,6 +17,11 @@ interface IPointLocation
 	/**
 	 * @return string
 	 */
+	public function getWay();
+
+	/**
+	 * @return string
+	 */
 	public function getType();
 
 	/**
@@ -28,4 +33,14 @@ interface IPointLocation
 	 * @return IPointLocationBuilding
 	 */
 	public function getBuilding();
+
+	/**
+	 * @return string
+	 */
+	public function getAddress();
+
+	/**
+	 * @return string
+	 */
+	public function getFullAddress();
 }
