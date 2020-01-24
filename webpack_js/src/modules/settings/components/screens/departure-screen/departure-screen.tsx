@@ -64,7 +64,11 @@ export function DepartureScreen(): JSX.Element {
 			<Field name="Дополнительные услуги">
 				<CheckboxGroup>
 					<Checkbox name="sms_notice_recipient" label="SMS-уведомление получателя" />
-					<Checkbox name="with_fitting" label="Услуга примерки" />
+					<Checkbox
+						name="with_fitting"
+						label="Услуга примерки (временно не поддерживается самой почтой)"
+						disabled
+					/>
 					<Checkbox name="functionality_checking" label="Проверка работоспособности" />
 					<Checkbox name="contents_checking" label="Проверка вложения" />
 					<Checkbox name="fragile" label={`Отметка "Осторожно/Хрупко"`} />

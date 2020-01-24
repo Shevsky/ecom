@@ -118,5 +118,17 @@ return [
 	'completeness_checking' => [
 		'value' => '',
 		'control_type' => 'checkbox',
+	],
+	'card_payment' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'cash_payment' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'pre_payment' => [
+		'value' => '1',
+		'control_type' => 'checkbox',
 	]
 ];

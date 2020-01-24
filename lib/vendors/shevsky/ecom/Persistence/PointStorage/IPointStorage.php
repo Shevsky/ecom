@@ -19,6 +19,18 @@ interface IPointStorage
 	public function filterByCityName($city_name);
 
 	/**
+	 * @param bool $availability
+	 * @return self
+	 */
+	public function filterByCardPaymentAvailability($availability);
+
+	/**
+	 * @param bool $availability
+	 * @return self
+	 */
+	public function filterByCashPaymentAvailability($availability);
+
+	/**
 	 * @return IPoint[]
 	 */
 	public function receive();

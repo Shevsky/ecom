@@ -54,6 +54,29 @@ class PointStorage implements IPointStorage
 	}
 
 	/**
+	 * @param bool $availability
+	 * @return self
+	 */
+	public function filterByCardPaymentAvailability($availability)
+	{
+		$this->filters['card_payment'] = $availability;
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $availability
+	 * @return self
+	 */
+	public function filterByCashPaymentAvailability($availability)
+	{
+		$this->filters['cash_payment'] = $availability;
+
+		return $this;
+	}
+
+
+	/**
 	 * @return IPoint[]
 	 */
 	public function receive()
@@ -112,6 +135,16 @@ class PointStorage implements IPointStorage
 		if (array_key_exists('city_name', $this->filters))
 		{
 			$model_conditions['city_name'] = $this->filters['city_name'];
+		}
+
+		if (!empty($this->filters['card_payment']))
+		{
+			$model_conditions['card_payment'] = 1;
+		}
+
+		if (!empty($this->filters['cash_payment']))
+		{
+			$model_conditions['cash_payment'] = 1;
 		}
 
 		return $model_conditions;

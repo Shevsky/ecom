@@ -41,6 +41,8 @@ class PointFormatter
 	 *  'contents-checking' => string,
 	 *  'with-fitting' => string,
 	 *  'default_weight-limit' => float,
+	 *  'card-payment' => int,
+	 *  'cash-payment' => int,
 	 *  ]
 	 * ]
 	 * @return array
@@ -86,6 +88,10 @@ class PointFormatter
 		{
 			$options[] = 'with_fitting';
 		}
+		if (!empty($point['partial-redemption']))
+		{
+			$options[] = 'partial_redemption';
+		}
 
 		$ret = [
 			'object_id' => $point['id'],
@@ -117,6 +123,8 @@ class PointFormatter
 			'slash' => ifset($point['address'], 'slash', ''),
 			'office' => ifset($point['address'], 'office', ''),
 			'vladenie' => ifset($point['address'], 'vladenie', ''),
+			'card_payment' => !empty(ifset($point, 'card-payment', false)) ? 1 : 0,
+			'cash_payment' => !empty(ifset($point, 'cash-payment', false)) ? 1 : 0,
 			'schedule_monday' => ifset($schedule, ScheduleFormatter::DAY_MONDAY, null),
 			'schedule_tuesday' => ifset($schedule, ScheduleFormatter::DAY_TUESDAY, null),
 			'schedule_wednesday' => ifset($schedule, ScheduleFormatter::DAY_WEDNESDAY, null),
@@ -126,13 +134,6 @@ class PointFormatter
 			'schedule_sunday' => ifset($schedule, ScheduleFormatter::DAY_SUNDAY, null),
 			'options_json' => json_encode($options),
 		];
-
-		if (empty($GLOBALS['inserted_point']))
-		{
-			\waLog::dump($point, 'point.log');
-			\waLog::dump($ret, 'point.log');
-			$GLOBALS['inserted_point'] = true;
-		}
 
 		return $ret;
 	}

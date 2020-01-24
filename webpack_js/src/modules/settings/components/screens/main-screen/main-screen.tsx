@@ -6,7 +6,8 @@ import { Tabs } from 'common/components';
 import {
 	ApiScreen,
 	DepartureScreen,
-	PointsHandbookScreen
+	PointsHandbookScreen,
+	PaymentScreen
 } from 'modules/settings/components/screens';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { GlobalContext } from 'modules/settings/services/global-context';
@@ -41,6 +42,10 @@ export function MainScreen(): JSX.Element {
 					{
 						title: 'Параметры отправления',
 						component: DepartureScreen
+					},
+					{
+						title: 'Параметры оплаты',
+						component: PaymentScreen
 					},
 					{
 						title: 'Справочник ПВЗ',

@@ -11,6 +11,7 @@ class Point implements IPoint
 	private $data;
 	private $schedule;
 	private $location;
+	private $options;
 
 	/**
 	 * @param array $data = [
@@ -43,6 +44,8 @@ class Point implements IPoint
 	 *  'slash' => string,
 	 *  'office' => string,
 	 *  'vladenie' => string,
+	 *  'card_payment' => int,
+	 *  'cash_payment' => int,
 	 *  'options_json' => string,
 	 *  'schedule_monday' => string,
 	 *  'schedule_tuesday' => string,
@@ -187,12 +190,67 @@ class Point implements IPoint
 	 */
 	public function getOptions()
 	{
-		$options = json_decode($this->data['options_json'], true);
-		if ($options === null || json_last_error() !== JSON_ERROR_NONE)
+		if (!isset($this->options))
 		{
-			return [];
+			$options = json_decode($this->data['options_json'], true);
+			if ($options === null || json_last_error() !== JSON_ERROR_NONE)
+			{
+				$this->options = [];
+			}
+			else
+			{
+				$this->options = $options;
+			}
 		}
 
-		return $options;
+		return $this->options;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasContentsChecking()
+	{
+		return !empty($this->getOptions()['contents_checking']);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasFunctionalityChecking()
+	{
+		return !empty($this->getOptions()['functionality_checking']);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasFitting()
+	{
+		return !empty($this->getOptions()['with_fitting']);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasPartialRedemption()
+	{
+		return !empty($this->getOptions()['partial_redemption']);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAvailableCardPayment()
+	{
+		return !empty($this->data['card_payment']);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAvailableCashPayment()
+	{
+		return !empty($this->data['cash_payment']);
 	}
 }

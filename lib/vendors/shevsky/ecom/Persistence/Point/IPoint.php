@@ -59,4 +59,34 @@ interface IPoint
 	 * @return string[]
 	 */
 	public function getOptions();
+
+	/**
+	 * @return bool
+	 */
+	public function hasContentsChecking();
+
+	/**
+	 * @return bool
+	 */
+	public function hasFunctionalityChecking();
+
+	/**
+	 * @return bool
+	 */
+	public function hasFitting();
+
+	/**
+	 * @return bool
+	 */
+	public function hasPartialRedemption();
+
+	/**
+	 * @return bool
+	 */
+	public function isAvailableCardPayment();
+
+	/**
+	 * @return bool
+	 */
+	public function isAvailableCashPayment();
 }

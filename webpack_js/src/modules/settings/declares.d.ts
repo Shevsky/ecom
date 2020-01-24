@@ -39,6 +39,10 @@ declare interface ISettings {
 	functionality_checking: boolean;
 	contents_checking: boolean;
 	completeness_checking: boolean;
+
+	card_payment: boolean;
+	cash_payment: boolean;
+	pre_payment: boolean;
 }
 
 declare interface ICountry {

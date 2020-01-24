@@ -23,6 +23,7 @@ use Shevsky\Ecom\Util\PointScheduleHelper;
 trait Calculator
 {
 	private $delivery_interval;
+	private $payment_list;
 
 	/**
 	 * @return array|string|null
@@ -236,6 +237,8 @@ trait Calculator
 		$points = (new PointStorage())
 			->filterByCityName($this->getCityName())
 			->filterByRegionCode($this->getRegionCode())
+			->filterByCardPaymentAvailability((bool)$this->card_payment)
+			->filterByCashPaymentAvailability((bool)$this->cash_payment)
 			->receive();
 
 		if (empty($points))
@@ -315,6 +318,7 @@ trait Calculator
 						$point->getSchedule(),
 						$datetime_interval
 					),
+					'payment' => $this->getPaymentList(),
 				],
 			],
 		];
@@ -473,4 +477,31 @@ trait Calculator
 		];
 	}
 
+	/**
+	 * @return string[]
+	 */
+	private function getPaymentList()
+	{
+		if (!isset($this->payment_list))
+		{
+			$this->payment_list = [];
+
+			if (!empty($this->card_payment))
+			{
+				$this->payment_list[\waShipping::PAYMENT_TYPE_CARD] = true;
+			}
+
+			if (!empty($this->cash_payment))
+			{
+				$this->payment_list[\waShipping::PAYMENT_TYPE_CASH] = true;
+			}
+
+			if (!empty($this->pre_payment))
+			{
+				$this->payment_list[\waShipping::PAYMENT_TYPE_PREPAID] = true;
+			}
+		}
+
+		return $this->payment_list;
+	}
 }

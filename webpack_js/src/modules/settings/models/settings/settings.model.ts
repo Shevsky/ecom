@@ -37,6 +37,9 @@ export class SettingsModel implements TSettingsModel {
 	with_fitting: BehaviorSubject<ISettings['with_fitting']>;
 	with_order_of_notice: BehaviorSubject<ISettings['with_order_of_notice']>;
 	with_simple_notice: BehaviorSubject<ISettings['with_simple_notice']>;
+	card_payment: BehaviorSubject<ISettings['card_payment']>;
+	cash_payment: BehaviorSubject<ISettings['cash_payment']>;
+	pre_payment: BehaviorSubject<ISettings['pre_payment']>;
 
 	constructor(settings: ISettings) {
 		Object.entries(settings).forEach(

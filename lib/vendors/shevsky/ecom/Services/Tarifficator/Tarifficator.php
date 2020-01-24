@@ -141,12 +141,23 @@ class Tarifficator
 		$parcel_info->setEntriesType($this->departure->getEntriesType());
 		$parcel_info->setPaymentMethod($this->departure->getPaymentMethod());
 		$parcel_info->setSmsNoticeRecipient($this->departure->isSmsNoticeRecipientService());
-		$parcel_info->setCompletenessChecking($this->departure->isCompletenessCheckingService());
-		$parcel_info->setContentsChecking($this->departure->isContentsCheckingService());
 		$parcel_info->setFragile($this->departure->isFragile());
-		$parcel_info->setFunctionalityChecking($this->departure->isFunctionalityCheckingService());
 		$parcel_info->setGoodsValue($goods_value);
-		$parcel_info->setWithFitting($this->departure->isWithFittingService());
+
+		if ($point->hasContentsChecking())
+		{
+			$parcel_info->setContentsChecking($this->departure->isContentsCheckingService());
+		}
+		if ($point->hasFunctionalityChecking())
+		{
+			$parcel_info->setFunctionalityChecking($this->departure->isFunctionalityCheckingService());
+		}
+
+		// Пока что не поддерживается ни одним ПВЗ
+		//if ($point->hasFitting())
+		//{
+		//	$parcel_info->setWithFitting($this->departure->isWithFittingService());
+		//}
 
 		TarifficatorLogger::debug('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
 

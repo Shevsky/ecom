@@ -14,4 +14,5 @@ module.exports = {
 	region_code_from: "''",
 	city_name_from: "''",
 	entries_type: "'SALE_OF_GOODS'",
+	pre_payment: "'1'"
 };

@@ -64,3 +64,8 @@ export enum TOTAL_VALUE_MODE {
 	WITH_DISCOUNTS = 'with_discounts',
 	WITHOUT_DISCOUNTS = 'without_discounts'
 }
+
+export enum ORDER_PAYMENT_TYPE {
+	PREPAID_ONLY = 'prepaid_only',
+	POSTPAY_ONLY = 'postpay_only'
+}

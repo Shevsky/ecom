@@ -31,6 +31,8 @@ return array(
 		'slash' => array('varchar', 50),
 		'office' => array('varchar', 50),
 		'vladenie' => array('varchar', 50),
+		'card_payment' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
+		'cash_payment' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
 		'options_json' => array('text', 'null' => 0),
 		'schedule_monday' => array('varchar', 11),
 		'schedule_tuesday' => array('varchar', 11),
