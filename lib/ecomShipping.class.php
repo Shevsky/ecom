@@ -209,16 +209,8 @@ class ecomShipping extends waShipping
 
 	protected function init()
 	{
-		self::registerAutoloader();
-
-		parent::init();
-	}
-
-	private static function registerAutoloader()
-	{
 		require_once __DIR__ . '/vendors/autoload.php';
 
-		require_once __DIR__ . '/vendors/Shevsky/Ecom/Autoloader.php';
-		Shevsky\Ecom\Autoloader::register();
+		parent::init();
 	}
 }

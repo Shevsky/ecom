@@ -3,6 +3,9 @@
     "type": "project",
     "config": {
         "vendor-dir": "lib/vendors",
+        "platform": {
+            "php": "5.6.0"
+        },
         "optimize-autoloader": true
     },
     "require": {
@@ -21,6 +24,11 @@
             "email": "mail@shevsky.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Shevsky\\Ecom\\": "lib/vendors/shevsky/ecom"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
