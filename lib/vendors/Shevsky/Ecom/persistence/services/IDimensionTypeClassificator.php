@@ -1,8 +1,8 @@
 <?php
 
-namespace Shevsky\Ecom\Persistence\Order;
+namespace Shevsky\Ecom\Persistence\Services;
 
-interface IOrderDimensionTypeClassificator
+interface IDimensionTypeClassificator
 {
 	/**
 	 * @return string

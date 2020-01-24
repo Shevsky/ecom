@@ -21,21 +21,23 @@ export function DimensionType(): JSX.Element {
 				<Paragraph smallBottomPadding>
 					<List>
 						<>
-							<strong>Размер S</strong>. 260 &#215; 170 &#215; 80. Вес до 1 кг
+							<strong>Размер S</strong>. До 260 &times; 170 &times; 80 мм. Вес до 1 кг
 						</>
 						<>
-							<strong>Размер M</strong>. 300 &#215; 200 &#215; 150. Вес от 1 до 3 кг
+							<strong>Размер M</strong>. До 300 &times; 200 &times; 150 мм. Вес от 1
+							до 3 кг
 						</>
 						<>
-							<strong>Размер L</strong>. 400 &#215; 270 &#215; 180. Вес от 3 до 5 кг.
+							<strong>Размер L</strong>. До 400 &times; 270 &times; 180 мм. Вес от 3
+							до 5 кг.
 						</>
 						<>
-							<strong>Размер XL</strong>. 530 &#215; 360 &#215; 220. Вес от 5 до 10
-							кг.
+							<strong>Размер XL</strong>. До 530 &times; 360 &times; 220 мм. Вес от 5
+							до 10 кг.
 						</>
 						<>
-							<strong>Размер OVERSIZED (негабарит)</strong>. Сумма сторон 1400, одна
-							сторона не более 600. Вес от 10 до 15 кг.
+							<strong>Размер OVERSIZED (негабарит)</strong>. Сумма сторон 1400 мм,
+							одна сторона не более 600 мм. Вес от 10 до 15 кг.
 						</>
 					</List>
 				</Paragraph>

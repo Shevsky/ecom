@@ -16,11 +16,16 @@ class Departure implements IDeparture
 	 *  'total_value_mode' => string,
 	 *  'mail_category' => string,
 	 *  'mail_type' => string,
+	 *  'entries_type' => string,
 	 *  'payment_method' => string,
+	 *  'notice_payment_method' => string,
 	 *  'sms_notice_recipient' => bool,
 	 *  'with_fitting' => bool,
 	 *  'functionality_checking' => bool,
 	 *  'contents_checking' => bool,
+	 *  'completeness_checking' => bool,
+	 *  'vsd' => bool,
+	 *  'fragile' => bool
 	 * ]
 	 */
 	public function __construct(array $params)
@@ -79,9 +84,25 @@ class Departure implements IDeparture
 	/**
 	 * @return string
 	 */
+	public function getEntriesType()
+	{
+		return $this->params['entries_type'];
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getPaymentMethod()
 	{
 		return $this->params['payment_method'];
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNoticePaymentMethod()
+	{
+		return $this->params['notice_payment_method'];
 	}
 
 	/**
@@ -114,5 +135,29 @@ class Departure implements IDeparture
 	public function isContentsCheckingService()
 	{
 		return (bool)$this->params['contents_checking'];
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isCompletenessCheckingService()
+	{
+		return (bool)$this->params['completeness_checking'];
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isVSDService()
+	{
+		return (bool)$this->params['vsd'];
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isFragile()
+	{
+		return (bool)$this->params['fragile'];
 	}
 }

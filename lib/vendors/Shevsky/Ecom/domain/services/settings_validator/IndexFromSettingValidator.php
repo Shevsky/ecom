@@ -1,11 +1,21 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\SettingsValidator;
+namespace Shevsky\Ecom\Domain\Services\SettingsValidator;
 
-use Shevsky\Ecom\Persistence\SettingsValidator\ISettingValidator;
+use Shevsky\Ecom\Persistence\Services\SettingsValidator\ISettingValidator;
 
 class IndexFromSettingValidator implements ISettingValidator
 {
+	private $settings;
+
+	/**
+	 * @param mixed $settings
+	 */
+	public function __construct($settings)
+	{
+		$this->settings = $settings;
+	}
+
 	/**
 	 * @param mixed $value
 	 * @return boolean

@@ -5,10 +5,6 @@ if (!trait_exists('\Shevsky\Ecom\Plugin\Address'))
 	require_once 'vendors/Shevsky/Ecom/plugin/Address.php';
 }
 
-if (!trait_exists('\Shevsky\Ecom\Plugin\Api'))
-{
-	require_once 'vendors/Shevsky/Ecom/plugin/Api.php';
-}
 
 if (!trait_exists('\Shevsky\Ecom\Plugin\Calculator'))
 {
@@ -20,20 +16,21 @@ if (!trait_exists('\Shevsky\Ecom\Plugin\ShopScript'))
 	require_once 'vendors/Shevsky/Ecom/plugin/ShopScript.php';
 }
 
-use Shevsky\Ecom\Autoloader;
 use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
 use Shevsky\Ecom\Domain\PointStorage\PointStorage;
-use Shevsky\Ecom\Domain\SettingsValidator\SettingsValidator;
+use Shevsky\Ecom\Domain\Services\SettingsValidator\SettingsValidator;
 use Shevsky\Ecom\Domain\Template\SettingsTemplate;
 use Shevsky\Ecom\Domain\Template\TrackingTemplate;
 use Shevsky\Ecom\Plugin;
+use Shevsky\Ecom\Provider;
 
 class ecomShipping extends waShipping
 {
 	use Plugin\Address;
-	use Plugin\Api;
 	use Plugin\Calculator;
 	use Plugin\ShopScript;
+
+	protected $provider;
 
 	/**
 	 * @return string
@@ -121,6 +118,15 @@ class ecomShipping extends waShipping
 			}
 		}
 
+		try
+		{
+			$settings_validator->validate();
+		}
+		catch (\Exception $e)
+		{
+			throw new waException($e->getMessage(), $e->getCode(), $e);
+		}
+
 		return parent::saveSettings($settings);
 	}
 
@@ -189,7 +195,9 @@ class ecomShipping extends waShipping
 	{
 		try
 		{
-			(new SyncPointsChain($this->getOtpravkaApi()))->execute();
+			(new SyncPointsChain(
+				Provider::getOtpravkaApi($this->login, $this->password, $this->token)
+			))->execute();
 
 			return true;
 		}
@@ -208,7 +216,9 @@ class ecomShipping extends waShipping
 
 	private static function registerAutoloader()
 	{
+		require_once __DIR__ . '/vendors/autoload.php';
+
 		require_once __DIR__ . '/vendors/Shevsky/Ecom/Autoloader.php';
-		Autoloader::register();
+		Shevsky\Ecom\Autoloader::register();
 	}
 }

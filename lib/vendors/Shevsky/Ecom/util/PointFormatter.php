@@ -40,7 +40,7 @@ class PointFormatter
 	 *  'functionality-checking' => string,
 	 *  'contents-checking' => string,
 	 *  'with-fitting' => string,
-	 *  'weight-limit' => float,
+	 *  'default_weight-limit' => float,
 	 *  ]
 	 * ]
 	 * @return array
@@ -95,7 +95,7 @@ class PointFormatter
 			'legal_name' => ifset($point, 'legal-name', ''),
 			'legal_short_name' => ifset($point, 'legal-short-name', ''),
 			'status' => !empty(ifset($point, 'closed', false)) ? 0 : 1,
-			'weight_limit' => (float)ifset($point, 'weight-limit', null),
+			'weight_limit' => (float)ifset($point, 'default_weight-limit', null),
 			'type' => ifset($point, 'delivery-point-type', ''),
 			'office_index' => ifset($point, 'delivery-point-index', ''),
 			'latitude' => ifset($point, 'latitude', ''),

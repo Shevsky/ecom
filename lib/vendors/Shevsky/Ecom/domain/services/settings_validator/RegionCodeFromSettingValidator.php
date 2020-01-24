@@ -1,8 +1,8 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\SettingsValidator;
+namespace Shevsky\Ecom\Domain\Services\SettingsValidator;
 
-use Shevsky\Ecom\Persistence\SettingsValidator\ISettingValidator;
+use Shevsky\Ecom\Persistence\Services\SettingsValidator\ISettingValidator;
 
 class RegionCodeFromSettingValidator implements ISettingValidator
 {

@@ -3,9 +3,9 @@
 require_once './bootstrap.php';
 
 use PHPUnit\Framework\TestCase;
+use Shevsky\Ecom\Domain\Services\DimensionTypeClassificator;
 use \Shevsky\Ecom\Enum;
 use \Shevsky\Ecom\Domain\Order\Order;
-use \Shevsky\Ecom\Domain\Order\OrderDimensionTypeClassificator;
 
 class OrderDimensionTypeClassificatorTest extends TestCase
 {
@@ -14,7 +14,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 		$this->expectException(\Exception::class);
 
 		$order = new Order([]);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 
@@ -30,7 +30,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => -1,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 
@@ -46,7 +46,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 0,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 
@@ -60,7 +60,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 240,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::SMALL, $classificator->getDimensionType());
 	}
@@ -75,7 +75,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 150,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::MEDIUM, $classificator->getDimensionType());
 	}
@@ -90,7 +90,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 400,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::LARGE, $classificator->getDimensionType());
 	}
@@ -105,7 +105,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 220,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::EXTRA_LARGE, $classificator->getDimensionType());
 	}
@@ -120,7 +120,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 400,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::OVERSIZED, $classificator->getDimensionType());
 	}
@@ -135,7 +135,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 50,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 
 		$this->assertSame(Enum\DimensionType::OVERSIZED, $classificator->getDimensionType());
 	}
@@ -152,7 +152,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 40,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 
@@ -168,7 +168,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 600,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 
@@ -184,7 +184,7 @@ class OrderDimensionTypeClassificatorTest extends TestCase
 				'total_width' => 900,
 			]
 		);
-		$classificator = new OrderDimensionTypeClassificator($order);
+		$classificator = DimensionTypeClassificator::buildWithOrder($order);
 		$classificator->getDimensionType();
 	}
 }

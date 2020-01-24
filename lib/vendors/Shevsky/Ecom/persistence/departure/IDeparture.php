@@ -37,7 +37,17 @@ interface IDeparture
 	/**
 	 * @return string
 	 */
+	public function getEntriesType();
+
+	/**
+	 * @return string
+	 */
 	public function getPaymentMethod();
+
+	/**
+	 * @return string
+	 */
+	public function getNoticePaymentMethod();
 
 	/**
 	 * @return bool
@@ -58,4 +68,19 @@ interface IDeparture
 	 * @return bool
 	 */
 	public function isContentsCheckingService();
+
+	/**
+	 * @return bool
+	 */
+	public function isCompletenessCheckingService();
+
+	/**
+	 * @return bool
+	 */
+	public function isVSDService();
+
+	/**
+	 * @return bool
+	 */
+	public function isFragile();
 }

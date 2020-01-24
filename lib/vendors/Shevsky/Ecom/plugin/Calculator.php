@@ -2,13 +2,15 @@
 
 namespace Shevsky\Ecom\Plugin;
 
+use LapayGroup\RussianPost\TariffInfo;
 use Shevsky\Ecom\Domain\Departure\Departure;
 use Shevsky\Ecom\Domain\Order\Order;
-use Shevsky\Ecom\Domain\Order\OrderDimensionTypeClassificator;
 use Shevsky\Ecom\Domain\Point\Point;
 use Shevsky\Ecom\Domain\PointStorage\PointStorage;
+use Shevsky\Ecom\Domain\Services\DimensionTypeClassificator;
 use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Point\IPointSchedule;
+use Shevsky\Ecom\Provider;
 use Shevsky\Ecom\Services\DeliveryIntervalHandbook\DeliveryIntervalHandbook;
 use Shevsky\Ecom\Services\Tarifficator\Tarifficator;
 use Shevsky\Ecom\Util\DateTimeLocaleFormatter;
@@ -39,12 +41,12 @@ trait Calculator
 			{
 				return [
 					'rate' => null,
-					'comment' => $e->getMessage(),
+					'comment' => $e->getMessage(), // TODO detect error text by code
 				];
 			}
 			else if ($e->isError())
 			{
-				return $e->getMessage();
+				return $e->getMessage(); // TODO detect error text by code
 			}
 
 			return null;
@@ -82,18 +84,36 @@ trait Calculator
 	 */
 	private function getOrder()
 	{
+		$height = $this->getTotalHeight();
+		if (empty($height))
+		{
+			$height = (float)$this->default_height;
+		}
+
+		$length = $this->getTotalLength();
+		if (empty($length))
+		{
+			$length = (float)$this->default_length;
+		}
+
+		$width = $this->getTotalWidth();
+		if (empty($width))
+		{
+			$width = (float)$this->default_width;
+		}
+
 		$weight = $this->getTotalWeight();
 		if (empty($weight))
 		{
-			$weight = (float)$this->weight;
+			$weight = (float)$this->default_weight;
 		}
 
 		$order = new Order(
 			[
 				'total_weight' => $weight,
-				'total_height' => $this->getTotalHeight(),
-				'total_length' => $this->getTotalLength(),
-				'total_width' => $this->getTotalWidth(),
+				'total_height' => $height,
+				'total_length' => $length,
+				'total_width' => $width,
 				'total_price' => $this->getTotalPrice(),
 				'total_raw_price' => $this->getTotalRawPrice(),
 				'items' => $this->getItems(),
@@ -102,7 +122,7 @@ trait Calculator
 
 		try
 		{
-			$dimension_type = (new OrderDimensionTypeClassificator($order))->getDimensionType();
+			$dimension_type = (DimensionTypeClassificator::buildWithOrder($order))->getDimensionType();
 		}
 		catch (\Exception $e)
 		{
@@ -134,11 +154,16 @@ trait Calculator
 				'total_value_mode' => $this->total_value_mode,
 				'mail_category' => $this->mail_category,
 				'mail_type' => $this->mail_type,
+				'entries_type' => $this->entries_type,
 				'payment_method' => $this->payment_method,
+				'notice_payment_method' => $this->notice_payment_method,
 				'sms_notice_recipient' => $this->sms_notice_recipient,
 				'with_fitting' => $this->with_fitting,
 				'functionality_checking' => $this->functionality_checking,
 				'contents_checking' => $this->contents_checking,
+				'completeness_checking' => $this->completeness_checking,
+				'vsd' => $this->vsd,
+				'fragile' => $this->fragile,
 			]
 		);
 
@@ -155,7 +180,7 @@ trait Calculator
 
 		try
 		{
-			$otpravka_api = $this->getOtpravkaApi();
+			$otpravka_api = Provider::getOtpravkaApi($this->api_login, $this->api_password, $this->api_token);
 		}
 		catch (\Exception $e)
 		{
@@ -221,11 +246,11 @@ trait Calculator
 	 */
 	private function getTariff(Tarifficator $tarifficator, Point $point)
 	{
-		$result = $tarifficator->calculate($point);
+		$raw_tariff = $tarifficator->calculate($point);
 
 		try
 		{
-			$datetime_interval = $this->getDeliveryDateTimeInterval($point->getSchedule());
+			$datetime_interval = $this->getDeliveryDateTimeInterval($raw_tariff, $point->getSchedule());
 		}
 		catch (\Exception $e)
 		{
@@ -245,7 +270,7 @@ trait Calculator
 			'delivery_date' => $delivery_interval,
 			'timezone' => date_default_timezone_get(),
 			'currency' => Config::CURRENCY,
-			'rate' => $result->getRate() + $result->getTax(),
+			'rate' => $raw_tariff->getTotalRate() + $raw_tariff->getTotalNds(),
 			'type' => \waShipping::TYPE_PICKUP,
 			'service' => $point->getName(),
 
@@ -293,9 +318,24 @@ trait Calculator
 	 * @return \DateTime[]
 	 * @throws \Exception
 	 */
-	private function getDeliveryDateTimeInterval(IPointSchedule $schedule)
+	private function getDeliveryDateTimeInterval(TariffInfo $tariff, IPointSchedule $schedule)
 	{
-		$interval = $this->getDeliveryInterval();
+		$interval = [];
+
+		if ($tariff->getDeliveryMinDays())
+		{
+			$interval[] = $tariff->getDeliveryMinDays();
+		}
+		if ($tariff->getDeliveryMaxDays())
+		{
+			$interval[] = $tariff->getDeliveryMaxDays();
+		}
+
+		if (empty($interval))
+		{
+			$interval = $this->getDeliveryInterval();
+		}
+
 		$datetime = new \DateTime($this->getPackageProperty('departure_datetime'));
 
 		$datetime_interval = [];

@@ -2,8 +2,7 @@
 
 namespace Shevsky\Ecom\Chain\SyncPoints;
 
-use Shevsky\Ecom\Api\Otpravka\MethodDeliveryPointGetAll;
-use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
+use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use Shevsky\Ecom\Persistence\Chain\IResponsibility;
 
 class GetPointsResponsibility implements IResponsibility
@@ -22,7 +21,7 @@ class GetPointsResponsibility implements IResponsibility
 	 */
 	public function execute(array ...$args)
 	{
-		$points = $this->otpravka_api->execute(new MethodDeliveryPointGetAll());
+		$points = $this->otpravka_api->getPvzList();
 
 		return [$points];
 	}

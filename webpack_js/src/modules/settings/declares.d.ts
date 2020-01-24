@@ -12,18 +12,30 @@ declare interface ISettings {
 	city_name_from: string;
 	undefined_dimension_case: import('./enum').UNDEFINED_DIMENSION_CASE;
 	dimension_type: import('./enum').DIMENSION_TYPE;
-	weight: number;
+	default_length: number;
+	default_height: number;
+	default_width: number;
+	default_weight: number;
 	pass_goods_value: boolean;
 	total_value_mode: import('./enum').TOTAL_VALUE_MODE;
 	mail_category:
 		| import('./enum').MAIL_CATEGORY.ORDINARY
 		| import('./enum').MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT;
 	mail_type: import('./enum').MAIL_TYPE.ECOM;
+	entries_type: import('./enum').ENTRIES_TYPE;
 	payment_method: import('./enum').PAYMENT_METHOD.CASHLESS;
+	fragile: boolean;
+	inventory: boolean;
+	vsd: boolean;
+	notice_payment_method: import('./enum').PAYMENT_METHOD;
+	with_electronic_notice: boolean;
+	with_order_of_notice: boolean;
+	with_simple_notice: boolean;
 	sms_notice_recipient: boolean;
 	with_fitting: boolean;
 	functionality_checking: boolean;
 	contents_checking: boolean;
+	completeness_checking: boolean;
 }
 
 declare interface ICountry {

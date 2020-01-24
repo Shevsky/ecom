@@ -3,7 +3,7 @@
 require_once './bootstrap.php';
 
 use PHPUnit\Framework\TestCase;
-use \Shevsky\Ecom\Domain\Order\OrderPackageCalculator;
+use Shevsky\Ecom\Domain\Services\OrderPackageCalculator;
 
 class OrderPackageCalculatorTest extends TestCase
 {
@@ -92,13 +92,13 @@ class OrderPackageCalculatorTest extends TestCase
 	{
 		$this->expectException(\Exception::class);
 
-		(new \Shevsky\Ecom\Domain\Order\OrderPackageCalculator([]))->calculate('qwe');
+		(new OrderPackageCalculator([]))->calculate('qwe');
 	}
 
 	public function testInvalidParamsCase3()
 	{
 		$this->expectException(\Exception::class);
 
-		(new \Shevsky\Ecom\Domain\Order\OrderPackageCalculator([]))->calculate('weight');
+		(new OrderPackageCalculator([]))->calculate('default_weight');
 	}
 }

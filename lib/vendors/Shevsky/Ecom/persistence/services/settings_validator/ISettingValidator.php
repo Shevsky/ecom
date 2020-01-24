@@ -1,6 +1,6 @@
 <?php
 
-namespace Shevsky\Ecom\Persistence\SettingsValidator;
+namespace Shevsky\Ecom\Persistence\Services\SettingsValidator;
 
 interface ISettingValidator
 {

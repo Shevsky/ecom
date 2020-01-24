@@ -39,7 +39,7 @@ class PointsMock
 	 *      'functionality-checking' => string,
 	 *      'contents-checking' => string,
 	 *      'with-fitting' => string,
-	 *      'weight-limit' => float,
+	 *      'default_weight-limit' => float,
 	 *      ]
 	 *  ]
 	 * ]

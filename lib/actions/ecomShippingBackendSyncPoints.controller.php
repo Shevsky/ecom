@@ -1,7 +1,7 @@
 <?php
 
-use Shevsky\Ecom\Api\Otpravka\MethodDeliveryPointGetAll;
-use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
+use LapayGroup\RussianPost\Providers\OtpravkaApi;
+use Shevsky\Ecom\Provider;
 use Shevsky\Ecom\Util\PointFormatter;
 
 class ecomShippingBackendSyncPointsController extends waLongActionController
@@ -9,6 +9,10 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	private $otpravka_api;
 	private $points_model;
 
+	/**
+	 * @throws waDbException
+	 * @throws waException
+	 */
 	public function __construct()
 	{
 		$this->points_model = new ecomShippingPointsModel();
@@ -38,9 +42,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 		try
 		{
-			$points = $this->getOtpravkaApi()->execute(
-				new MethodDeliveryPointGetAll()
-			);
+			$points = $this->getOtpravkaApi()->getPvzList();
 			$points_count = count($points);
 		}
 		catch (\Exception $e)
@@ -54,10 +56,8 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 		$this->points_model->truncate();
 
-		$this->data = [
-			'points' => $points,
-			'points_count' => $points_count,
-		];
+		$this->data['points'] = $points;
+		$this->data['points_count'] = $points_count;
 	}
 
 	/**
@@ -107,10 +107,13 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 			return false;
 		}
 
-		$points = &$this->data['points'];
 		$offset = &$this->data['offset'];
+		if ($offset === null || $offset === -1)
+		{
+			$offset = 0;
+		}
 
-		$chunk = array_slice($points, $offset, $this->getChunkSize());
+		$chunk = array_slice($this->data['points'], $offset, $this->getChunkSize());
 
 		foreach ($chunk as $point)
 		{
@@ -210,7 +213,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 	/**
 	 * @return OtpravkaApi
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	private function getOtpravkaApi()
 	{
@@ -218,12 +221,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 		{
 			list($login, $password, $token) = $this->getApiData();
 
-			if (!$login || !$password || !$token)
-			{
-				throw new \Exception('Параметры для API сервиса Отправка не указаны');
-			}
-
-			$this->otpravka_api = new OtpravkaApi($login, $password, $token);
+			$this->otpravka_api = Provider::getOtpravkaApi($login, $password, $token);
 		}
 
 		return $this->otpravka_api;

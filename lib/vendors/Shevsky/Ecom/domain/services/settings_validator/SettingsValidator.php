@@ -1,12 +1,13 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\SettingsValidator;
+namespace Shevsky\Ecom\Domain\Services\SettingsValidator;
 
-use Shevsky\Ecom\Persistence\SettingsValidator\ISettingsValidator;
-use Shevsky\Ecom\Persistence\SettingsValidator\ISettingValidator;
+use Shevsky\Ecom\Persistence\Services\SettingsValidator\ISettingsValidator;
+use Shevsky\Ecom\Persistence\Services\SettingsValidator\ISettingValidator;
 
 class SettingsValidator implements ISettingsValidator
 {
+	private $settings;
 	private $validators = [];
 
 	/**
@@ -14,16 +15,18 @@ class SettingsValidator implements ISettingsValidator
 	 */
 	public function __construct($settings)
 	{
-		$api_validator = new ApiSettingValidator();
+		$this->settings = $settings;
 
+		$api_validator = new ApiSettingValidator();
 		$this->validators = [
 			'api_login' => $api_validator,
 			'api_password' => $api_validator,
 			'api_token' => $api_validator,
 			'tracking_cache_lifetime' => new TrackingCacheLifetimeSettingValidator(),
-			'index_from' => new IndexFromSettingValidator(),
+			'index_from' => new IndexFromSettingValidator($settings),
 			'region_code_from' => new RegionCodeFromSettingValidator(),
 			'city_name_from' => new CityNameFromSettingValidator(),
+			'default_weight' => new DefaultWeightSettingValidator(),
 		];
 	}
 
@@ -40,5 +43,14 @@ class SettingsValidator implements ISettingsValidator
 		}
 
 		return $this->validators[$name];
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function validate()
+	{
+		(new DefaultDimensionSettingsValidator())->validate($this->settings);
+		(new OtpravkaApiSyncSettingsValidator())->validate($this->settings);
 	}
 }

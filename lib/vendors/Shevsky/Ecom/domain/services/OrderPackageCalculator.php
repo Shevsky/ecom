@@ -1,6 +1,6 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\Order;
+namespace Shevsky\Ecom\Domain\Services;
 
 use Shevsky\Ecom\Domain\Chain\PackageCalculator\PackageCalculatorByMinimalSidesChain;
 
@@ -16,7 +16,7 @@ class OrderPackageCalculator
 	 *      'id' => string,
 	 *      'sku' => string,
 	 *      'name' => string,
-	 *      'weight' => float,
+	 *      'default_weight' => float,
 	 *      'price' => float,
 	 *      'quantity' => int,
 	 *      'height' => float,

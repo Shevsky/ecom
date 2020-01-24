@@ -2,6 +2,7 @@
 
 namespace Shevsky\Ecom\Domain\Order;
 
+use Shevsky\Ecom\Domain\Services\OrderPackageCalculator;
 use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Order\IOrder;
 
@@ -24,7 +25,7 @@ class Order implements IOrder
 	 *          'id' => string,
 	 *          'sku' => string,
 	 *          'name' => string,
-	 *          'weight' => float,
+	 *          'default_weight' => float,
 	 *          'price' => float,
 	 *          'quantity' => int,
 	 *          'height' => float,

@@ -1,12 +1,12 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\Order;
+namespace Shevsky\Ecom\Domain\Services;
 
 use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Order\IOrder;
-use Shevsky\Ecom\Persistence\Order\IOrderDimensionTypeClassificator;
+use Shevsky\Ecom\Persistence\Services\IDimensionTypeClassificator;
 
-class OrderDimensionTypeClassificator implements IOrderDimensionTypeClassificator
+class DimensionTypeClassificator implements IDimensionTypeClassificator
 {
 	private $weight;
 	private $height;
@@ -25,14 +25,26 @@ class OrderDimensionTypeClassificator implements IOrderDimensionTypeClassificato
 	private $oversized_max_one_side = 600;
 
 	/**
-	 * @param IOrder $order
+	 * @param float $weight
+	 * @param int $height
+	 * @param int $length
+	 * @param int $width
 	 */
-	public function __construct(IOrder $order)
+	public function __construct($weight, $height, $length, $width)
 	{
-		$this->weight = $order->getWeight();
-		$this->height = $order->getHeight();
-		$this->length = $order->getLength();
-		$this->width = $order->getWidth();
+		$this->weight = $weight;
+		$this->height = $height;
+		$this->length = $length;
+		$this->width = $width;
+	}
+
+	/**
+	 * @param IOrder $order
+	 * @return self
+	 */
+	public static function buildWithOrder(IOrder $order)
+	{
+		return new self($order->getWeight(), $order->getHeight(), $order->getLength(), $order->getWidth());
 	}
 
 	/**

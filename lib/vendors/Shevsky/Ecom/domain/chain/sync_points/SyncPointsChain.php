@@ -2,7 +2,7 @@
 
 namespace Shevsky\Ecom\Chain\SyncPoints;
 
-use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
+use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use Shevsky\Ecom\Persistence\Chain\AbstractChain;
 use Shevsky\Ecom\Persistence\Chain\IResponsibility;
 
@@ -25,7 +25,7 @@ class SyncPointsChain extends AbstractChain
 	{
 		return [
 			new GetPointsResponsibility($this->otpravka_api),
-			new SavePointsResponsibility()
+			new SavePointsResponsibility(),
 		];
 	}
 }

@@ -2,8 +2,10 @@
 
 namespace Shevsky\Ecom\Services\Tarifficator;
 
-use Shevsky\Ecom\Api\Otpravka\MethodTariff;
-use Shevsky\Ecom\Api\Otpravka\OtpravkaApi;
+use LapayGroup\RussianPost\Exceptions\RussianPostException;
+use LapayGroup\RussianPost\ParcelInfo;
+use LapayGroup\RussianPost\Providers\OtpravkaApi;
+use LapayGroup\RussianPost\TariffInfo;
 use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Departure\IDeparture;
 use Shevsky\Ecom\Persistence\Order\IOrder;
@@ -11,6 +13,8 @@ use Shevsky\Ecom\Persistence\Point\IPoint;
 
 class Tarifficator
 {
+	const MAIL_DIRECT = 643;
+
 	private $order;
 	private $departure;
 	private $otpravka_api;
@@ -29,45 +33,44 @@ class Tarifficator
 
 	/**
 	 * @param IPoint $point
-	 * @return TarifficatorResult
+	 * @return TariffInfo
 	 * @throws \Exception
 	 */
 	public function calculate(IPoint $point)
 	{
 		TarifficatorLogger::debug('Начинаем расчет тарифа через API сервиса Отправка');
 
-		// TODO test mock
-		return new TarifficatorResult([
-			'total-rate' => 5000,
-			'total-vat' => 500
-		]);
-
 		try
 		{
-			$raw_result = $this->otpravka_api->execute($this->buildMethodTariff($point));
+			$tariff = $this->otpravka_api->getDeliveryTariff($this->buildParcelInfo($point));
 		}
-		catch (\Exception $e)
+		catch (RussianPostException $e)
 		{
-			TarifficatorLogger::debug(
-				'Получено исключение при попытке произвести удаленный запрос',
+			TarifficatorLogger::error(
+				'Получено исключение при попытке произвести расчет стоимости доставки',
 				[
 					'message' => $e->getMessage(),
 					'code' => $e->getCode(),
+					'raw_request' => $e->getRawRequest(),
+					'raw_response' => $e->getRawResponse(),
 				]
 			);
 			throw $e;
 		}
 
-		TarifficatorLogger::debug('Получен результат расчета тарифа', $raw_result);
+		TarifficatorLogger::debug(
+			'Получен результат расчета стоимости доставки',
+			$tariff->getRawData()
+		);
 
-		return new TarifficatorResult($raw_result);
+		return $tariff;
 	}
 
 	/**
 	 * @param IPoint $point
-	 * @return MethodTariff
+	 * @return ParcelInfo
 	 */
-	private function buildMethodTariff(IPoint $point)
+	private function buildParcelInfo(IPoint $point)
 	{
 		$goods_value = 0;
 		if ($this->departure->isPassOrderValue())
@@ -85,30 +88,30 @@ class Tarifficator
 			$goods_value = (int)$goods_value;
 		}
 
-		$index_to = $this->departure->getIndexTo();
-		if (empty($index_to))
-		{
-			$index_to = $point->getIndex();
-		}
+		$parcel_info = new ParcelInfo();
 
-		$content = [
-			'delivery-point-index' => $point->getId(),
-			'dimension-type' => $this->order->getDimensionType(),
-			'index-from' => $this->departure->getIndexFrom(),
-			'goods-value' => $goods_value,
-			'index-to' => $index_to,
-			'mail-category' => $this->departure->getMailCategory(),
-			'mail-type' => $this->departure->getMailType(),
-			'mass' => (int)($this->order->getWeight() * 1000),
-			'payment-method' => $this->departure->getPaymentMethod(),
-			'sms-notice-recipient' => $this->departure->isSmsNoticeRecipientService() ? 1 : 0,
-			'with-fitting' => $this->departure->isWithFittingService(),
-			'functionality-checking' => $this->departure->isFunctionalityCheckingService(),
-			'contents-checking' => $this->departure->isContentsCheckingService(),
-		];
+		$parcel_info->setCourier(false);
+		$parcel_info->setDeliveryPointIndex((string)$point->getIndex());
+		$parcel_info->setHeight((int)($this->order->getHeight() / 10));
+		$parcel_info->setLength((int)($this->order->getLength() / 10));
+		$parcel_info->setWidth((int)($this->order->getWidth() / 10));
+		$parcel_info->setWeight((int)($this->order->getWeight() * 1000));
+		$parcel_info->setDimensionType($this->order->getDimensionType());
+		$parcel_info->setIndexFrom($this->departure->getIndexFrom());
+		$parcel_info->setMailCategory($this->departure->getMailCategory());
+		$parcel_info->setMailType($this->departure->getMailType());
+		$parcel_info->setEntriesType($this->departure->getEntriesType());
+		$parcel_info->setPaymentMethod($this->departure->getPaymentMethod());
+		$parcel_info->setSmsNoticeRecipient($this->departure->isSmsNoticeRecipientService());
+		$parcel_info->setCompletenessChecking($this->departure->isCompletenessCheckingService());
+		$parcel_info->setContentsChecking($this->departure->isContentsCheckingService());
+		$parcel_info->setFragile($this->departure->isFragile());
+		$parcel_info->setFunctionalityChecking($this->departure->isFunctionalityCheckingService());
+		$parcel_info->setGoodsValue($goods_value);
+		$parcel_info->setWithFitting($this->departure->isWithFittingService());
 
-		TarifficatorLogger::debug('Сгенерирован контент для удаленного запроса', $content);
+		TarifficatorLogger::debug('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
 
-		return new MethodTariff($content);
+		return $parcel_info;
 	}
 }

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CheckboxGroup, Field, INPUT_SIZE } from 'common/components';
 import { Checkbox, Input, Select } from 'modules/settings/components/common';
 import { useSetting } from 'modules/settings/util/use-setting';
-import { TOTAL_VALUE_MODE } from 'modules/settings/enum';
+import { ENTRIES_TYPE, TOTAL_VALUE_MODE } from 'modules/settings/enum';
 import { GlobalContext } from 'modules/settings/services/global-context';
 import { DimensionType } from './dimension-type';
 import { UndefinedDimensionCase } from './undefined-dimension-case';
@@ -49,11 +49,25 @@ export function DepartureScreen(): JSX.Element {
 					/>
 				</Field>
 			)}
+			<Field name="Категория вложения">
+				<Select
+					name="entries_type"
+					options={{
+						[ENTRIES_TYPE.GIFT]: 'Подарок',
+						[ENTRIES_TYPE.DOCUMENT]: 'Документы',
+						[ENTRIES_TYPE.SALE_OF_GOODS]: 'Продажа товара',
+						[ENTRIES_TYPE.COMMERCIAL_SAMPLE]: 'Коммерческий образец',
+						[ENTRIES_TYPE.OTHER]: 'Прочее'
+					}}
+				/>
+			</Field>
 			<Field name="Дополнительные услуги">
 				<CheckboxGroup>
 					<Checkbox name="sms_notice_recipient" label="SMS-уведомление получателя" />
 					<Checkbox name="with_fitting" label="Услуга примерки" />
-					<Checkbox name="contents_checking" label="Проверка комплектности" />
+					<Checkbox name="completeness_checking" label="Проверка комплектности" />
+					<Checkbox name="contents_checking" label="Проверка вложения" />
+					<Checkbox name="fragile" label={`Отметка "Осторожно/Хрупко"`} />
 				</CheckboxGroup>
 			</Field>
 			<Field name="Типоразмер отправления">
@@ -62,9 +76,35 @@ export function DepartureScreen(): JSX.Element {
 			<Field name="Типоразмер по умолчанию">
 				<UndefinedDimensionCase />
 			</Field>
+			<Field name="Габариты по умолчанию">
+				<Input
+					name="default_height"
+					size={INPUT_SIZE.SMALL}
+					type="number"
+					min="1"
+					max="600"
+				/>{' '}
+				&times;{' '}
+				<Input
+					name="default_length"
+					size={INPUT_SIZE.SMALL}
+					type="number"
+					min="1"
+					max="600"
+				/>{' '}
+				&times;{' '}
+				<Input
+					name="default_width"
+					size={INPUT_SIZE.SMALL}
+					type="number"
+					min="1"
+					max="600"
+				/>{' '}
+				мм
+			</Field>
 			<Field name="Вес по умолчанию">
 				<Input
-					name="weight"
+					name="default_weight"
 					size={INPUT_SIZE.SMALL}
 					type="number"
 					min="0.01"

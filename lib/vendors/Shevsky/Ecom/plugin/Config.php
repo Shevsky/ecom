@@ -7,6 +7,6 @@ class Config
 	const ID = 'ecom';
 	const CURRENCY = 'RUB';
 	const WEIGHT_UNIT = 'kg';
-	const LINEAR_UNIT = 'cm';
+	const LINEAR_UNIT = 'mm';
 	const COUNTRY = 'rus';
 }
