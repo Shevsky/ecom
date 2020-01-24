@@ -74,7 +74,7 @@ export function TariffScreen(): JSX.Element {
 
 	return (
 		<>
-			<Field name="API для расчета доставки">
+			<Field name="API для расчета стоимости доставки">
 				<Select
 					value={tariffApi}
 					onChange={handleChangeTariffApi}
