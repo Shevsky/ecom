@@ -18,6 +18,7 @@ export interface IIconProps {
 	paddedLeft?: boolean;
 	paddedRight?: boolean;
 	size?: ICON_SIZE;
+	verticalAlignMiddle?: boolean;
 }
 
 export function Icon(props: IIconProps): JSX.Element {
@@ -27,7 +28,11 @@ export function Icon(props: IIconProps): JSX.Element {
 				`icon${props.size || ICON_SIZE.MEDIUM}`,
 				props.name,
 				{ s: props.small },
-				classname({ padded_left: !!props.paddedLeft, padded_right: !!props.paddedRight }),
+				classname({
+					padded_left: !!props.paddedLeft,
+					padded_right: !!props.paddedRight,
+					vertical_align_middle: !!props.verticalAlignMiddle
+				}),
 				{ [props.className]: !!props.className }
 			)}
 		/>

@@ -3,6 +3,9 @@ declare interface ISettings {
 	api_password: string;
 	api_token: string;
 
+	is_calculate_thru_tariff: boolean;
+	tariff_agreement_number: string;
+
 	tracking_login: string;
 	tracking_password: string;
 	tracking_cache_lifetime: number;
@@ -51,6 +54,7 @@ declare type TRegions = {
 declare interface IParams {
 	id: string;
 	key: string | null;
+	get_agreement_number_url: string;
 	sync_points_url: string;
 	get_regions_url: string;
 	points_handbook_count: number;

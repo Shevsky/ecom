@@ -10,6 +10,13 @@ return [
 	'api_token' => [
 		'value' => '',
 	],
+	'is_calculate_thru_tariff' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'tariff_agreement_number' => [
+		'value' => '',
+	],
 	'tracking_login' => [
 		'value' => '',
 	],

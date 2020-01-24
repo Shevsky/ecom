@@ -7,6 +7,7 @@ import { bem } from 'util/bem';
 
 interface IInlineLinkProps extends HTMLProps<HTMLAnchorElement> {
 	icon?: Omit<IIconProps, 'paddedLeft' | 'paddedRight'>;
+	iconAfter?: Omit<IIconProps, 'paddedLeft' | 'paddedRight'>;
 }
 
 const classname = bem('inline-link');
@@ -16,6 +17,7 @@ export function InlineLink({
 	children,
 	href = '#',
 	icon,
+	iconAfter,
 	...props
 }: IInlineLinkProps): JSX.Element {
 	const handleClick = useCallback(
@@ -38,11 +40,21 @@ export function InlineLink({
 			className={ClassNames('inline-link', classname(), className)}
 			onClick={handleClick}
 		>
-			{icon ? <Icon className={classname('icon')} {...icon} paddedRight /> : ''}
+			{icon ? (
+				<Icon className={classname('icon')} {...icon} paddedRight verticalAlignMiddle />
+			) : (
+				''
+			)}
 
 			<b>
 				<i>{children}</i>
 			</b>
+
+			{iconAfter ? (
+				<Icon className={classname('icon')} {...iconAfter} paddedLeft verticalAlignMiddle />
+			) : (
+				''
+			)}
 		</a>
 	);
 }
