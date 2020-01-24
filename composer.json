@@ -1,0 +1,26 @@
+{
+    "name": "shevsky/ecom-shipping",
+    "type": "project",
+    "config": {
+        "vendor-dir": "lib/vendors",
+        "optimize-autoloader": true
+    },
+    "require": {
+        "shevsky-fork-lapaygroup/russianpost": "dev-master"
+    },
+    "repositories":[
+        {
+            "type": "vcs",
+            "url": "git@github.com:Shevsky/RussianPost.git"
+        }
+    ],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Konstantin Shevsky",
+            "email": "mail@shevsky.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
