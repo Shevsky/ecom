@@ -1,0 +1,27 @@
+<?php
+
+namespace Shevsky\Ecom\Enum;
+
+class MailType
+{
+	const POSTAL_PARCEL = 'POSTAL_PARCEL';
+	const ONLINE_PARCEL = 'ONLINE_PARCEL';
+	const ONLINE_COURIER = 'ONLINE_COURIER';
+	const EMS = 'EMS';
+	const EMS_OPTIMAL = 'EMS_OPTIMAL';
+	const EMS_RT = 'EMS_RT';
+	const EMS_TENDER = 'EMS_TENDER';
+	const LETTER = 'LETTER';
+	const LETTER_CLASS_1 = 'LETTER_CLASS_1';
+	const BANDEROL = 'BANDEROL';
+	const BUSINESS_COURIER = 'BUSINESS_COURIER';
+	const BUSINESS_COURIER_ES = 'BUSINESS_COURIER_ES';
+	const PARCEL_CLASS_1 = 'PARCEL_CLASS_1';
+	const BANDEROL_CLASS_1 = 'BANDEROL_CLASS_1';
+	const VGPO_CLASS_1 = 'VGPO_CLASS_1';
+	const SMALL_PACKET = 'SMALL_PACKET';
+	const EASY_RETURN = 'EASY_RETURN';
+	const VSD = 'VSD';
+	const ECOM = 'ECOM';
+	const COMBINED = 'COMBINED';
+}

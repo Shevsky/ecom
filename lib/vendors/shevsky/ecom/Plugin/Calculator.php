@@ -12,6 +12,7 @@ use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Point\IPointSchedule;
 use Shevsky\Ecom\Provider;
 use Shevsky\Ecom\Services\DeliveryIntervalHandbook\DeliveryIntervalHandbook;
+use Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
 use Shevsky\Ecom\Services\Tarifficator\Tarifficator;
 use Shevsky\Ecom\Util\DateTimeLocaleFormatter;
 use Shevsky\Ecom\Util\PointScheduleHelper;
@@ -180,26 +181,54 @@ trait Calculator
 
 		try
 		{
-			$otpravka_api = Provider::getOtpravkaApi($this->api_login, $this->api_password, $this->api_token);
+			if ($this->is_calculate_thru_tariff)
+			{
+				$tarifficator = new Tarifficator(
+					$this->getOrder(),
+					$this->getDeparture(),
+					ApiAdapter\TarifficatorTariffApiAdapter::class,
+					$this->tariff_agreement_number
+				);
+			}
+			else
+			{
+				try
+				{
+					$otpravka_api = Provider::getOtpravkaApi($this->api_login, $this->api_password, $this->api_token);
+				}
+				catch (\Exception $e)
+				{
+					CalculatorLogger::debug(
+						'Не удалось получить экземпляр API сервиса Отправка',
+						[
+							'message' => $e->getMessage(),
+							'code' => $e->getCode(),
+						]
+					);
+
+					throw CalculatorException::error(CalculatorException::OTPRAVKA_API_ERROR, $e);
+				}
+
+				$tarifficator = new Tarifficator(
+					$this->getOrder(),
+					$this->getDeparture(),
+					ApiAdapter\TarifficatorOtpravkaApiAdapter::class,
+					$otpravka_api
+				);
+			}
 		}
 		catch (\Exception $e)
 		{
 			CalculatorLogger::debug(
-				'Не удалось получить экземпляр API сервиса Отправка',
+				'Не удалось получить экземпляр тарификатора',
 				[
 					'message' => $e->getMessage(),
 					'code' => $e->getCode(),
 				]
 			);
 
-			throw CalculatorException::error(CalculatorException::OTPRAVKA_API_ERROR, $e);
+			throw CalculatorException::error(CalculatorException::TARIFFICATOR_ERROR, $e);
 		}
-
-		$tarifficator = new Tarifficator(
-			$this->getOrder(),
-			$this->getDeparture(),
-			$otpravka_api
-		);
 
 		/**
 		 * @var Point[] $points
@@ -246,11 +275,11 @@ trait Calculator
 	 */
 	private function getTariff(Tarifficator $tarifficator, Point $point)
 	{
-		$raw_tariff = $tarifficator->calculate($point);
+		$tariff = $tarifficator->calculate($point);
 
 		try
 		{
-			$datetime_interval = $this->getDeliveryDateTimeInterval($raw_tariff, $point->getSchedule());
+			$datetime_interval = $this->getDeliveryDateTimeInterval($tariff, $point->getSchedule());
 		}
 		catch (\Exception $e)
 		{
@@ -263,14 +292,14 @@ trait Calculator
 		);
 		$est_delivery = DateTimeLocaleFormatter::formatInterval($datetime_interval);
 
-		$tariff = [
+		$tariff_array = [
 			'name' => $point->getLocation()->getAddress(),
 			'description' => $point->getLocation()->getFullAddress(),
 			'est_delivery' => $est_delivery,
 			'delivery_date' => $delivery_interval,
 			'timezone' => date_default_timezone_get(),
 			'currency' => Config::CURRENCY,
-			'rate' => $raw_tariff->getTotalRate() + $raw_tariff->getTotalNds(),
+			'rate' => ($tariff->getTotalRate() + $tariff->getTotalNds()) / 100,
 			'type' => \waShipping::TYPE_PICKUP,
 			'service' => $point->getName(),
 
@@ -290,9 +319,9 @@ trait Calculator
 			],
 		];
 
-		CalculatorLogger::debug('Расчитан тариф', $tariff);
+		CalculatorLogger::debug('Расчитан тариф', $tariff_array);
 
-		return $tariff;
+		return $tariff_array;
 	}
 
 	/**

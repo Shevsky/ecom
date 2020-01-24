@@ -4,12 +4,12 @@ namespace Shevsky\Ecom\Services\Tarifficator;
 
 use LapayGroup\RussianPost\Exceptions\RussianPostException;
 use LapayGroup\RussianPost\ParcelInfo;
-use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use LapayGroup\RussianPost\TariffInfo;
 use Shevsky\Ecom\Enum;
 use Shevsky\Ecom\Persistence\Departure\IDeparture;
 use Shevsky\Ecom\Persistence\Order\IOrder;
 use Shevsky\Ecom\Persistence\Point\IPoint;
+use Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
 
 class Tarifficator
 {
@@ -17,18 +17,29 @@ class Tarifficator
 
 	private $order;
 	private $departure;
-	private $otpravka_api;
+	/**
+	 * @var ApiAdapter\ITarifficatorApiAdapter
+	 */
+	private $api_adapter;
 
 	/**
 	 * @param IOrder $order
 	 * @param IDeparture $departure
-	 * @param OtpravkaApi $otpravka_api
+	 * @param string $api_adapter_classname
+	 * @param mixed[] $api_adapter_construct_params
+	 * @throws \Exception
 	 */
-	public function __construct(IOrder $order, IDeparture $departure, OtpravkaApi $otpravka_api)
+	public function __construct(
+		IOrder $order,
+		IDeparture $departure,
+		$api_adapter_classname,
+		...$api_adapter_construct_params
+	)
 	{
 		$this->order = $order;
 		$this->departure = $departure;
-		$this->otpravka_api = $otpravka_api;
+
+		$this->api_adapter = new $api_adapter_classname(...$api_adapter_construct_params);
 	}
 
 	/**
@@ -38,11 +49,11 @@ class Tarifficator
 	 */
 	public function calculate(IPoint $point)
 	{
-		TarifficatorLogger::debug('Начинаем расчет тарифа через API сервиса Отправка');
+		TarifficatorLogger::debug("Начинаем расчет тарифа");
 
 		try
 		{
-			$tariff = $this->otpravka_api->getDeliveryTariff($this->buildParcelInfo($point));
+			$tariff = $this->api_adapter->getTariff($this->buildParcelInfo($point));
 		}
 		catch (RussianPostException $e)
 		{
@@ -60,7 +71,34 @@ class Tarifficator
 
 		TarifficatorLogger::debug(
 			'Получен результат расчета стоимости доставки',
-			$tariff->getRawData()
+			[
+				'total-rate' => $tariff->getTotalRate(),
+				'total-vat' => $tariff->getTotalNds(),
+
+				'avia-rate' => $tariff->getAviaRate(),
+				'avia-vat' => $tariff->getAviaNds(),
+
+				'ground-rate' => $tariff->getGroundRate(),
+				'ground-vat' => $tariff->getGroundNds(),
+
+				'fragile-rate' => $tariff->getFragileRate(),
+				'fragile-vat' => $tariff->getFragileNds(),
+
+				'contents-checking-rate' => $tariff->getContentsCheckingRate(),
+				'contents-checking-vat' => $tariff->getContentsCheckingNds(),
+
+				'functionality-checking-rate' => $tariff->getFunctionalityCheckingRate(),
+				'functionality-checking-vat' => $tariff->getFunctionalityCheckingNds(),
+
+				'with-fitting-rate' => $tariff->getWithFittingRate(),
+				'with-fitting-vat' => $tariff->getWithFittingNds(),
+
+				'notice-rate' => $tariff->getNoticeRate(),
+				'notice-vat' => $tariff->getNoticeNds(),
+
+				'oversize-rate' => $tariff->getOversizeRate(),
+				'oversize-vat' => $tariff->getOversizeNds(),
+			]
 		);
 
 		return $tariff;
