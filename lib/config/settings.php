@@ -77,7 +77,7 @@ return [
 		'control_type' => 'checkbox',
 	],
 	'inventory' => [
-		'value' => '1',
+		'value' => '',
 		'control_type' => 'checkbox',
 	],
 	'vsd' => [
@@ -88,7 +88,7 @@ return [
 		'value' => 'CASHLESS',
 	],
 	'with_electronic_notice' => [
-		'value' => '1',
+		'value' => '',
 		'control_type' => 'checkbox',
 	],
 	'with_order_of_notice' => [
