@@ -44,7 +44,7 @@ class Tarifficator
 
 	/**
 	 * @param IPoint $point
-	 * @return TariffInfo
+	 * @return TarifficatorResult
 	 * @throws \Exception
 	 */
 	public function calculate(IPoint $point)
@@ -53,7 +53,7 @@ class Tarifficator
 
 		try
 		{
-			$tariff = $this->api_adapter->getTariff($this->buildParcelInfo($point));
+			$tariff_info = $this->api_adapter->getTariff($this->buildParcelInfo($point));
 		}
 		catch (RussianPostException $e)
 		{
@@ -69,39 +69,43 @@ class Tarifficator
 			throw $e;
 		}
 
+		$result = new TarifficatorResult($tariff_info);
+
 		TarifficatorLogger::debug(
 			'Получен результат расчета стоимости доставки',
-			[
-				'total-rate' => $tariff->getTotalRate(),
-				'total-vat' => $tariff->getTotalNds(),
-
-				'avia-rate' => $tariff->getAviaRate(),
-				'avia-vat' => $tariff->getAviaNds(),
-
-				'ground-rate' => $tariff->getGroundRate(),
-				'ground-vat' => $tariff->getGroundNds(),
-
-				'fragile-rate' => $tariff->getFragileRate(),
-				'fragile-vat' => $tariff->getFragileNds(),
-
-				'contents-checking-rate' => $tariff->getContentsCheckingRate(),
-				'contents-checking-vat' => $tariff->getContentsCheckingNds(),
-
-				'functionality-checking-rate' => $tariff->getFunctionalityCheckingRate(),
-				'functionality-checking-vat' => $tariff->getFunctionalityCheckingNds(),
-
-				'with-fitting-rate' => $tariff->getWithFittingRate(),
-				'with-fitting-vat' => $tariff->getWithFittingNds(),
-
-				'notice-rate' => $tariff->getNoticeRate(),
-				'notice-vat' => $tariff->getNoticeNds(),
-
-				'oversize-rate' => $tariff->getOversizeRate(),
-				'oversize-vat' => $tariff->getOversizeNds(),
-			]
+			$result->toArray()
 		);
 
-		return $tariff;
+		return $result;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMementoKey()
+	{
+		$order_memento = [$this->order->getDimensionType()];
+		if ($this->departure->isPassOrderValue())
+		{
+			switch ($this->departure->getOrderValueMode())
+			{
+				case Enum\TotalValueMode::WITH_DISCOUNTS:
+					$order_memento[] = round($this->order->getPriceWithDiscounts());
+					break;
+				case Enum\TotalValueMode::WITHOUT_DISCOUNTS:
+					$order_memento[] = round($this->order->getPriceWithoutDiscounts());
+					break;
+			}
+		}
+		$order_memento_key = json_encode($order_memento);
+
+		$departure_memento = $this->departure->toArray();
+		unset($departure_memento['index_to']);
+		$departure_memento_key = json_encode($departure_memento);
+
+		$adapter_memento_key = $this->api_adapter->getMementoKey();
+
+		return md5($order_memento_key . $departure_memento_key . $adapter_memento_key);
 	}
 
 	/**

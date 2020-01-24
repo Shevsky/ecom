@@ -18,16 +18,16 @@ export function PaymentScreen(): JSX.Element {
 				name="Оплата картой"
 				description="Будут показаны пункты выдачи с возможностью оплаты картой"
 			>
-				<Checkbox name="card_payment" />
+				<Checkbox name="card_payment" label="Оплата картой" />
 			</Field>
 			<Field
 				name="Оплата наличными"
 				description="Будут показаны пункты выдачи с возможностью оплаты наличными"
 			>
-				<Checkbox name="card_payment" />
+				<Checkbox name="cash_payment" label="Оплата наличными" />
 			</Field>
 			<Field name="Предоплата" description="Будут показаны все пункты выдачи">
-				<Checkbox name="pre_payment" />
+				<Checkbox name="pre_payment" label="Предоплата" />
 			</Field>
 		</>
 	);

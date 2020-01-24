@@ -14,7 +14,9 @@ use Shevsky\Ecom\Provider;
 use Shevsky\Ecom\Services\DeliveryIntervalHandbook\DeliveryIntervalHandbook;
 use Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
 use Shevsky\Ecom\Services\Tarifficator\Tarifficator;
+use Shevsky\Ecom\Services\Tarifficator\TarifficatorResult;
 use Shevsky\Ecom\Util\DateTimeLocaleFormatter;
+use Shevsky\Ecom\Util\KeyValueCacheUtil;
 use Shevsky\Ecom\Util\PointScheduleHelper;
 
 /**
@@ -22,6 +24,7 @@ use Shevsky\Ecom\Util\PointScheduleHelper;
  */
 trait Calculator
 {
+	private $cache_util;
 	private $delivery_interval;
 	private $payment_list;
 
@@ -210,11 +213,15 @@ trait Calculator
 					throw CalculatorException::error(CalculatorException::OTPRAVKA_API_ERROR, $e);
 				}
 
+				$memento_key_sault = 'calculator_otpravka_api_memento_key';
+				$memento_key = md5($memento_key_sault . $this->api_login . $this->api_password . $this->api_token);
+
 				$tarifficator = new Tarifficator(
 					$this->getOrder(),
 					$this->getDeparture(),
 					ApiAdapter\TarifficatorOtpravkaApiAdapter::class,
-					$otpravka_api
+					$otpravka_api,
+					$memento_key
 				);
 			}
 		}
@@ -253,15 +260,40 @@ trait Calculator
 		$tariffs = [];
 		foreach ($points as $point)
 		{
-			try
+			$tariff_result = null;
+
+			if ($this->is_calculate_caching)
 			{
-				$tariffs[] = $this->getTariff($tarifficator, $point);
+				try
+				{
+					$tariff_result = $this->tryCachedTariffResult($tarifficator, $point);
+				}
+				catch (\Exception $e)
+				{
+				}
 			}
-			catch (\Exception $e)
+
+			if (!$tariff_result)
 			{
-				CalculatorLogger::error(
-					"Получено исключение от сервиса тарификации. Не удалось произвести расчет для пункта выдачи \"{$point->getId()}\""
-				);
+				try
+				{
+					$tariff_result = $tarifficator->calculate($point);
+					if ($this->is_calculate_caching)
+					{
+						$this->cacheTariffResult($tarifficator, $tariff_result, $point);
+					}
+				}
+				catch (\Exception $e)
+				{
+					CalculatorLogger::error(
+						"Получено исключение от сервиса тарификации. Не удалось произвести расчет для пункта выдачи \"{$point->getId()}\""
+					);
+				}
+			}
+
+			if ($tariff_result)
+			{
+				$tariffs[] = $this->getTariff($tariff_result->getInfo(), $point);
 			}
 		}
 
@@ -271,18 +303,15 @@ trait Calculator
 	}
 
 	/**
-	 * @param Tarifficator $tarifficator
+	 * @param TariffInfo $tariff_info
 	 * @param Point $point
 	 * @return array
-	 * @throws \Exception
 	 */
-	private function getTariff(Tarifficator $tarifficator, Point $point)
+	private function getTariff(TariffInfo $tariff_info, Point $point)
 	{
-		$tariff = $tarifficator->calculate($point);
-
 		try
 		{
-			$datetime_interval = $this->getDeliveryDateTimeInterval($tariff, $point->getSchedule());
+			$datetime_interval = $this->getDeliveryDateTimeInterval($tariff_info, $point->getSchedule());
 		}
 		catch (\Exception $e)
 		{
@@ -295,14 +324,14 @@ trait Calculator
 		);
 		$est_delivery = DateTimeLocaleFormatter::formatInterval($datetime_interval);
 
-		$tariff_array = [
+		$tariff = [
 			'name' => $point->getLocation()->getAddress(),
 			'description' => $point->getLocation()->getFullAddress(),
 			'est_delivery' => $est_delivery,
 			'delivery_date' => $delivery_interval,
 			'timezone' => date_default_timezone_get(),
 			'currency' => Config::CURRENCY,
-			'rate' => ($tariff->getTotalRate() + $tariff->getTotalNds()) / 100,
+			'rate' => ($tariff_info->getTotalRate() + $tariff_info->getTotalNds()) / 100,
 			'type' => \waShipping::TYPE_PICKUP,
 			'service' => $point->getName(),
 
@@ -323,9 +352,45 @@ trait Calculator
 			],
 		];
 
-		CalculatorLogger::debug('Расчитан тариф', $tariff_array);
+		CalculatorLogger::debug('Расчитан тариф', $tariff);
 
-		return $tariff_array;
+		return $tariff;
+	}
+
+	/**
+	 * @return KeyValueCacheUtil
+	 */
+	private function getCacheUtil()
+	{
+		if (!isset($this->cache_util))
+		{
+			$this->cache_util = new KeyValueCacheUtil('calculator');
+		}
+
+		return $this->cache_util;
+	}
+
+	/**
+	 * @param Tarifficator $tarifficator
+	 * @param TarifficatorResult $tariff_result
+	 * @param Point $point
+	 */
+	private function cacheTariffResult(Tarifficator $tarifficator, TarifficatorResult $tariff_result, Point $point)
+	{
+		$this->getCacheUtil()->setCache("{$tarifficator->getMementoKey()}.cache", $point->getIndex(), $tariff_result->memento());
+	}
+
+	/**
+	 * @param Tarifficator $tarifficator
+	 * @param Point $point
+	 * @return TarifficatorResult
+	 * @throws \Exception
+	 */
+	private function tryCachedTariffResult(Tarifficator $tarifficator, Point $point)
+	{
+		$raw_tariff_result = $this->getCacheUtil()->getCache("{$tarifficator->getMementoKey()}.cache", $point->getIndex());
+
+		return TarifficatorResult::restore($raw_tariff_result);
 	}
 
 	/**

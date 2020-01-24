@@ -7,6 +7,7 @@ export class SettingsModel implements TSettingsModel {
 	api_token: BehaviorSubject<ISettings['api_token']>;
 	is_calculate_thru_tariff: BehaviorSubject<ISettings['is_calculate_thru_tariff']>;
 	tariff_agreement_number: BehaviorSubject<ISettings['tariff_agreement_number']>;
+	is_calculate_caching: BehaviorSubject<ISettings['is_calculate_caching']>;
 	city_name_from: BehaviorSubject<ISettings['city_name_from']>;
 	completeness_checking: BehaviorSubject<ISettings['completeness_checking']>;
 	contents_checking: BehaviorSubject<ISettings['contents_checking']>;

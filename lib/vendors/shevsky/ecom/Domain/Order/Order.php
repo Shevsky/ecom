@@ -173,6 +173,19 @@ class Order implements IOrder
 	}
 
 	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array_merge(
+			$this->params,
+			[
+				'dimension_type' => $this->getDimensionType(),
+			]
+		);
+	}
+
+	/**
 	 * @param string $name
 	 * @return float
 	 * @throws \Exception

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Field, InlineLink, Paragraph } from 'common/components';
+import { Container, Field, InlineLink, INPUT_SIZE, Paragraph } from 'common/components';
 import { Input } from 'modules/settings/components/common';
 
 export function TrackingScreen(): JSX.Element {
@@ -31,9 +31,9 @@ export function TrackingScreen(): JSX.Element {
 			</Field>
 			<Field
 				name="Время жизни кеша"
-				description="Как часто должны обновляться данные в трекинге при их запросе. Значение указывается в секундах"
+				description="Как часто должны обновляться данные в трекинге при их запросе"
 			>
-				<Input name="tracking_cache_lifetime" type="tel" />
+				<Input name="tracking_cache_lifetime" type="tel" size={INPUT_SIZE.SMALL} /> сек.
 			</Field>
 		</>
 	);

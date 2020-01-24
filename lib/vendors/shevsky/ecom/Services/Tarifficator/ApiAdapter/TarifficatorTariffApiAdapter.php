@@ -120,6 +120,14 @@ class TarifficatorTariffApiAdapter implements ITarifficatorApiAdapter
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getMementoKey()
+	{
+		return $this->agreement_number;
+	}
+
+	/**
 	 * @param array $response
 	 * @return TariffInfo
 	 */

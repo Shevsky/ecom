@@ -17,6 +17,10 @@ return [
 	'tariff_agreement_number' => [
 		'value' => '',
 	],
+	'is_calculate_caching' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
 	'tracking_login' => [
 		'value' => '',
 	],

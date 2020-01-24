@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { Field, Icon, ICON_SIZE, InlineLink, Select } from 'common/components';
-import { Input } from 'modules/settings/components/common';
+import { Field, Icon, InlineLink, INPUT_SIZE, Select } from 'common/components';
+import { Checkbox, Input } from 'modules/settings/components/common';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { useSetting } from 'modules/settings/util/use-setting';
 
@@ -109,6 +109,10 @@ export function TariffScreen(): JSX.Element {
 					)}
 				</Field>
 			)}
+
+			<Field name="Кешировать результаты расчета">
+				<Checkbox name="is_calculate_caching" label="Кешировать результаты расчета" />
+			</Field>
 		</>
 	);
 }

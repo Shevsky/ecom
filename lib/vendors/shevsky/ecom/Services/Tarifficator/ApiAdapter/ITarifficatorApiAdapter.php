@@ -15,4 +15,9 @@ interface ITarifficatorApiAdapter
 	 * @throws \Exception
 	 */
 	public function getTariff(ParcelInfo $parcel_info);
+
+	/**
+	 * @return string
+	 */
+	public function getMementoKey();
 }

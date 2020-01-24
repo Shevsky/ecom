@@ -5,6 +5,7 @@ declare interface ISettings {
 
 	is_calculate_thru_tariff: boolean;
 	tariff_agreement_number: string;
+	is_calculate_caching: boolean;
 
 	tracking_login: string;
 	tracking_password: string;

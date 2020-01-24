@@ -5,11 +5,21 @@ namespace Shevsky\Ecom\Domain\Services\SettingsValidator;
 use LapayGroup\RussianPost\Exceptions\RussianPostException;
 use Shevsky\Ecom\Persistence\Services\SettingsValidator\ISettingValidator;
 use Shevsky\Ecom\Provider;
+use Shevsky\Ecom\Util\KeyValueCacheUtil;
 
-class OtpravkaApiSyncSettingsValidator extends AbstractCachedSettingValidator implements ISettingValidator
+class OtpravkaApiSyncSettingsValidator implements ISettingValidator
 {
+	const CACHE_UTIL_BASE_KEY = 'settings-validator';
+
 	const CACHE_KEY = 'otpravka_api_sync.cache';
 	const CACHE_SAULT = 'otpravka_api_sync_settings_validator';
+
+	private $cache_util;
+
+	public function __construct()
+	{
+		$this->cache_util = new KeyValueCacheUtil(self::CACHE_UTIL_BASE_KEY);
+	}
 
 	/**
 	 * @param mixed $settings
@@ -23,7 +33,7 @@ class OtpravkaApiSyncSettingsValidator extends AbstractCachedSettingValidator im
 			. $settings['index_from']
 		);
 
-		$cached_result = $this->getCache(self::CACHE_KEY, $cache_name);
+		$cached_result = $this->cache_util->getCache(self::CACHE_KEY, $cache_name);
 		if ($cached_result === true)
 		{
 			return true;
@@ -55,10 +65,10 @@ class OtpravkaApiSyncSettingsValidator extends AbstractCachedSettingValidator im
 				throw new \Exception('Указаны некорректные данные для авторизации API сервиса Отправка Почта России');
 			}
 
-			$this->setCache(self::CACHE_KEY, $cache_name, false);
+			$this->cache_util->setCache(self::CACHE_KEY, $cache_name, false);
 		}
 
-		$this->setCache(self::CACHE_KEY, $cache_name, true);
+		$this->cache_util->setCache(self::CACHE_KEY, $cache_name, true);
 
 		return true;
 	}

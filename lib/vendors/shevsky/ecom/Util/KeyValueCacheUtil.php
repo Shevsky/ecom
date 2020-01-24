@@ -1,10 +1,19 @@
 <?php
 
-namespace Shevsky\Ecom\Domain\Services\SettingsValidator;
+namespace Shevsky\Ecom\Util;
 
-abstract class AbstractCachedSettingValidator
+class KeyValueCacheUtil
 {
+	private $base_key;
 	private $cache_adapter;
+
+	/**
+	 * @param string $base_key
+	 */
+	public function __construct($base_key)
+	{
+		$this->base_key = $base_key;
+	}
 
 	/**
 	 * @return \waFileCacheAdapter
@@ -15,7 +24,7 @@ abstract class AbstractCachedSettingValidator
 		{
 			$this->cache_adapter = new \waFileCacheAdapter(
 				[
-					'path' => \waConfig::get('wa_path_cache') . '/ecom/setting-validator',
+					'path' => \waConfig::get('wa_path_cache') . "/ecom/{$this->base_key}",
 				]
 			);
 		}
@@ -27,7 +36,7 @@ abstract class AbstractCachedSettingValidator
 	 * @param string $key
 	 * @return array
 	 */
-	protected function readCache($key)
+	public function readCache($key)
 	{
 		$value = $this->getCacheAdapter()->get($key);
 		if (!is_array($value))
@@ -42,7 +51,7 @@ abstract class AbstractCachedSettingValidator
 	 * @param string $key
 	 * @param array $value
 	 */
-	protected function writeCache($key, array $value)
+	public function writeCache($key, array $value)
 	{
 		$this->getCacheAdapter()->set($key, $value);
 	}
@@ -52,7 +61,7 @@ abstract class AbstractCachedSettingValidator
 	 * @param string $name
 	 * @return mixed
 	 */
-	protected function getCache($key, $name)
+	public function getCache($key, $name)
 	{
 		$value = $this->readCache($key);
 		if (array_key_exists($name, $value))
@@ -66,9 +75,9 @@ abstract class AbstractCachedSettingValidator
 	/**
 	 * @param string $key
 	 * @param string $name
-	 * @param string $raw_value
+	 * @param mixed $raw_value
 	 */
-	protected function setCache($key, $name, $raw_value)
+	public function setCache($key, $name, $raw_value)
 	{
 		$value = $this->readCache($key);
 		$value[$name] = $raw_value;

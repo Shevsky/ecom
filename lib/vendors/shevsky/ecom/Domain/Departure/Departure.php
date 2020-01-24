@@ -160,4 +160,12 @@ class Departure implements IDeparture
 	{
 		return (bool)$this->params['fragile'];
 	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return $this->params;
+	}
 }

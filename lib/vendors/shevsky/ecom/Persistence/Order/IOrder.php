@@ -38,4 +38,9 @@ interface IOrder
 	 * @return string
 	 */
 	public function getDimensionType();
+
+	/**
+	 * @return array
+	 */
+	public function toArray();
 }

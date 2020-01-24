@@ -83,4 +83,9 @@ interface IDeparture
 	 * @return bool
 	 */
 	public function isFragile();
+
+	/**
+	 * @return array
+	 */
+	public function toArray();
 }
