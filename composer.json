@@ -9,14 +9,8 @@
         "optimize-autoloader": true
     },
     "require": {
-        "shevsky-fork-lapaygroup/russianpost": "dev-master"
+        "lapaygroup/russianpost": "dev-master"
     },
-    "repositories":[
-        {
-            "type": "vcs",
-            "url": "git@github.com:Shevsky/RussianPost.git"
-        }
-    ],
     "license": "proprietary",
     "authors": [
         {
