@@ -181,7 +181,7 @@ trait Calculator
 	 */
 	private function getTariffs()
 	{
-		CalculatorLogger::debug('Начинаем расчет тарифов');
+		CalculatorLogger::debug('Начинаем этап расчета тарифов');
 
 		try
 		{
@@ -248,6 +248,13 @@ trait Calculator
 			->filterByCashPaymentAvailability((bool)$this->cash_payment)
 			->receive();
 
+		$event_data = [
+			'id' => $this->id,
+			'key' => $this->key,
+			'points' => &$points,
+		];
+		wa()->event('ecom_shipping.calculator.points', $event_data);
+
 		if (empty($points))
 		{
 			CalculatorLogger::debug(
@@ -256,6 +263,24 @@ trait Calculator
 
 			throw CalculatorException::error(CalculatorException::NO_POINTS);
 		}
+		else
+		{
+			$points_count = count($points);
+
+			CalculatorLogger::debug(
+				"Получены пункты выдачи для адреса \"{$this->getRegionCode()}{$this->getCityName()}\" ({$points_count})"
+			);
+		}
+
+		$event_data = [
+			'id' => $this->id,
+			'key' => $this->key,
+			'address' => $this->getAddress(),
+			'items' => $this->getItems(),
+		];
+		wa()->event('ecom_shipping.calculator.before_calculate', $event_data);
+
+		CalculatorLogger::debug('Расчет тарифов запущен');
 
 		$tariffs = [];
 		foreach ($points as $point)
@@ -293,11 +318,20 @@ trait Calculator
 
 			if ($tariff_result)
 			{
-				$tariffs[] = $this->getTariff($tariff_result->getInfo(), $point);
+				$tariffs[$point->getIndex()] = $this->getTariff($tariff_result->getInfo(), $point);
 			}
 		}
 
 		CalculatorLogger::debug('Расчет тарифов завершен', $tariffs);
+
+		$event_data = [
+			'id' => $this->id,
+			'key' => $this->key,
+			'address' => $this->getAddress(),
+			'items' => $this->getItems(),
+			'tariffs' => &$tariffs,
+		];
+		wa()->event('ecom_shipping.calculator.after_calculate', $event_data);
 
 		return $tariffs;
 	}
@@ -337,11 +371,11 @@ trait Calculator
 
 			'custom_data' => [
 				\waShipping::TYPE_PICKUP => [
-					'id' => $point->getId(),
+					'id' => $point->getIndex(),
 					'lat' => (string)$point->getLocation()->getLatitude(),
 					'lng' => (string)$point->getLocation()->getLongitude(),
 					'name' => $point->getLocation()->getAddress(),
-					'description' => $point->getLegalName(),
+					'description' => $point->getLocation()->getFullAddress(),
 					'way' => $point->getLocation()->getWay(),
 					'schedule' => $this->getScheduleWithDateTimeInterval(
 						$point->getSchedule(),
@@ -377,7 +411,11 @@ trait Calculator
 	 */
 	private function cacheTariffResult(Tarifficator $tarifficator, TarifficatorResult $tariff_result, Point $point)
 	{
-		$this->getCacheUtil()->setCache("{$tarifficator->getMementoKey()}.cache", $point->getIndex(), $tariff_result->memento());
+		$this->getCacheUtil()->setCache(
+			"{$tarifficator->getMementoKey()}.cache",
+			$point->getIndex(),
+			$tariff_result->memento()
+		);
 	}
 
 	/**
@@ -388,7 +426,10 @@ trait Calculator
 	 */
 	private function tryCachedTariffResult(Tarifficator $tarifficator, Point $point)
 	{
-		$raw_tariff_result = $this->getCacheUtil()->getCache("{$tarifficator->getMementoKey()}.cache", $point->getIndex());
+		$raw_tariff_result = $this->getCacheUtil()->getCache(
+			"{$tarifficator->getMementoKey()}.cache",
+			$point->getIndex()
+		);
 
 		return TarifficatorResult::restore($raw_tariff_result);
 	}
