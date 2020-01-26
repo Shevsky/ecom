@@ -1,0 +1,14 @@
+{strip}
+	{include "./util/assets_includer.html" assets=$assets inline}
+
+	<div class="ecom-tracking">
+		Отслеживание отправления: <a href="https://pochta.ru/tracking#{$tracking_id}" target="_blank">
+			https://pochta.ru/tracking#{$tracking_id}</a>
+
+		{if !empty($error) && $wa->getEnv() !== 'frontend'}
+			<div class="ecom-tracking__error">
+				Получить информацию по трекингу не удалось: {$error}
+			</div>
+		{/if}
+	</div>
+{/strip}

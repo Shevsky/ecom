@@ -1,0 +1,46 @@
+{strip}
+	{include "./util/assets_includer.html" assets=$assets inline}
+
+	{if empty($history)}
+		{include './tracking_simple.html' inline}
+	{else}
+		<div class="ecom-tracking">
+			{if $wa->getEnv() === 'frontend'}
+				<div class="ecom-tracking__simple-box">
+					Отслеживание отправления: <a href="https://pochta.ru/tracking#{$tracking_id}" target="_blank">
+						https://pochta.ru/tracking#{$tracking_id}</a>
+				</div>
+			{/if}
+
+			<div class="ecom-tracking__history">
+				<table class="zebra">
+					<tr>
+						<th>Дата</th>
+						<th>Город</th>
+						<th>Статус</th>
+					</tr>
+
+					{foreach $history as $record}
+						<tr>
+							<td>
+								{$record.date}
+							</td>
+							<td>
+								{$record.address_description}{if $record.address_index}, {$record.address_index}{/if}
+							</td>
+							<td>
+								{if $record.attr_name && $record.type_name}
+									{$record.attr_name} ({$record.type_name})
+								{elseif $record.attr_name}
+									{$record.attr_name}
+								{elseif $record.type_name}
+									{$record.type_name}
+								{/if}
+							</td>
+						</tr>
+					{/foreach}
+				</table>
+			</div>
+		</div>
+	{/if}
+{/strip}

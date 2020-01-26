@@ -20,6 +20,7 @@ use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
 use Shevsky\Ecom\Domain\PointStorage\PointStorage;
 use Shevsky\Ecom\Domain\Services\SettingsValidator\SettingsValidator;
 use Shevsky\Ecom\Domain\Template\SettingsTemplate;
+use Shevsky\Ecom\Domain\Template\TrackingSimpleTemplate;
 use Shevsky\Ecom\Domain\Template\TrackingTemplate;
 use Shevsky\Ecom\Plugin;
 use Shevsky\Ecom\Provider;
@@ -91,7 +92,28 @@ class ecomShipping extends waShipping
 	 */
 	public function tracking($tracking_id = null)
 	{
-		return (new TrackingTemplate($tracking_id))->render();
+		try
+		{
+			$tracking = Provider::getTracking($this->tracking_login, $this->tracking_password);
+			$template = new TrackingTemplate($tracking_id, $tracking);
+		}
+		catch (\Exception $e)
+		{
+			$template = new TrackingSimpleTemplate();
+			$template->assign(
+				[
+					'error' => $e->getMessage(),
+				]
+			);
+		}
+
+		$template->assign(
+			[
+				'tracking_id' => $tracking_id,
+			]
+		);
+
+		return $template->render();
 	}
 
 	/**

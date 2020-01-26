@@ -44,6 +44,11 @@ class Provider
 	 */
 	public static function getTracking($login, $password)
 	{
+		if (!class_exists('SoapClient'))
+		{
+			throw new \Exception('Трекинг недоступен: расширение SOAP не установлено');
+		}
+
 		if (!$login || !$password)
 		{
 			throw new \Exception('Параметры для API Трекинга не указаны');

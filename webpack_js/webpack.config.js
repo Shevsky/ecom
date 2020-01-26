@@ -11,6 +11,7 @@ module.exports = {
 	mode: 'development',
 	entry: {
 		settings: './src/settings.ts',
+		tracking: './src/modules/tracking/tracking.sass'
 	},
 	output: {
 		path: path.resolve(__dirname, '../'),
