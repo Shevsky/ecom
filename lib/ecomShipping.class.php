@@ -31,8 +31,6 @@ class ecomShipping extends waShipping
 	use Plugin\Calculator;
 	use Plugin\ShopScript;
 
-	protected $provider;
-
 	/**
 	 * @return string
 	 */
@@ -95,7 +93,7 @@ class ecomShipping extends waShipping
 		try
 		{
 			$tracking = Provider::getTracking($this->tracking_login, $this->tracking_password);
-			$template = new TrackingTemplate($tracking_id, $tracking);
+			$template = new TrackingTemplate($tracking_id, $tracking, $this->tracking_cache_lifetime);
 		}
 		catch (\Exception $e)
 		{
@@ -220,7 +218,7 @@ class ecomShipping extends waShipping
 		{
 			(new SyncPointsChain(
 				Provider::getOtpravkaApi($this->login, $this->password, $this->token)
-			))->execute();
+			))->execute(); // TODO протестировать правильность работы
 
 			return true;
 		}

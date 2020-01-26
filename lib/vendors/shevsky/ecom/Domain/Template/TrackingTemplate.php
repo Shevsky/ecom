@@ -8,15 +8,18 @@ class TrackingTemplate extends ViewTemplate
 {
 	private $tracking_id;
 	private $tracking;
+	private $cache_lifetime;
 
 	/**
 	 * @param string $tracking_id
 	 * @param Tracking $tracking
+	 * @param int $cache_lifetime
 	 */
-	public function __construct($tracking_id, Tracking $tracking)
+	public function __construct($tracking_id, Tracking $tracking, $cache_lifetime)
 	{
 		$this->tracking_id = $tracking_id;
 		$this->tracking = $tracking;
+		$this->cache_lifetime = $cache_lifetime; // TODO учитывать настройки кеширования
 	}
 
 	/**
@@ -27,7 +30,7 @@ class TrackingTemplate extends ViewTemplate
 		try
 		{
 			/**
-			 * @var \stdClass[] $operations
+			 * @var \stdClass[] $raw_history
 			 */
 			$raw_history = $this->tracking->getOperationsByRpo($this->tracking_id);
 			$history = array_map([__CLASS__, 'historyRecordToArray'], $raw_history);
