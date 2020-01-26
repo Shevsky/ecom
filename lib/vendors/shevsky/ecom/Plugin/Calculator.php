@@ -16,6 +16,7 @@ use Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
 use Shevsky\Ecom\Services\Tarifficator\Tarifficator;
 use Shevsky\Ecom\Services\Tarifficator\TarifficatorResult;
 use Shevsky\Ecom\Util\DateTimeLocaleFormatter;
+use Shevsky\Ecom\Util\ILogger;
 use Shevsky\Ecom\Util\KeyValueCacheUtil;
 use Shevsky\Ecom\Util\PointScheduleHelper;
 
@@ -24,6 +25,7 @@ use Shevsky\Ecom\Util\PointScheduleHelper;
  */
 trait Calculator
 {
+	private $logger;
 	private $cache_util;
 	private $delivery_interval;
 	private $payment_list;
@@ -56,6 +58,22 @@ trait Calculator
 
 			return null;
 		}
+	}
+
+	/**
+	 * @return ILogger
+	 */
+	private function getLogger()
+	{
+		if (!isset($this->logger))
+		{
+			$this->logger = new CalculatorLogger(
+				\waSystemConfig::isDebug() && $this->is_debug && $this->is_debug_calculator
+					? $this->calculator_debug_mode : Enum\DebugMode::DISABLED
+			);
+		}
+
+		return $this->logger;
 	}
 
 	/**
@@ -181,7 +199,7 @@ trait Calculator
 	 */
 	private function getTariffs()
 	{
-		CalculatorLogger::debug('Начинаем этап расчета тарифов');
+		$this->getLogger()->debug('Начинаем этап расчета тарифов');
 
 		try
 		{
@@ -202,7 +220,7 @@ trait Calculator
 				}
 				catch (\Exception $e)
 				{
-					CalculatorLogger::debug(
+					$this->getLogger()->debug(
 						'Не удалось получить экземпляр API сервиса Отправка',
 						[
 							'message' => $e->getMessage(),
@@ -227,7 +245,7 @@ trait Calculator
 		}
 		catch (\Exception $e)
 		{
-			CalculatorLogger::debug(
+			$this->getLogger()->debug(
 				'Не удалось получить экземпляр тарификатора',
 				[
 					'message' => $e->getMessage(),
@@ -237,6 +255,11 @@ trait Calculator
 
 			throw CalculatorException::error(CalculatorException::TARIFFICATOR_ERROR, $e);
 		}
+
+		$tarifficator->setDebugMode(
+			\waSystemConfig::isDebug() && $this->is_debug && $this->is_debug_tarifficator
+				? $this->tarifficator_debug_mode : Enum\DebugMode::DISABLED
+		);
 
 		/**
 		 * @var Point[] $points
@@ -257,8 +280,8 @@ trait Calculator
 
 		if (empty($points))
 		{
-			CalculatorLogger::debug(
-				"Не найдено пунктов выдачи для адреса \"{$this->getRegionCode()} {$this->getCityName()}\""
+			$this->getLogger()->debug(
+				"Не найдено пунктов выдачи для адреса \"{$this->getRegionCode()} {$this->getCityName()}\" (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment})"
 			);
 
 			throw CalculatorException::error(CalculatorException::NO_POINTS);
@@ -267,8 +290,8 @@ trait Calculator
 		{
 			$points_count = count($points);
 
-			CalculatorLogger::debug(
-				"Получены пункты выдачи для адреса \"{$this->getRegionCode()}{$this->getCityName()}\" ({$points_count})"
+			$this->getLogger()->debug(
+				"Получены пункты выдачи для адреса \"{$this->getRegionCode()}{$this->getCityName()}\" ({$points_count}) (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment})"
 			);
 		}
 
@@ -280,7 +303,7 @@ trait Calculator
 		];
 		wa()->event('ecom_shipping.calculator.before_calculate', $event_data);
 
-		CalculatorLogger::debug('Расчет тарифов запущен');
+		$this->getLogger()->debug('Расчет тарифов запущен');
 
 		$tariffs = [];
 		foreach ($points as $point)
@@ -310,7 +333,7 @@ trait Calculator
 				}
 				catch (\Exception $e)
 				{
-					CalculatorLogger::error(
+					$this->getLogger()->error(
 						"Получено исключение от сервиса тарификации. Не удалось произвести расчет для пункта выдачи \"{$point->getId()}\""
 					);
 				}
@@ -322,7 +345,7 @@ trait Calculator
 			}
 		}
 
-		CalculatorLogger::debug('Расчет тарифов завершен', $tariffs);
+		$this->getLogger()->debug('Расчет тарифов завершен', $tariffs);
 
 		$event_data = [
 			'id' => $this->id,
@@ -386,7 +409,7 @@ trait Calculator
 			],
 		];
 
-		CalculatorLogger::debug('Расчитан тариф', $tariff);
+		$this->getLogger()->debug('Расчитан тариф', $tariff);
 
 		return $tariff;
 	}

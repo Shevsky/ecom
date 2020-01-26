@@ -2,6 +2,7 @@ import './field.sass';
 
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { bem } from 'util/bem';
+import { Container } from '../container';
 
 const classname = bem('field');
 
@@ -22,10 +23,20 @@ export function Field(props: PropsWithChildren<IFieldProps>): JSX.Element {
 		>
 			<div className={classname('name')}>{!!props.name && props.name}</div>
 			<div className={classname('value')}>
-				{props.children}
+				{Array.isArray(props.children)
+					? props.children.map(
+							(children: ReactNode, index: number): JSX.Element => (
+								<div key={index} className={classname('value-item')}>
+									{children}
+								</div>
+							)
+					  )
+					: props.children}
 
 				{props.description !== undefined && (
-					<div className={classname('description')}>{props.description}</div>
+					<Container>
+						<div className={classname('description')}>{props.description}</div>
+					</Container>
 				)}
 			</div>
 		</div>

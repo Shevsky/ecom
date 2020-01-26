@@ -14,5 +14,7 @@ module.exports = {
 	region_code_from: "''",
 	city_name_from: "''",
 	entries_type: "'SALE_OF_GOODS'",
-	pre_payment: "'1'"
+	pre_payment: "'1'",
+	calculator_debug_mode: "'ERRORS'",
+	tarifficator_debug_mode: "'ERRORS'"
 };

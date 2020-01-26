@@ -6,8 +6,10 @@ import React, {
 	MouseEvent,
 	useCallback,
 	useState,
-	createElement
+	createElement,
+	useEffect
 } from 'react';
+import { Observable } from 'rxjs';
 import { bem } from 'util/bem';
 import Cookies from 'js-cookie';
 
@@ -22,6 +24,7 @@ interface ITabsProps {
 	options: ITabsOption[];
 	id?: string | null;
 	disabled?: boolean;
+	controller?: Observable<ComponentType>;
 }
 
 export function Tabs(props: ITabsProps) {
@@ -55,6 +58,26 @@ export function Tabs(props: ITabsProps) {
 		},
 		[props.id, props.disabled]
 	);
+
+	useEffect((): VoidFunction => {
+		if (!props.controller) {
+			return (): void => void 0;
+		}
+
+		const subscription = props.controller.subscribe(
+			(component: ComponentType): void => {
+				const nextSelectedId = props.options.findIndex(
+					(option: ITabsOption): boolean => option.component === component
+				);
+
+				if (nextSelectedId !== -1) {
+					setSelectedId(nextSelectedId);
+				}
+			}
+		);
+
+		return (): void => subscription.unsubscribe();
+	}, [props.controller, props.options]);
 
 	return (
 		<div className={classname({ disabled: !!props.disabled })}>

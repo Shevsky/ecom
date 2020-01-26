@@ -2,6 +2,8 @@ import { BehaviorSubject } from 'rxjs';
 import { TSettingsModel } from './settings.type';
 
 export class SettingsModel implements TSettingsModel {
+	calculator_debug_mode: BehaviorSubject<ISettings['calculator_debug_mode']>;
+	tarifficator_debug_mode: BehaviorSubject<ISettings['tarifficator_debug_mode']>;
 	api_login: BehaviorSubject<ISettings['api_login']>;
 	api_password: BehaviorSubject<ISettings['api_password']>;
 	api_token: BehaviorSubject<ISettings['api_token']>;
@@ -41,6 +43,9 @@ export class SettingsModel implements TSettingsModel {
 	card_payment: BehaviorSubject<ISettings['card_payment']>;
 	cash_payment: BehaviorSubject<ISettings['cash_payment']>;
 	pre_payment: BehaviorSubject<ISettings['pre_payment']>;
+	is_debug: BehaviorSubject<ISettings['is_debug']>;
+	is_debug_calculator: BehaviorSubject<ISettings['is_debug_calculator']>;
+	is_debug_tarifficator: BehaviorSubject<ISettings['is_debug_tarifficator']>;
 
 	constructor(settings: ISettings) {
 		Object.entries(settings).forEach(

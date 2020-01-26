@@ -7,7 +7,8 @@ import {
 	ApiScreen,
 	DepartureScreen,
 	PointsHandbookScreen,
-	PaymentScreen
+	PaymentScreen,
+	DebugScreen
 } from 'modules/settings/components/screens';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { GlobalContext } from 'modules/settings/services/global-context';
@@ -50,10 +51,15 @@ export function MainScreen(): JSX.Element {
 					{
 						title: 'Справочник ПВЗ',
 						component: PointsHandbookScreen
+					},
+					{
+						title: 'Режим отладки',
+						component: DebugScreen
 					}
 				]}
 				id={params.key && `shipping_${params.key}_tab_main_screen`}
 				disabled={isNavigationDisabled}
+				controller={global.tabController}
 			/>
 		</div>
 	);

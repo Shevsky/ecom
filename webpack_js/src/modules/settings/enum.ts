@@ -69,3 +69,8 @@ export enum ORDER_PAYMENT_TYPE {
 	PREPAID_ONLY = 'prepaid_only',
 	POSTPAY_ONLY = 'postpay_only'
 }
+
+export enum DEBUG_MODE {
+	ERRORS = 'errors',
+	DEBUG = 'debug'
+}

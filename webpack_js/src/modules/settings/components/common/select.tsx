@@ -10,7 +10,7 @@ interface ISelectProps<K extends TStringSettingKeys>
 	extends Omit<UISelectProps, 'onChange' | 'value' | 'name'> {
 	name: K;
 	// @ts-ignore
-	options: Record<ISettings[K] extends infer N ? N : string, string>;
+	options: Partial<Record<ISettings[K] extends infer N ? N : string, string>>;
 }
 
 export function Select<K extends TStringSettingKeys>({

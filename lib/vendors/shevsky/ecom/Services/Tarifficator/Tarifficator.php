@@ -10,6 +10,7 @@ use Shevsky\Ecom\Persistence\Departure\IDeparture;
 use Shevsky\Ecom\Persistence\Order\IOrder;
 use Shevsky\Ecom\Persistence\Point\IPoint;
 use Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
+use Shevsky\Ecom\Util\ILogger;
 
 class Tarifficator
 {
@@ -21,6 +22,9 @@ class Tarifficator
 	 * @var ApiAdapter\ITarifficatorApiAdapter
 	 */
 	private $api_adapter;
+
+	private $debug_mode = Enum\DebugMode::DISABLED;
+	private $logger;
 
 	/**
 	 * @param IOrder $order
@@ -49,7 +53,7 @@ class Tarifficator
 	 */
 	public function calculate(IPoint $point)
 	{
-		TarifficatorLogger::debug("Начинаем расчет тарифа");
+		$this->getLogger()->debug("Начинаем расчет тарифа");
 
 		try
 		{
@@ -57,7 +61,7 @@ class Tarifficator
 		}
 		catch (RussianPostException $e)
 		{
-			TarifficatorLogger::error(
+			$this->getLogger()->error(
 				'Получено исключение при попытке произвести расчет стоимости доставки',
 				[
 					'message' => $e->getMessage(),
@@ -71,7 +75,7 @@ class Tarifficator
 
 		$result = new TarifficatorResult($tariff_info);
 
-		TarifficatorLogger::debug(
+		$this->getLogger()->debug(
 			'Получен результат расчета стоимости доставки',
 			$result->toArray()
 		);
@@ -106,6 +110,27 @@ class Tarifficator
 		$adapter_memento_key = $this->api_adapter->getMementoKey();
 
 		return md5($order_memento_key . $departure_memento_key . $adapter_memento_key);
+	}
+
+	/**
+	 * @param string $debug_mode
+	 */
+	public function setDebugMode($debug_mode)
+	{
+		$this->debug_mode = $debug_mode;
+	}
+
+	/**
+	 * @return ILogger
+	 */
+	private function getLogger()
+	{
+		if (!isset($this->logger))
+		{
+			$this->logger = new TarifficatorLogger($this->debug_mode);
+		}
+
+		return $this->logger;
 	}
 
 	/**
@@ -163,7 +188,7 @@ class Tarifficator
 		//	$parcel_info->setWithFitting($this->departure->isWithFittingService());
 		//}
 
-		TarifficatorLogger::debug('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
+		$this->getLogger()->debug('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
 
 		return $parcel_info;
 	}

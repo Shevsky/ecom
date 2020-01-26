@@ -134,5 +134,23 @@ return [
 	'pre_payment' => [
 		'value' => '1',
 		'control_type' => 'checkbox',
+	],
+	'is_debug' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'is_debug_calculator' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'calculator_debug_mode' => [
+		'value' => 'ERRORS',
+	],
+	'is_debug_tarifficator' => [
+		'value' => '',
+		'control_type' => 'checkbox',
+	],
+	'tarifficator_debug_mode' => [
+		'value' => 'ERRORS',
 	]
 ];

@@ -2,28 +2,31 @@
 
 namespace Shevsky\Ecom\Plugin;
 
-use Shevsky\Ecom\Util\Logger;
+use Shevsky\Ecom\Util\ILogger;
+use Shevsky\Ecom\Util\AbstractLogger;
 
-class CalculatorLogger
+class CalculatorLogger extends AbstractLogger implements ILogger
 {
 	const FILE = 'ecom.calculator.log';
 
 	/**
 	 * @param string $message
 	 * @param array $info
+	 * @param string $file
 	 */
-	public static function debug($message, array $info = [])
+	public function debug($message, array $info = [], $file = self::FILE)
 	{
-		Logger::debug(self::FILE, $message, $info);
+		parent::debug($message, $info, $file);
 	}
 
 	/**
 	 * @param string $message
 	 * @param array $info
+	 * @param string $file
 	 */
-	public static function error($message, array $info = [])
+	public function error($message, array $info = [], $file = self::FILE)
 	{
-		Logger::error(self::FILE, $message, $info);
+		parent::error($message, $info, $file);
 	}
 }
 

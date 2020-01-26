@@ -44,6 +44,12 @@ declare interface ISettings {
 	card_payment: boolean;
 	cash_payment: boolean;
 	pre_payment: boolean;
+
+	is_debug: boolean;
+	is_debug_calculator: boolean;
+	calculator_debug_mode: import('./enum').DEBUG_MODE;
+	is_debug_tarifficator: boolean;
+	tarifficator_debug_mode: import('./enum').DEBUG_MODE;
 }
 
 declare interface ICountry {

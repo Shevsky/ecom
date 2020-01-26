@@ -1,10 +1,30 @@
-import React from 'react';
-import { Container, Field, Paragraph } from 'common/components';
-import { Checkbox } from 'modules/settings/components/common';
+import './payment-screen.sass';
+
+import React, { useCallback, useContext } from 'react';
+import { Container, Field, InlineLink, Paragraph } from 'common/components';
+import { MAIL_CATEGORY } from 'modules/settings/enum';
+import { Checkbox, Select } from 'modules/settings/components/common';
+import { GlobalContext } from 'modules/settings/services/global-context';
+import { mailCategoryPaymentMatchVerifier } from 'modules/settings/util/mail-category-payment-match-verifier';
+import { bem } from 'util/bem';
+import { DepartureScreen } from '../departure-screen';
+
+const classname = bem('payment-screen');
 
 export function PaymentScreen(): JSX.Element {
+	const global = useContext(GlobalContext);
+	const handleClickGoToDepartureTab = useCallback(
+		(): void => global.tabController.next(DepartureScreen),
+		[]
+	);
+
+	const [
+		isMailCategoryMatchPayment,
+		mailCategoryMatchPaymentDescription
+	] = mailCategoryPaymentMatchVerifier();
+
 	return (
-		<>
+		<div className={classname()}>
 			<Container>
 				<Paragraph>
 					Плагин будет фильтровать возможные способы оплаты при выборе этого способа
@@ -13,6 +33,26 @@ export function PaymentScreen(): JSX.Element {
 					возможности использования такого способа оплаты.
 				</Paragraph>
 			</Container>
+
+			<Field
+				name="Категория отправления"
+				description={
+					<>
+						<InlineLink onClick={handleClickGoToDepartureTab}>
+							Редактировать на вкладке "Параметры отправления"
+						</InlineLink>
+					</>
+				}
+			>
+				<Select
+					name="mail_category"
+					options={{
+						[MAIL_CATEGORY.ORDINARY]: 'Обыкновенное',
+						[MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT]: 'С обязательным платежом'
+					}}
+					disabled
+				/>
+			</Field>
 
 			<Field
 				name="Оплата картой"
@@ -29,6 +69,17 @@ export function PaymentScreen(): JSX.Element {
 			<Field name="Предоплата" description="Будут показаны все пункты выдачи">
 				<Checkbox name="pre_payment" label="Предоплата" />
 			</Field>
-		</>
+			{!isMailCategoryMatchPayment && (
+				<Field>
+					<Container>
+						<Paragraph disabledBottomPadding>
+							<div className={classname('error')}>
+								{mailCategoryMatchPaymentDescription}
+							</div>
+						</Paragraph>
+					</Container>
+				</Field>
+			)}
+		</div>
 	);
 }
