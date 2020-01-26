@@ -14,6 +14,15 @@ class CalculatorException extends \Exception
 	const UNDEFINED_DIMENSION_TYPE = 5;
 	const OTPRAVKA_API_ERROR = 6;
 
+	const ERROR_MESSAGE_POOL = [
+		self::BAD_COUNTRY => 'Доставка возможна только по территории Российской Федерации',
+		self::NO_INDEX => 'Не указан индекс доставки',
+		self::TARIFFICATOR_ERROR => 'Недоступно',
+		self::NO_POINTS => 'Пунктов выдачии ЕКОМ для этого региона не найдено',
+		self::UNDEFINED_DIMENSION_TYPE => 'Недоступно',
+		self::OTPRAVKA_API_ERROR => 'Недоступно',
+	];
+
 	private $type;
 
 	/**
@@ -39,7 +48,7 @@ class CalculatorException extends \Exception
 	 */
 	protected function __construct($type, $code, \Throwable $previous = null)
 	{
-		parent::__construct('', $code, $previous);
+		parent::__construct(self::ERROR_MESSAGE_POOL[$code], $code, $previous);
 
 		$this->type = $type;
 	}

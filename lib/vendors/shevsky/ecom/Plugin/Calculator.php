@@ -46,12 +46,12 @@ trait Calculator
 			{
 				return [
 					'rate' => null,
-					'comment' => $e->getMessage(), // TODO detect error text by code
+					'comment' => $e->getMessage(),
 				];
 			}
 			else if ($e->isError())
 			{
-				return $e->getMessage(); // TODO detect error text by code
+				return $e->getMessage();
 			}
 
 			return null;
