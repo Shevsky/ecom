@@ -178,6 +178,45 @@ class ecomShipping extends waShipping
 
 		$settings = $this->getSettings();
 
+		$is_auto_sync_available = false;
+		try
+		{
+			$model = new waAppSettingsModel();
+			$time = $model->get('shop', 'shipping_plugins_sync');
+
+			if (!empty($time))
+			{
+				$is_auto_sync_available = true;
+			}
+		}
+		catch (\Exception $e)
+		{
+		}
+
+		try
+		{
+			if (method_exists($this, 'getGeneralSettings'))
+			{
+				$sync_data = [
+					'time' => (int)$this->getGeneralSettings('sync_time'),
+					'success_time' => (int)$this->getGeneralSettings('sync_success_time'),
+					'failure_time' => (int)$this->getGeneralSettings('sync_failure_time'),
+				];
+			}
+			else
+			{
+				throw new \Exception();
+			}
+		}
+		catch (\Exception $e)
+		{
+			$sync_data = [
+				'time' => 0,
+				'success_time' => 0,
+				'failure_time' => 0,
+			];
+		}
+
 		$template->assign(
 			[
 				'params' => [
@@ -189,6 +228,8 @@ class ecomShipping extends waShipping
 					'points_handbook_count' => (new PointStorage())->count(),
 					'countries' => $countries,
 					'settings' => $settings,
+					'is_auto_sync_available' => $is_auto_sync_available,
+					'sync_data' => $sync_data,
 				],
 			]
 		);
@@ -217,8 +258,8 @@ class ecomShipping extends waShipping
 		try
 		{
 			(new SyncPointsChain(
-				Provider::getOtpravkaApi($this->login, $this->password, $this->token)
-			))->execute(); // TODO протестировать правильность работы
+				Provider::getOtpravkaApi($this->api_login, $this->api_password, $this->api_token)
+			))->execute();
 
 			return true;
 		}

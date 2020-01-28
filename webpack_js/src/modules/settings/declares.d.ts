@@ -71,4 +71,10 @@ declare interface IParams {
 	points_handbook_count: number;
 	countries: ICountry[];
 	settings: ISettings;
+	is_auto_sync_available: boolean;
+	sync_data: {
+		time: number;
+		success_time: number;
+		failure_time: number;
+	};
 }
