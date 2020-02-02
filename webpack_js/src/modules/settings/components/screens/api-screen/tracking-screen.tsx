@@ -33,7 +33,9 @@ export function TrackingScreen(): JSX.Element {
 				name="Время жизни кеша"
 				description="Как часто должны обновляться данные в трекинге при их запросе"
 			>
-				<Input name="tracking_cache_lifetime" type="tel" size={INPUT_SIZE.SMALL} /> сек.
+				<>
+					<Input name="tracking_cache_lifetime" type="tel" size={INPUT_SIZE.SMALL} /> сек.
+				</>
 			</Field>
 		</>
 	);

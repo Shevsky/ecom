@@ -18,6 +18,15 @@ class TrackingRecord implements IArrayConvertable, IMemento
 	}
 
 	/**
+	 * @param array $record
+	 * @return self
+	 */
+	public static function build($record)
+	{
+		return new self($record);
+	}
+
+	/**
 	 * @param \stdClass $raw_record
 	 * @return TrackingRecord
 	 */

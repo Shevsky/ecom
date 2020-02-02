@@ -37,7 +37,9 @@ class TrackingHistory implements \Countable, \ArrayAccess, \Iterator, IArrayConv
 			throw new \Exception('Не удалось восстановить снимок');
 		}
 
-		return new self($data);
+		$records = array_map([TrackingRecord::class, 'build'], $data);
+
+		return new self($records);
 	}
 
 	/**

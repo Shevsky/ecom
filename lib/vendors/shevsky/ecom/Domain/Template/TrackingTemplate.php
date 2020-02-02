@@ -2,6 +2,7 @@
 
 namespace Shevsky\Ecom\Domain\Template;
 
+use Shevsky\Ecom\Services\Tracking\TrackingHistory;
 use Shevsky\Ecom\Services\Tracking\TrackingMaintenance;
 
 class TrackingTemplate extends ViewTemplate
@@ -35,7 +36,7 @@ class TrackingTemplate extends ViewTemplate
 					'error' => $e->getMessage(),
 				]
 			);
-			$history = [];
+			$history = new TrackingHistory([]);
 		}
 
 		$this->assign(
