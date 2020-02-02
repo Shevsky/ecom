@@ -95,7 +95,7 @@ export function PointsHandbookScreen(): JSX.Element {
 								выполняется.
 								{hasAutoSyncHelpLink && (
 									<>
-										{` `}
+										{' '}
 										<InlineLink onClick={handleClickAutoSyncHelp}>
 											Как настроить автообновление?
 										</InlineLink>

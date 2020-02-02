@@ -17,6 +17,7 @@ export function Select<K extends TStringSettingKeys>({
 	name,
 	...props
 }: ISelectProps<K>): JSX.Element {
+	// tslint:disable-next-line:no-any
 	const [value, setValue] = useSetting<any>(name);
 
 	return <UISelect {...props} onChange={setValue} value={value} />;

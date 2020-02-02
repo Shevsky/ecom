@@ -7,10 +7,10 @@ const classname = bem('checkbox');
 
 export interface ICheckboxProps
 	extends Omit<HTMLProps<HTMLInputElement>, 'onChange' | 'checked' | 'name' | 'label'> {
-	onChange(checked: boolean, name: string): void;
 	checked: boolean;
 	name?: string;
 	label?: ReactNode;
+	onChange(checked: boolean, name: string): void;
 }
 
 export function Checkbox({ onChange, ...props }: ICheckboxProps): JSX.Element {

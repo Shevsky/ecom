@@ -6,7 +6,7 @@ import { useSetting } from 'modules/settings/util/use-setting';
 
 interface IGetAgreementNumberResponse {
 	data?: string;
-	errors?: string[][];
+	errors?: Array<Array<string>>;
 	status: 'ok' | 'fail';
 }
 

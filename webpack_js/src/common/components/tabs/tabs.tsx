@@ -21,13 +21,13 @@ interface ITabsOption {
 }
 
 interface ITabsProps {
-	options: ITabsOption[];
+	options: Array<ITabsOption>;
 	id?: string | null;
 	disabled?: boolean;
 	controller?: Observable<ComponentType>;
 }
 
-export function Tabs(props: ITabsProps) {
+export function Tabs(props: ITabsProps): JSX.Element {
 	let defaultSelectedId = props.id ? +Cookies.get(props.id) : undefined;
 	if (isNaN(defaultSelectedId) || defaultSelectedId === undefined) {
 		defaultSelectedId = 0;

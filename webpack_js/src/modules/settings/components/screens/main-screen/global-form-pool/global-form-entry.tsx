@@ -21,7 +21,7 @@ export function GlobalFormEntry(props: IGlobalFormEntry): JSX.Element {
 			null
 		);
 
-		return () => subscription.unsubscribe();
+		return (): void => subscription.unsubscribe();
 	}, []);
 
 	return <textarea name={`shipping[settings][${props.name}]`} value={value} readOnly />;

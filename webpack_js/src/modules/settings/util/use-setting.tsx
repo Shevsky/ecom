@@ -17,7 +17,7 @@ export function useSetting<K extends keyof ISettings>(
 		// @ts-ignore
 		const subscription = settings[name].subscribe(dispatchValue);
 
-		return () => subscription.unsubscribe();
+		return (): void => subscription.unsubscribe();
 	}, []);
 
 	const setValue = useCallback((newValue: TValue): void => {

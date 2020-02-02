@@ -1,6 +1,7 @@
 import { SettingsModule } from 'modules/settings';
 
 declare global {
+	// tslint:disable-next-line:interface-name
 	interface Window {
 		shipping_ecom_settings: {
 			construct: typeof SettingsModule;

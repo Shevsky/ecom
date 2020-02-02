@@ -15,13 +15,13 @@ export enum SELECT_SIZE {
 
 export interface ISelectProps
 	extends Omit<HTMLProps<HTMLSelectElement>, 'onChange' | 'value' | 'name' | 'size'> {
-	onChange(value: string, name: string): void;
 	value: string;
 	options: Record<string, string>;
-	order?: string[];
+	order?: Array<string>;
 	name?: string;
 	size?: SELECT_SIZE;
 	withEmpty?: boolean;
+	onChange(value: string, name: string): void;
 }
 
 export function Select({

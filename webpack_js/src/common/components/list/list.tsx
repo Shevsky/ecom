@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import { bem } from 'util/bem';
 
 interface IListProps {
-	children: ReactNode[];
+	children: Array<ReactNode>;
 }
 
 const classname = bem('list');

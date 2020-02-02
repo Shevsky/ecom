@@ -16,7 +16,9 @@ export class Constructor {
 	constructor(selector: string, { settings, ...params }: IParams) {
 		this.root = document.querySelector(selector);
 		if (!this.root) {
-			throw `Не удалось инициализировать контейнер: элемент "${selector}" не найден`;
+			throw new Error(
+				`Не удалось инициализировать контейнер: элемент "${selector}" не найден`
+			);
 		}
 
 		this.params = params;
@@ -27,7 +29,7 @@ export class Constructor {
 		this.build();
 	}
 
-	private build() {
+	private build(): void {
 		ReactDOM.render(
 			<ParamsContext.Provider value={this.params}>
 				<SettingsContext.Provider value={this.settingsModel}>

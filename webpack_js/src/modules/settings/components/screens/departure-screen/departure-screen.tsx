@@ -150,7 +150,7 @@ export function DepartureScreen(): JSX.Element {
 					/>
 					<Checkbox name="functionality_checking" label="Проверка работоспособности" />
 					<Checkbox name="contents_checking" label="Проверка вложения" />
-					<Checkbox name="fragile" label={`Отметка "Осторожно/Хрупко"`} />
+					<Checkbox name="fragile" label={'Отметка "Осторожно/Хрупко"'} />
 				</CheckboxGroup>
 			</Field>
 			<Field name="Типоразмер отправления">

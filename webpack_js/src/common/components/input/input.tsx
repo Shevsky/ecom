@@ -20,11 +20,11 @@ export enum INPUT_SIZE {
 
 export interface IInputProps
 	extends Omit<HTMLProps<HTMLInputElement>, 'onChange' | 'value' | 'name' | 'size'> {
-	onChange(value: string, name: string): void;
 	value: string;
 	name?: string;
 	size?: INPUT_SIZE;
 	mask?: string | Array<string | RegExp>;
+	onChange(value: string, name: string): void;
 }
 
 export function Input({ onChange, size, mask, ...props }: IInputProps): JSX.Element {

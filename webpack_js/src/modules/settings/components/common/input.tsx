@@ -17,7 +17,7 @@ export function Input({ name, ...props }: IInputProps): JSX.Element {
 			setValue(SettingStringify.encode(newValue));
 		}, null);
 
-		return () => subscription.unsubscribe();
+		return (): void => subscription.unsubscribe();
 	}, []);
 	const handleChange = useCallback((newValue: string) => {
 		// @ts-ignore
