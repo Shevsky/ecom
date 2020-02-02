@@ -2,7 +2,9 @@
 
 namespace Shevsky\Ecom\Persistence\Order;
 
-interface IOrder
+use Shevsky\Ecom\Util\IArrayConvertable;
+
+interface IOrder extends IArrayConvertable
 {
 	/**
 	 * @return float
@@ -38,9 +40,4 @@ interface IOrder
 	 * @return string
 	 */
 	public function getDimensionType();
-
-	/**
-	 * @return array
-	 */
-	public function toArray();
 }

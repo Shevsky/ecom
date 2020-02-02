@@ -2,7 +2,9 @@
 
 namespace Shevsky\Ecom\Persistence\Departure;
 
-interface IDeparture
+use Shevsky\Ecom\Util\IArrayConvertable;
+
+interface IDeparture extends IArrayConvertable
 {
 	/**
 	 * @return string
@@ -83,9 +85,4 @@ interface IDeparture
 	 * @return bool
 	 */
 	public function isFragile();
-
-	/**
-	 * @return array
-	 */
-	public function toArray();
 }

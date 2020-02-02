@@ -3,8 +3,10 @@
 namespace Shevsky\Ecom\Services\Tarifficator;
 
 use LapayGroup\RussianPost\TariffInfo;
+use Shevsky\Ecom\Util\IArrayConvertable;
+use Shevsky\Ecom\Util\IMemento;
 
-class TarifficatorResult
+class TarifficatorResult implements IArrayConvertable, IMemento
 {
 	private $tariff_info;
 
@@ -34,7 +36,7 @@ class TarifficatorResult
 
 	/**
 	 * @param mixed $data
-	 * @return self
+	 * @return static
 	 * @throws \Exception
 	 */
 	public static function restore($data)

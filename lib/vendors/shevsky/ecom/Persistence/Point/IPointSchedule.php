@@ -2,7 +2,9 @@
 
 namespace Shevsky\Ecom\Persistence\Point;
 
-interface IPointSchedule
+use Shevsky\Ecom\Util\IArrayConvertable;
+
+interface IPointSchedule extends IArrayConvertable
 {
 	/**
 	 * @return IPointScheduleDaily

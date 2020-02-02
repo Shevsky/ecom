@@ -63,6 +63,15 @@ class Point implements IPoint
 	}
 
 	/**
+	 * @param array $data
+	 * @return Point
+	 */
+	public static function build($data)
+	{
+		return new self($data);
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getId()

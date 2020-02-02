@@ -23,18 +23,18 @@
 					{foreach $history as $record}
 						<tr>
 							<td>
-								{$record.date}
+								{$record->getDate()}
 							</td>
 							<td>
-								{$record.address_description}{if $record.address_index}, {$record.address_index}{/if}
+								{$record->getAddressDescription()}{if $record->getAddressIndex()}, {$record->getAddressIndex()}{/if}
 							</td>
 							<td>
-								{if $record.attr_name && $record.type_name}
-									{$record.attr_name} ({$record.type_name})
-								{elseif $record.attr_name}
-									{$record.attr_name}
-								{elseif $record.type_name}
-									{$record.type_name}
+								{if $record->getAttrName() && $record->getTypeName()}
+									{$record->getAttrName()} ({$record->getTypeName()})
+								{elseif $record->getAttrName()}
+									{$record->getAttrName()}
+								{elseif $record->getTypeName()}
+									{$record->getTypeName()}
 								{/if}
 							</td>
 						</tr>

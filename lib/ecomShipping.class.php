@@ -24,6 +24,7 @@ use Shevsky\Ecom\Domain\Template\TrackingSimpleTemplate;
 use Shevsky\Ecom\Domain\Template\TrackingTemplate;
 use Shevsky\Ecom\Plugin;
 use Shevsky\Ecom\Provider;
+use Shevsky\Ecom\Services\Tracking\TrackingMaintenance;
 
 class ecomShipping extends waShipping
 {
@@ -93,7 +94,9 @@ class ecomShipping extends waShipping
 		try
 		{
 			$tracking = Provider::getTracking($this->tracking_login, $this->tracking_password);
-			$template = new TrackingTemplate($tracking_id, $tracking, $this->tracking_cache_lifetime);
+			$tracking_maintenance = new TrackingMaintenance($tracking, $this->tracking_cache_lifetime);
+
+			$template = new TrackingTemplate($tracking_id, $tracking_maintenance);
 		}
 		catch (\Exception $e)
 		{

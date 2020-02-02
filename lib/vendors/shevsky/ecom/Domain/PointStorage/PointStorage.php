@@ -97,7 +97,7 @@ class PointStorage implements IPointStorage
 			}
 		}
 
-		return array_map([__CLASS__, 'modelPointToPoint'], $raw_points);
+		return array_map([Point::class, 'build'], $raw_points);
 	}
 
 	/**
@@ -148,14 +148,5 @@ class PointStorage implements IPointStorage
 		}
 
 		return $model_conditions;
-	}
-
-	/**
-	 * @param array $data
-	 * @return IPoint
-	 */
-	private function modelPointToPoint($data)
-	{
-		return new Point($data);
 	}
 }
