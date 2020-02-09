@@ -160,41 +160,45 @@ export function DepartureScreen(): JSX.Element {
 				<UndefinedDimensionCase />
 			</Field>
 			<Field name="Габариты по умолчанию">
-				<Input
-					name="default_height"
-					size={INPUT_SIZE.SMALL}
-					type="number"
-					min="1"
-					max="600"
-				/>{' '}
-				&times;{' '}
-				<Input
-					name="default_length"
-					size={INPUT_SIZE.SMALL}
-					type="number"
-					min="1"
-					max="600"
-				/>{' '}
-				&times;{' '}
-				<Input
-					name="default_width"
-					size={INPUT_SIZE.SMALL}
-					type="number"
-					min="1"
-					max="600"
-				/>{' '}
-				мм
+				<>
+					<Input
+						name="default_height"
+						size={INPUT_SIZE.SMALL}
+						type="number"
+						min="1"
+						max="600"
+					/>{' '}
+					&times;{' '}
+					<Input
+						name="default_length"
+						size={INPUT_SIZE.SMALL}
+						type="number"
+						min="1"
+						max="600"
+					/>{' '}
+					&times;{' '}
+					<Input
+						name="default_width"
+						size={INPUT_SIZE.SMALL}
+						type="number"
+						min="1"
+						max="600"
+					/>{' '}
+					мм
+				</>
 			</Field>
 			<Field name="Вес по умолчанию">
-				<Input
-					name="default_weight"
-					size={INPUT_SIZE.SMALL}
-					type="number"
-					min="0.01"
-					step="0.001"
-					max="15"
-				/>{' '}
-				кг
+				<>
+					<Input
+						name="default_weight"
+						size={INPUT_SIZE.SMALL}
+						type="number"
+						min="0.01"
+						step="0.001"
+						max="15"
+					/>{' '}
+					кг
+				</>
 			</Field>
 		</div>
 	);
