@@ -4,6 +4,7 @@ module.exports = {
 	mail_type: "'ECOM'",
 	payment_method: "'CASHLESS'",
 	notice_payment_method: "'CASHLESS'",
+	pass_goods_value: "'1'",
 	total_value_mode: "'with_discounts'",
 	undefined_dimension_case: "'fixed_dimension_type'",
 	dimension_type: "'S'",

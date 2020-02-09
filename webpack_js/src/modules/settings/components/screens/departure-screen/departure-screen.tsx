@@ -112,10 +112,7 @@ export function DepartureScreen(): JSX.Element {
 				name="Передавать стоимость заказа"
 				description="Будет передавать стоимость заказа при расчете стоимости доставки (сумма товаров). Не может включать в себя стоимость доставки, так как на этом этапе она как раз таки расчитывается"
 			>
-				<Checkbox
-					name="pass_goods_value"
-					disabled={mailCategory === MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT}
-				/>
+				<Checkbox name="pass_goods_value" disabled />
 			</Field>
 			{isPassGoodsValue && (
 				<Field name="Режим передачи стоимости заказа">

@@ -72,6 +72,17 @@ class Tarifficator
 			);
 			throw $e;
 		}
+		catch (\Exception $e)
+		{
+			$this->getLogger()->error(
+				'Получено нераспознанное исключение при попытке произвести расчет стоимости доставки',
+				[
+					'message' => $e->getMessage(),
+					'code' => $e->getCode(),
+				]
+			);
+			throw $e;
+		}
 
 		$result = new TarifficatorResult($tariff_info);
 

@@ -86,8 +86,12 @@ class TarifficatorTariffApiAdapter implements ITarifficatorApiAdapter
 			'weight' => $parcel_info->getWeight(),
 			'pack' => $package_code,
 			'dogovor' => $this->agreement_number,
-			'sumin' => $parcel_info->getGoodsValue(),
 		];
+
+		if ($parcel_info->getGoodsValue())
+		{
+			$params['sumin'] = $parcel_info->getGoodsValue();
+		}
 
 		$services = [];
 		if ($parcel_info->getSmsNoticeRecipient())
@@ -130,6 +134,7 @@ class TarifficatorTariffApiAdapter implements ITarifficatorApiAdapter
 	/**
 	 * @param array $response
 	 * @return TariffInfo
+	 * @throws \Exception
 	 */
 	private function buildTariffInfo($response)
 	{
@@ -141,7 +146,7 @@ class TarifficatorTariffApiAdapter implements ITarifficatorApiAdapter
 		}
 		else
 		{
-			throw new \Exception('Не удалось расчитать стоимость доставки');
+			throw new RussianPostException('Не удалось расчитать стоимость доставки', 200, $response);
 		}
 
 		if (!empty($response['nds']))

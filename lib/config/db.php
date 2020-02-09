@@ -14,7 +14,7 @@ return array(
 		'office_index' => array('varchar', 6),
 		'latitude' => array('varchar', 255),
 		'longitude' => array('varchar', 255),
-		'location_type' => array('enum', "'DEFAULT','BOX','DEMAND','HOTEL'"),
+		'location_type' => array('enum', "'DEFAULT','BOX','DEMAND','HOTEL',''"),
 		'region' => array('varchar', 255),
 		'region_code' => array('varchar', 8, 'null' => 0),
 		'place' => array('varchar', 255),
