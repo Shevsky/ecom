@@ -2,18 +2,18 @@
 
 if (!trait_exists('\Shevsky\Ecom\Plugin\Address'))
 {
-	require_once 'vendors/Shevsky/Ecom/plugin/Address.php';
+	require_once 'vendors/shevsky/ecom/Plugin/Address.php';
 }
 
 
 if (!trait_exists('\Shevsky\Ecom\Plugin\Calculator'))
 {
-	require_once 'vendors/Shevsky/Ecom/plugin/Calculator.php';
+	require_once 'vendors/shevsky/ecom/Plugin/Calculator.php';
 }
 
 if (!trait_exists('\Shevsky\Ecom\Plugin\ShopScript'))
 {
-	require_once 'vendors/Shevsky/Ecom/plugin/ShopScript.php';
+	require_once 'vendors/shevsky/ecom/Plugin/ShopScript.php';
 }
 
 use Shevsky\Ecom\Chain\SyncPoints\SyncPointsChain;
