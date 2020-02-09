@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"scripts": {
 		"dev": "webpack --config webpack.watch.js",
-		"build": "gulp build",
+		"build": "webpack --config webpack.prod.js && gulp build",
 		"save-php-settings": "gulp save-php-settings",
 		"parse-delivery-dates": "gulp parse-delivery-dates"
 	},
