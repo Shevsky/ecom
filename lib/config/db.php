@@ -10,7 +10,7 @@ return array(
 		'legal_short_name' => array('varchar', 255),
 		'status' => array('tinyint', 1, 'null' => 0, 'default' => '1'),
 		'weight_limit' => array('varchar', 11),
-		'type' => array('enum', "'DELIVERY_POINT','PICKUP_POINT','',''"),
+		'type' => array('enum', "'DELIVERY_POINT','PICKUP_POINT',''"),
 		'office_index' => array('varchar', 6),
 		'latitude' => array('varchar', 255),
 		'longitude' => array('varchar', 255),
