@@ -58,7 +58,7 @@ return [
 		'value' => '0.1',
 	],
 	'pass_goods_value' => [
-		'value' => '',
+		'value' => '1',
 		'control_type' => 'checkbox',
 	],
 	'total_value_mode' => [
