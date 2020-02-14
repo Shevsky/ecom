@@ -46,7 +46,7 @@ class CalculatorException extends \Exception
 	 * @param int $code
 	 * @param \Throwable|null $previous
 	 */
-	protected function __construct($type, $code, \Throwable $previous = null)
+	public function __construct($type, $code, \Throwable $previous = null)
 	{
 		parent::__construct(self::ERROR_MESSAGE_POOL[$code], $code, $previous);
 
