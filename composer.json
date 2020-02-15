@@ -9,7 +9,8 @@
         "optimize-autoloader": true
     },
     "require": {
-        "lapaygroup/russianpost": "dev-master"
+        "lapaygroup/russianpost": "dev-master",
+        "guzzlehttp/promises": "dev-master"
     },
     "license": "proprietary",
     "authors": [
