@@ -102,11 +102,13 @@ export function TariffScreen(): JSX.Element {
 						)
 					}
 				>
-					<Input name="tariff_agreement_number" />
+					<>
+						<Input name="tariff_agreement_number" />
 
-					{isLoadingAgreementNumber && (
-						<Icon name="loading" paddedLeft verticalAlignMiddle />
-					)}
+						{isLoadingAgreementNumber && (
+							<Icon name="loading" paddedLeft verticalAlignMiddle />
+						)}
+					</>
 				</Field>
 			)}
 
