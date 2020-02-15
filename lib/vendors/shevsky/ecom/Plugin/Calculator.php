@@ -145,7 +145,7 @@ trait Calculator
 
 		try
 		{
-			$dimension_type = (DimensionTypeClassificator::buildWithOrder($order))->getDimensionType();
+			$dimension_type = DimensionTypeClassificator::buildWithOrder($order)->getDimensionType();
 		}
 		catch (\Exception $e)
 		{
