@@ -136,7 +136,7 @@ class Point implements IPoint
 	}
 
 	/**
-	 * @return IPointSchedule
+	 * @return PointSchedule
 	 */
 	public function getSchedule()
 	{
@@ -159,7 +159,7 @@ class Point implements IPoint
 	}
 
 	/**
-	 * @return IPointLocation
+	 * @return PointLocation
 	 */
 	public function getLocation()
 	{
@@ -261,5 +261,50 @@ class Point implements IPoint
 	public function isAvailableCashPayment()
 	{
 		return !empty($this->data['cash_payment']);
+	}
+
+	/**
+	 * @return array [
+	 *  'id' => number,
+	 *  'index' => number,
+	 *  'type' => string,
+	 *  'status' => boolean,
+	 *  'name' => string,
+	 *  'description' => string,
+	 *  'legal_name' => string,
+	 *  'legal_short_name' => string,
+	 *  'schedule' => array,
+	 *  'location' => array,
+	 *  'options' => string[],
+	 *  'is_available_card_payment' => boolean,
+	 *  'is_available_cash_payment' => boolean,
+	 *  ]
+	 * ]
+	 */
+	public function toArray()
+	{
+		return [
+			'id' => $this->getId(),
+			'index' => $this->getIndex(),
+			'type' => $this->getType(),
+			'status' => $this->getStatus(),
+			'name' => $this->getName(),
+			'description' => $this->getDescription(),
+			'legal_name' => $this->getLegalName(),
+			'legal_short_name' => $this->getLegalShortName(),
+			'schedule' => [
+				'monday' => $this->getSchedule()->getMonday()->toArray(),
+				'tuesday' => $this->getSchedule()->getTuesday()->toArray(),
+				'wednesday' => $this->getSchedule()->getWednesday()->toArray(),
+				'thursday' => $this->getSchedule()->getThursday()->toArray(),
+				'friday' => $this->getSchedule()->getFriday()->toArray(),
+				'saturday' => $this->getSchedule()->getSaturday()->toArray(),
+				'sunday' => $this->getSchedule()->getSunday()->toArray(),
+			],
+			'location' => $this->getLocation()->toArray(),
+			'options' => $this->getOptions(),
+			'is_available_card_payment' => $this->isAvailableCardPayment(),
+			'is_available_cash_payment' => $this->isAvailableCashPayment(),
+		];
 	}
 }

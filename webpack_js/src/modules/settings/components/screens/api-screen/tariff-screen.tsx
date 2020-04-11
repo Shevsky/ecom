@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { Field, Icon, InlineLink, INPUT_SIZE, Select } from 'common/components';
+import { Field, Icon, InlineLink, Select } from 'common/components';
 import { Checkbox, Input } from 'modules/settings/components/common';
 import { ParamsContext } from 'modules/settings/services/params-context';
 import { useSetting } from 'modules/settings/util/use-setting';
@@ -46,8 +46,6 @@ export function TariffScreen(): JSX.Element {
 						params.get_agreement_number_url,
 						{ login: rawLogin, password: rawPassword, token: rawToken },
 						(response: IGetAgreementNumberResponse): void => {
-							setIsLoadingAgreementNumber(false);
-
 							if (!response || !response.status) {
 								reject('Не удалось получить номер договора');
 							} else if (response.status === 'fail') {

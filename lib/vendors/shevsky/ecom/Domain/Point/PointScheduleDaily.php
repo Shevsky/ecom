@@ -58,4 +58,18 @@ class PointScheduleDaily implements IPointScheduleDaily
 	{
 		return $this->match_data[4];
 	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return [
+			'is_working' => $this->isWorking(),
+			'hour_from' => $this->getHourFrom(),
+			'hour_to' => $this->getHourTo(),
+			'minutes_from' => $this->getMinutesFrom(),
+			'minutes_to' => $this->getMinutesTo(),
+		];
+	}
 }

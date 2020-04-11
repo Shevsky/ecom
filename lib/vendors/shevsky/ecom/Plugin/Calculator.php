@@ -261,9 +261,6 @@ trait Calculator
 				? $this->tarifficator_debug_mode : Enum\DebugMode::DISABLED
 		);
 
-		/**
-		 * @var Point[] $points
-		 */
 		$points = (new PointStorage())
 			->filterByCityName($this->getCityName())
 			->filterByRegionCode($this->getRegionCode())

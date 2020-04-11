@@ -207,4 +207,19 @@ class PointLocation implements IPointLocation
 
 		return implode(', ', $full_address_parts);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return [
+			'latitude' => $this->getLatitude(),
+			'longitude' => $this->getLongitude(),
+			'way' => $this->getWay(),
+			'type' => $this->getType(),
+			'address' => $this->getAddress(),
+			'full_address' => $this->getFullAddress(),
+		];
+	}
 }

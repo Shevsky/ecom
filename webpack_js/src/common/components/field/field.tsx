@@ -11,6 +11,7 @@ interface IFieldProps {
 	description?: ReactNode;
 	paddedTop?: boolean;
 	paddedBottom?: boolean;
+	vertical?: boolean;
 }
 
 export function Field(props: PropsWithChildren<IFieldProps>): JSX.Element {
@@ -18,7 +19,8 @@ export function Field(props: PropsWithChildren<IFieldProps>): JSX.Element {
 		<div
 			className={classname({
 				padded_top: !!props.paddedTop,
-				padded_bottom: !!props.paddedBottom
+				padded_bottom: !!props.paddedBottom,
+				vertical: !!props.vertical
 			})}
 		>
 			<div className={classname('name')}>{!!props.name && props.name}</div>

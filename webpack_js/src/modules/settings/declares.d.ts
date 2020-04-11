@@ -67,6 +67,7 @@ declare interface IParams {
 	key: string | null;
 	get_agreement_number_url: string;
 	sync_points_url: string;
+	find_points_url: string;
 	get_regions_url: string;
 	points_handbook_count: number;
 	countries: ICountry[];

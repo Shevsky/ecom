@@ -7,6 +7,7 @@ import { ParamsContext } from 'modules/settings/services/params-context';
 import { numericDeclension } from 'util/numeric-declension';
 import { formatNumeric } from 'util/format-numeric';
 import { PointsHandbookSynchronizer } from './points-handbook-synchronizer';
+import { PointsHandbookFinder } from './points-handbook-finder';
 
 moment.locale('ru');
 
@@ -106,6 +107,14 @@ export function PointsHandbookScreen(): JSX.Element {
 					</Paragraph>
 				</Container>
 			</Field>
+
+			{pointsHandbookCount > 0 && (
+				<Field name="Поиск пунктов выдачи">
+					<Container>
+						<PointsHandbookFinder />
+					</Container>
+				</Field>
+			)}
 		</>
 	);
 }

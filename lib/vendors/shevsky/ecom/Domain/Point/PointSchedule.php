@@ -3,7 +3,6 @@
 namespace Shevsky\Ecom\Domain\Point;
 
 use Shevsky\Ecom\Persistence\Point\IPointSchedule;
-use Shevsky\Ecom\Persistence\Point\IPointScheduleDaily;
 
 class PointSchedule implements IPointSchedule
 {
@@ -26,7 +25,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getMonday()
 	{
@@ -34,7 +33,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getTuesday()
 	{
@@ -42,7 +41,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getWednesday()
 	{
@@ -50,7 +49,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getThursday()
 	{
@@ -58,7 +57,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getFriday()
 	{
@@ -66,7 +65,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getSaturday()
 	{
@@ -74,7 +73,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily
+	 * @return PointScheduleDaily
 	 */
 	public function getSunday()
 	{
@@ -82,7 +81,7 @@ class PointSchedule implements IPointSchedule
 	}
 
 	/**
-	 * @return IPointScheduleDaily[]
+	 * @return PointScheduleDaily[]
 	 */
 	public function toArray()
 	{

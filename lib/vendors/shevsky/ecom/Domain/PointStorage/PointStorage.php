@@ -4,7 +4,6 @@ namespace Shevsky\Ecom\Domain\PointStorage;
 
 use ecomShippingPointsModel;
 use Shevsky\Ecom\Domain\Point\Point;
-use Shevsky\Ecom\Persistence\Point\IPoint;
 use Shevsky\Ecom\Persistence\PointStorage\IPointStorage;
 use waException;
 
@@ -77,7 +76,7 @@ class PointStorage implements IPointStorage
 
 
 	/**
-	 * @return IPoint[]
+	 * @return Point[]
 	 */
 	public function receive()
 	{

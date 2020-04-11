@@ -227,6 +227,7 @@ class ecomShipping extends waShipping
 					'key' => (string)$this->key === $this->id ? null : (string)$this->key,
 					'get_agreement_number_url' => $this->getInteractionUrl('getAgreementNumber', 'backend'),
 					'sync_points_url' => $this->getInteractionUrl('syncPoints', 'backend'),
+					'find_points_url' => $this->getInteractionUrl('findPoints', 'backend'),
 					'get_regions_url' => $get_regions_url,
 					'points_handbook_count' => (new PointStorage())->count(),
 					'countries' => $countries,
