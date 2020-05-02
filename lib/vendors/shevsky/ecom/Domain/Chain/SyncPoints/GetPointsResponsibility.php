@@ -2,7 +2,7 @@
 
 namespace Shevsky\Ecom\Chain\SyncPoints;
 
-use LapayGroup\RussianPost\Providers\OtpravkaApi;
+use Shevsky\Ecom\Services\OtpravkaApi\OtpravkaApi;
 use Shevsky\Ecom\Persistence\Chain\IResponsibility;
 
 class GetPointsResponsibility implements IResponsibility

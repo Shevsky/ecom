@@ -18,6 +18,7 @@ import { useSetting } from 'modules/settings/util/use-setting';
 import { LongActionRequest } from 'util/long-action-request';
 import { GlobalContext } from 'modules/settings/services/global-context';
 import { bem } from 'util/bem';
+import { numericDeclension } from '../../../../../../util/numeric-declension';
 
 enum SYNC_POINTS_STEP {
 	WAITING = 'waiting',
@@ -44,7 +45,9 @@ const PROGRESSBAR_STEP_ICON: Partial<Record<SYNC_POINTS_STEP, string>> = {
 
 interface ISyncPointsData {
 	points_count?: number;
+	warnings?: Array<string>;
 	offset?: number;
+	processed_count?: number;
 }
 
 const classname = bem('points-handbook-synchronizer');
@@ -84,8 +87,10 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 
 	const [step, setStep] = useState<SYNC_POINTS_STEP>(SYNC_POINTS_STEP.WAITING);
 	const [error, setError] = useState<string>('');
+	const [warnings, setWarnings] = useState<Array<string>>([]);
 	const [pointsCount, setPointsCount] = useState<number>(-1);
 	const [offset, setOffset] = useState<number>(-1);
+	const [processedCount, setProcessedCount] = useState<number>(-1);
 
 	const isUnavailable = !login || !password || !token;
 	const isRunning = [SYNC_POINTS_STEP.INIT, SYNC_POINTS_STEP.SYNC].includes(step);
@@ -105,18 +110,29 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 	);
 
 	const updateState = useCallback((data: ISyncPointsData): void => {
-		let rawOffset = data.offset;
+		let rawOffset = data.offset || 0;
 		if (data.points_count && rawOffset && rawOffset > data.points_count) {
 			rawOffset = data.points_count;
+		}
+		let rawProcessedCount = data.processed_count || 0;
+		if (data.points_count && rawProcessedCount && rawProcessedCount > data.points_count) {
+			rawProcessedCount = data.points_count;
 		}
 
 		if (rawOffset) {
 			setOffset(rawOffset);
 		}
-		pointsHandbookCount.next(rawOffset);
+		if (rawProcessedCount) {
+			setProcessedCount(rawProcessedCount);
+		}
+		pointsHandbookCount.next(rawProcessedCount);
 
 		if (data.points_count) {
 			setPointsCount(data.points_count);
+		}
+
+		if (data.warnings && Array.isArray(data.warnings)) {
+			setWarnings(data.warnings);
 		}
 	}, []);
 
@@ -196,25 +212,27 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 	return (
 		<div className={classname()}>
 			<Paragraph disabledBottomPadding={isUnavailable}>
+				{' '}
 				<Button
 					onClick={handleClickSync}
 					type={BUTTON_TYPE.PRIMARY}
 					disabled={isRunning || isDone || isUnavailable || isPreparing}
 					loading={isRunning || isPreparing}
 				>
-					Запустить синхронизацию справочника
+					{' '}
+					Запустить синхронизацию справочника{' '}
 				</Button>
-
 				{isRunning && (
 					<div className={classname('cancel-box')}>
 						<Button onClick={handleClickCancel} type={BUTTON_TYPE.DELETE}>
-							Отменить синхронизацию
+							{' '}
+							Отменить синхронизацию{' '}
 						</Button>
 					</div>
-				)}
+				)}{' '}
 				{isUnavailable && (
 					<div className={classname('unavailable-box')}>
-						Недоступно. Укажите параметры API сервиса Отправка Почта России
+						Недоступно. Укажите параметры API сервиса Отправка Почта России{' '}
 					</div>
 				)}
 			</Paragraph>
@@ -247,7 +265,10 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 					</>
 				) : (
 					<Paragraph disabledBottomPadding>
-						<InlineLink onClick={handleClickAdditional}>Дополнительно...</InlineLink>
+						{' '}
+						<InlineLink onClick={handleClickAdditional}>
+							Дополнительно...
+						</InlineLink>{' '}
 					</Paragraph>
 				))}
 
@@ -260,10 +281,10 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 							? PROGRESSBAR_STEP_TEXT[step]
 							: 'Инициализация...'}
 
-						{step === SYNC_POINTS_STEP.SYNC && (offset > 0 && pointsCount > 0) && (
+						{step === SYNC_POINTS_STEP.SYNC && (processedCount > 0 && pointsCount > 0) && (
 							<strong>
 								{' '}
-								({offset} из {pointsCount})
+								({processedCount} из {pointsCount}){' '}
 							</strong>
 						)}
 
@@ -282,6 +303,22 @@ export function PointsHandbookSynchronizer(): JSX.Element {
 							</div>
 						</div>
 					</div>
+					{!!warnings.length && (
+						<div className={classname('warnings')}>
+							<div className={classname('warnings-title')}>
+								{warnings.length}{' '}
+								{numericDeclension(warnings.length, ['ошибка', 'ошибки', 'ошибок'])}
+							</div>
+
+							{warnings.map(
+								(warning: string, index: number): JSX.Element => (
+									<div key={index} className={classname('warnings-item')}>
+										{warning}
+									</div>
+								)
+							)}
+						</div>
+					)}
 				</div>
 			)}
 		</div>

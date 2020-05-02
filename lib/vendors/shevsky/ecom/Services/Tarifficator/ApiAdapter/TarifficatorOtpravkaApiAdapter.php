@@ -2,9 +2,9 @@
 
 namespace Shevsky\Ecom\Services\Tarifficator\ApiAdapter;
 
+use Shevsky\Ecom\Services\OtpravkaApi\OtpravkaApi;
 use LapayGroup\RussianPost\Exceptions\RussianPostException;
 use LapayGroup\RussianPost\ParcelInfo;
-use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use LapayGroup\RussianPost\TariffInfo;
 
 class TarifficatorOtpravkaApiAdapter implements ITarifficatorApiAdapter

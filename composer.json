@@ -10,7 +10,8 @@
     },
     "require": {
         "lapaygroup/russianpost": "dev-master",
-        "guzzlehttp/promises": "dev-master"
+        "guzzlehttp/promises": "dev-master",
+        "halaxa/json-machine": "^0.3.3"
     },
     "license": "proprietary",
     "authors": [

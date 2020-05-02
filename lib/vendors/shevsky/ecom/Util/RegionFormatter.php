@@ -8,6 +8,7 @@ class RegionFormatter
 		'мкр Чертаново Северное' => 'Москва',
 		'рп Малаховка' => 'Малаховка',
 		'тер Старый Петергоф' => 'Петергоф',
+		'массив Горы-2' => 'Массив Горы-2'
 	];
 
 	private static $region_to_region_code_pool = [
@@ -53,6 +54,7 @@ class RegionFormatter
 		'Калужская' => '40',
 		'Камчатский' => '41',
 		'Кемеровская' => '42',
+		'Кемеровская область - Кузбасс' => '42',
 		'Кировская' => '43',
 		'Костромская' => '44',
 		'Курганская' => '45',
@@ -113,7 +115,7 @@ class RegionFormatter
 			return self::$region_to_region_code_pool[$region];
 		}
 
-		throw new \Exception('Не удалось определить код региона');
+		throw new \Exception("Не удалось определить код региона: {$region}");
 	}
 
 	/**
@@ -125,7 +127,11 @@ class RegionFormatter
 	{
 		$place = trim($place);
 
-		if (preg_match('/^(?:г|п|д)\.\s*(.*)$/iu', $place, $matches))
+		if (preg_match('/^(?:г|п|д|гп|рп|с)\.\s*(.*)$/iu', $place, $matches))
+		{
+			return $matches[1];
+		}
+		else if (preg_match('/^(?:г|п|д|гп|рп|с)\s+(.*)$/iu', $place, $matches))
 		{
 			return $matches[1];
 		}
@@ -139,6 +145,6 @@ class RegionFormatter
 			return self::$place_to_city_pool[$place];
 		}
 
-		throw new \Exception('Не удалось определить название города');
+		throw new \Exception("Не удалось определить название города: {$place}");
 	}
 }

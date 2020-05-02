@@ -2,8 +2,8 @@
 
 namespace Shevsky\Ecom;
 
-use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use LapayGroup\RussianPost\Providers\Tracking;
+use Shevsky\Ecom\Services\OtpravkaApi\OtpravkaApi;
 
 class Provider
 {

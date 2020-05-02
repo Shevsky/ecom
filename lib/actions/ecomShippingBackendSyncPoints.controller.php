@@ -1,13 +1,16 @@
 <?php
 
-use LapayGroup\RussianPost\Providers\OtpravkaApi;
 use Shevsky\Ecom\Provider;
+use Shevsky\Ecom\Services\OtpravkaApi\OtpravkaApi;
+use Shevsky\Ecom\Services\PointsRegistry\PointsRegistry;
+use Shevsky\Ecom\Services\PointsRegistry\PointsRegistryException;
 use Shevsky\Ecom\Util\PointFormatter;
 
 class ecomShippingBackendSyncPointsController extends waLongActionController
 {
 	private $otpravka_api;
 	private $points_model;
+	private $points_registry;
 
 	/**
 	 * @throws waDbException
@@ -16,6 +19,7 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	public function __construct()
 	{
 		$this->points_model = new ecomShippingPointsModel();
+		$this->points_registry = new PointsRegistry();
 	}
 
 	/**
@@ -33,17 +37,17 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 			'chunk_size' => $this->getChunkSizeFromRequest(),
 
-			'points' => null,
 			'points_count' => -1,
+			'processed_count' => -1,
 			'offset' => -1,
 
+			'warnings' => [],
 			'error' => null,
 		];
 
 		try
 		{
-			$points = $this->getOtpravkaApi()->getPvzList();
-			$points_count = count($points);
+			$points_count = $this->points_registry->update($this->getOtpravkaApi());
 		}
 		catch (\Exception $e)
 		{
@@ -56,7 +60,6 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 
 		$this->points_model->truncate();
 
-		$this->data['points'] = $points;
 		$this->data['points_count'] = $points_count;
 	}
 
@@ -100,34 +103,50 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 	 */
 	protected function step()
 	{
-		if (($this->data['points']) === null || !is_array($this->data['points']))
-		{
-			$this->data['error'] = 'Не удалось получить список пунктов выдачи';
-
-			return false;
-		}
-
 		$offset = &$this->data['offset'];
 		if ($offset === null || $offset === -1)
 		{
 			$offset = 0;
 		}
-
-		$chunk = array_slice($this->data['points'], $offset, $this->getChunkSize());
-
-		foreach ($chunk as $point)
+		$processed_count = &$this->data['processed_count'];
+		if ($processed_count === null || $processed_count === -1)
 		{
+			$processed_count = 0;
+		}
+		$warnings = &$this->data['warnings'];
+		if ($warnings === null || !is_array($warnings))
+		{
+			$warnings = [];
+		}
+
+		$chunk_size = $this->getChunkSize();
+
+		for ($chunk_counter = 0; $chunk_counter < $chunk_size; $chunk_counter++)
+		{
+			$this->points_registry->seek($offset);
+			$offset++;
+
 			try
 			{
+				$point = $this->points_registry->read();
 				$data = PointFormatter::getPointDbDataFromApiData($point);
 			}
 			catch (\Exception $e)
 			{
+				if ($e instanceof PointsRegistryException && $e->type === PointsRegistryException::TYPE_END_OF_REGISTRY)
+				{
+					$offset = $this->data['points_count'];
+					$processed_count = $this->data['points_count'];
+					break;
+				}
+
+				$warnings[] = $e->getMessage();
 				continue;
 			}
 
+			$processed_count++;
+
 			$this->points_model->insert($data);
-			$offset++;
 		}
 	}
 
@@ -159,7 +178,9 @@ class ecomShippingBackendSyncPointsController extends waLongActionController
 		echo json_encode(
 			[
 				'points_count' => ifset($this->data, 'points_count', -1),
+				'warnings' => ifset($this->data, 'warnings', []),
 				'offset' => ifset($this->data, 'offset', -1),
+				'processed_count' => ifset($this->data, 'processed_count', -1),
 				'process_id' => $this->processId,
 				'ready' => $this->isDone(),
 				'error' => ifset($this->data, 'error', null),
