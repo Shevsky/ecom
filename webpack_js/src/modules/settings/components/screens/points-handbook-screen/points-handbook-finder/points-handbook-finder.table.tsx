@@ -1,5 +1,5 @@
 import { Input } from 'common/components';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { IPointsHandbookFinderPoint } from './points-handbook-finder.type';
 
 interface IPointsHandbookFinderTableProps {
@@ -10,7 +10,10 @@ export function PointsHandbookFinderTable({
 	points
 }: IPointsHandbookFinderTableProps): JSX.Element {
 	const [address, setAddress] = useState('');
-	const addressRegex = new RegExp(address, 'i');
+	const addressRegex = useMemo(
+		(): RegExp | null => (!!address ? new RegExp(address, 'i') : null),
+		[]
+	);
 
 	return (
 		<table className="zebra">
