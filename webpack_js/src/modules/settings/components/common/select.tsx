@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Select as UISelect, ISelectProps as UISelectProps } from 'common/components';
 import { useSetting } from 'modules/settings/util/use-setting';
 
@@ -11,6 +11,8 @@ interface ISelectProps<K extends TStringSettingKeys>
 	name: K;
 	// @ts-ignore
 	options: Partial<Record<ISettings[K] extends infer N ? N : string, string>>;
+	// @ts-ignore
+	details?: Partial<Record<ISettings[K] extends infer N ? N : string, ReactNode>>;
 }
 
 export function Select<K extends TStringSettingKeys>({

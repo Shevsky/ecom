@@ -40,6 +40,25 @@ abstract class AbstractLogger implements ILogger
 	 * @param array $info
 	 * @param string $file
 	 */
+	public function details($message, array $info = [], $file = 'ecom.log')
+	{
+		if (!self::isDetails())
+		{
+			return;
+		}
+
+		\waLog::log($message, $file);
+		if (!empty($info))
+		{
+			\waLog::dump($info, $file);
+		}
+	}
+
+	/**
+	 * @param string $message
+	 * @param array $info
+	 * @param string $file
+	 */
 	public function error($message, array $info = [], $file = 'ecom.log')
 	{
 		if (!self::isErrors())
@@ -59,7 +78,15 @@ abstract class AbstractLogger implements ILogger
 	 */
 	private function isDebug()
 	{
-		return $this->mode === Enum\DebugMode::DEBUG;
+		return in_array($this->mode, [Enum\DebugMode::DEBUG, Enum\DebugMode::DETAILS]);
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function isDetails()
+	{
+		return $this->mode === Enum\DebugMode::DETAILS;
 	}
 
 	/**
@@ -67,6 +94,6 @@ abstract class AbstractLogger implements ILogger
 	 */
 	private function isErrors()
 	{
-		return in_array($this->mode, [Enum\DebugMode::DEBUG, Enum\DebugMode::ERRORS]);
+		return in_array($this->mode, [Enum\DebugMode::DEBUG, Enum\DebugMode::DETAILS, Enum\DebugMode::ERRORS]);
 	}
 }

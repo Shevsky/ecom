@@ -36,7 +36,8 @@ export function DebugScreen(): JSX.Element {
 								name="calculator_debug_mode"
 								options={{
 									[DEBUG_MODE.ERRORS]: 'Только ошибки',
-									[DEBUG_MODE.DEBUG]: 'Весь процесс калькулятора'
+									[DEBUG_MODE.DEBUG]: 'Весь процесс калькулятора',
+									[DEBUG_MODE.DETAILS]: 'Весь процесс калькулятора (детальный)'
 								}}
 							/>
 						)}
@@ -56,7 +57,8 @@ export function DebugScreen(): JSX.Element {
 								name="tarifficator_debug_mode"
 								options={{
 									[DEBUG_MODE.ERRORS]: 'Только ошибки',
-									[DEBUG_MODE.DEBUG]: 'Весь процесс тарификатора'
+									[DEBUG_MODE.DEBUG]: 'Весь процесс тарификатора',
+									[DEBUG_MODE.DETAILS]: 'Весь процесс тарификатора (детальный)'
 								}}
 							/>
 						)}

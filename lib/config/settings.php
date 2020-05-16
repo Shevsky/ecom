@@ -152,5 +152,22 @@ return [
 	],
 	'tarifficator_debug_mode' => [
 		'value' => 'ERRORS',
+	],
+	'calculation_mode' => [
+		'value' => 'group_by_name',
+	],
+	'delivery_point_type' => [
+		'value' => '1',
+		'control_type' => 'checkbox',
+	],
+	'pickup_point_type' => [
+		'value' => '1',
+		'control_type' => 'checkbox',
+	],
+	'extra_charge' => [
+		'value' => '',
+	],
+	'extra_coeff' => [
+		'value' => '',
 	]
 ];

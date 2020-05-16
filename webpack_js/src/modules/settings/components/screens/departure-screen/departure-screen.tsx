@@ -69,26 +69,26 @@ export function DepartureScreen(): JSX.Element {
 			<Field name="Город отправки">
 				<Input name="city_name_from" />
 			</Field>
-			<Field
-				name="Категория отправления"
-				description={
-					<>
-						<div>
-							<strong>Обыкновенное</strong> &ndash; отправление без оплаты стоимости
-							заказа
-						</div>
-						<div>
-							<strong>С обязательным платежом</strong> &ndash; отправление с оплатой
-							стоимости заказа при получении
-						</div>
-					</>
-				}
-			>
+			<Field name="Категория отправления">
 				<Select
 					name="mail_category"
 					options={{
 						[MAIL_CATEGORY.ORDINARY]: 'Обыкновенное',
 						[MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT]: 'С обязательным платежом'
+					}}
+					details={{
+						[MAIL_CATEGORY.ORDINARY]: (
+							<>
+								<strong>Обыкновенное</strong> &ndash; отправление без оплаты
+								стоимости заказа
+							</>
+						),
+						[MAIL_CATEGORY.WITH_COMPULSORY_PAYMENT]: (
+							<>
+								<strong>С обязательным платежом</strong> &ndash; отправление с
+								оплатой стоимости заказа при получении
+							</>
+						)
 					}}
 				/>
 			</Field>

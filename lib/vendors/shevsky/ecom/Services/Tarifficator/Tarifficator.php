@@ -53,7 +53,8 @@ class Tarifficator
 	 */
 	public function calculate(IPoint $point)
 	{
-		$this->getLogger()->debug("Начинаем расчет тарифа");
+		$start = microtime(true);
+		$this->getLogger()->debug('Начинаем расчет тарифа');
 
 		try
 		{
@@ -86,10 +87,12 @@ class Tarifficator
 
 		$result = new TarifficatorResult($tariff_info);
 
-		$this->getLogger()->debug(
+		$time = microtime(true) - $start;
+		$this->getLogger()->details(
 			'Получен результат расчета стоимости доставки',
 			$result->toArray()
 		);
+		$this->getLogger()->debug(sprintf('Результат расчета стоимости доставки получен за %.4F сек.', $time));
 
 		return $result;
 	}
@@ -199,7 +202,7 @@ class Tarifficator
 		//	$parcel_info->setWithFitting($this->departure->isWithFittingService());
 		//}
 
-		$this->getLogger()->debug('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
+		$this->getLogger()->details('Сгенерирован контент для произведения расчета', $parcel_info->getArray());
 
 		return $parcel_info;
 	}

@@ -24,6 +24,16 @@ class TarifficatorLogger extends AbstractLogger implements ILogger
 	 * @param array $info
 	 * @param string $file
 	 */
+	public function details($message, array $info = [], $file = self::FILE)
+	{
+		parent::details($message, $info, $file);
+	}
+
+	/**
+	 * @param string $message
+	 * @param array $info
+	 * @param string $file
+	 */
 	public function error($message, array $info = [], $file = self::FILE)
 	{
 		parent::error($message, $info, $file);

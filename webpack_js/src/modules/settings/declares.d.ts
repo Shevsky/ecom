@@ -50,6 +50,12 @@ declare interface ISettings {
 	calculator_debug_mode: import('./enum').DEBUG_MODE;
 	is_debug_tarifficator: boolean;
 	tarifficator_debug_mode: import('./enum').DEBUG_MODE;
+
+	calculation_mode: import('./enum').CALCULATION_MODE;
+	delivery_point_type: boolean;
+	pickup_point_type: boolean;
+	extra_charge: string;
+	extra_coeff: number;
 }
 
 declare interface ICountry {

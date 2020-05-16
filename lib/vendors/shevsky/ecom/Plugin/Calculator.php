@@ -38,7 +38,6 @@ trait Calculator
 		try
 		{
 			$this->verifyCountryCode();
-			$this->verifyIndex();
 
 			return $this->getTariffs();
 		}
@@ -84,20 +83,6 @@ trait Calculator
 		if ($this->getCountryCode() !== Config::COUNTRY)
 		{
 			throw CalculatorException::error(CalculatorException::BAD_COUNTRY);
-		}
-	}
-
-	/**
-	 * @deprecated Верификация по индексу не нужна, если его нет - используем индекс пункта выдачи
-	 * @throws CalculatorException
-	 */
-	private function verifyIndex()
-	{
-		return;
-
-		if (!$this->getIndex() && !$this->isShopScript8Checkout())
-		{
-			throw CalculatorException::warning(CalculatorException::NO_INDEX);
 		}
 	}
 
@@ -199,6 +184,7 @@ trait Calculator
 	 */
 	private function getTariffs()
 	{
+		$start = microtime(true);
 		$this->getLogger()->debug('Начинаем этап расчета тарифов');
 
 		try
@@ -261,11 +247,14 @@ trait Calculator
 				? $this->tarifficator_debug_mode : Enum\DebugMode::DISABLED
 		);
 
+		$points_start = microtime(true);
 		$points = (new PointStorage())
 			->filterByCityName($this->getCityName())
 			->filterByRegionCode($this->getRegionCode())
 			->filterByCardPaymentAvailability((bool)$this->card_payment)
 			->filterByCashPaymentAvailability((bool)$this->cash_payment)
+			->filterByDeliveryPointTypeAvailability((bool)$this->delivery_point_type)
+			->filterByPickupPointTypeAvailability((bool)$this->pickup_point_type)
 			->receive();
 
 		$event_data = [
@@ -278,18 +267,20 @@ trait Calculator
 		if (empty($points))
 		{
 			$this->getLogger()->debug(
-				"Не найдено пунктов выдачи для адреса \"{$this->getRegionCode()} {$this->getCityName()}\" (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment})"
+				"Не найдено пунктов выдачи для адреса \"{$this->getRegionCode()} {$this->getCityName()}\" (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment}, ПВЗ {$this->delivery_point_type}, Почтоматы {$this->pickup_point_type})"
 			);
 
 			throw CalculatorException::error(CalculatorException::NO_POINTS);
 		}
 		else
 		{
+			$points_time = microtime(true) - $points_start;
 			$points_count = count($points);
 
 			$this->getLogger()->debug(
-				"Получены пункты выдачи для адреса \"{$this->getRegionCode()}{$this->getCityName()}\" ({$points_count}) (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment})"
+				"Получены пункты выдачи для адреса \"{$this->getRegionCode()} {$this->getCityName()}\" ({$points_count}) (оплата картой {$this->card_payment}, оплата наличными {$this->cash_payment}, ПВЗ {$this->delivery_point_type}, Почтоматы {$this->pickup_point_type})"
 			);
+			$this->getLogger()->debug(sprintf('Пункты выдачи получены за %.4F сек.', $points_time));
 		}
 
 		$event_data = [
@@ -300,49 +291,93 @@ trait Calculator
 		];
 		wa()->event('ecom_shipping.calculator.before_calculate', $event_data);
 
+		$tariffs_start = microtime(true);
 		$this->getLogger()->debug('Расчет тарифов запущен');
 
+		$extra_coeff = $this->getExtraCoeff();
+
 		$tariffs = [];
-		foreach ($points as $point)
+		switch ($this->calculation_mode)
 		{
-			$tariff_result = null;
-
-			if ($this->is_calculate_caching)
-			{
-				try
+			case Enum\CalculationMode::EACH_POINT:
+				foreach ($points as $point)
 				{
-					$tariff_result = $this->tryCachedTariffResult($tarifficator, $point);
-				}
-				catch (\Exception $e)
-				{
-				}
-			}
-
-			if (!$tariff_result)
-			{
-				try
-				{
-					$tariff_result = $tarifficator->calculate($point);
-					if ($this->is_calculate_caching)
+					$tarifficator_result = $this->getTarifficatorResult($tarifficator, $point);
+					if ($tarifficator_result)
 					{
-						$this->cacheTariffResult($tarifficator, $tariff_result, $point);
+						$tariffs[$point->getIndex()] = $this->getTariff(
+							$tarifficator_result->getInfo(),
+							$point,
+							$extra_coeff
+						);
 					}
 				}
-				catch (\Exception $e)
+				break;
+			case Enum\CalculationMode::FIRST_IN_CITY_POINT:
+				reset($points);
+				$point = current($points);
+				$tarifficator_result = $this->getTarifficatorResult($tarifficator, $point);
+				if ($tarifficator_result)
 				{
-					$this->getLogger()->error(
-						"Получено исключение от сервиса тарификации. Не удалось произвести расчет для пункта выдачи \"{$point->getId()}\""
-					);
-				}
-			}
+					$tariff_info = $tarifficator_result->getInfo();
+					$raw_rate = ($tariff_info->getTotalRate() + $tariff_info->getTotalNds()) / 100;
+					$extra_charge = $this->getExtraCharge($raw_rate);
 
-			if ($tariff_result)
-			{
-				$tariffs[$point->getIndex()] = $this->getTariff($tariff_result->getInfo(), $point);
-			}
+					foreach ($points as $point)
+					{
+						$tariffs[$point->getIndex()] = $this->getTariff(
+							$tariff_info,
+							$point,
+							$extra_coeff,
+							$extra_charge
+						);
+					}
+				}
+				break;
+			case Enum\CalculationMode::GROUP_BY_NAME:
+				$tariff_data_by_name = [];
+				foreach ($points as $point)
+				{
+					if (!isset($tariff_data_by_name[$point->getName()]))
+					{
+						$tarifficator_result = $this->getTarifficatorResult(
+							$tarifficator,
+							$point
+						);
+
+						if ($tarifficator_result)
+						{
+							$tariff_info = $tarifficator_result->getInfo();
+							$raw_rate = ($tariff_info->getTotalRate() + $tariff_info->getTotalNds()) / 100;
+							$extra_charge = $this->getExtraCharge($raw_rate);
+
+							$tariff_data_by_name[$point->getName()] = [
+								$tariff_info,
+								$extra_charge,
+							];
+						}
+						else
+						{
+							$tariff_data_by_name[$point->getName()] = false;
+						}
+					}
+
+					if ($tariff_data_by_name[$point->getName()])
+					{
+						list($tariff_info, $extra_charge) = $tariff_data_by_name[$point->getName()];
+						$tariffs[$point->getIndex()] = $this->getTariff(
+							$tariff_info,
+							$point,
+							$extra_coeff,
+							$extra_charge
+						);
+					}
+				}
+				break;
 		}
 
-		$this->getLogger()->debug('Расчет тарифов завершен', $tariffs);
+		$tariffs_time = microtime(true) - $tariffs_start;
+		$this->getLogger()->debug(sprintf('Расчет тарифов завершен за %.4F сек.', $tariffs_time));
 
 		$event_data = [
 			'id' => $this->id,
@@ -353,16 +388,70 @@ trait Calculator
 		];
 		wa()->event('ecom_shipping.calculator.after_calculate', $event_data);
 
+		$time = microtime(true) - $start;
+		$this->getLogger()->debug(sprintf('Этап расчета тарифов завершен за %.4F сек.', $time));
+
 		return $tariffs;
+	}
+
+	/**
+	 * @param Tarifficator $tarifficator
+	 * @param Point $point
+	 * @return TarifficatorResult|null
+	 */
+	private function getTarifficatorResult(Tarifficator $tarifficator, Point $point)
+	{
+		$tariff_result = null;
+
+		if ($this->is_calculate_caching)
+		{
+			try
+			{
+				$tariff_result = $this->tryCachedTariffResult($tarifficator, $point);
+			}
+			catch (\Exception $e)
+			{
+			}
+		}
+
+		if (!$tariff_result)
+		{
+			try
+			{
+				$tariff_result = $tarifficator->calculate($point);
+				if ($this->is_calculate_caching)
+				{
+					$this->cacheTariffResult($tarifficator, $tariff_result, $point);
+				}
+			}
+			catch (\Exception $e)
+			{
+				$this->getLogger()->error(
+					"Получено исключение от сервиса тарификации. Не удалось произвести расчет для пункта выдачи \"{$point->getId()}\""
+				);
+			}
+		}
+
+		return $tariff_result;
 	}
 
 	/**
 	 * @param TariffInfo $tariff_info
 	 * @param Point $point
+	 * @param float|null $fixed_extra_coeff
+	 * @param float|null $fixed_extra_charge
 	 * @return array
 	 */
-	private function getTariff(TariffInfo $tariff_info, Point $point)
+	private function getTariff(
+		TariffInfo $tariff_info,
+		Point $point,
+		$fixed_extra_coeff = null,
+		$fixed_extra_charge = null
+	)
 	{
+		$start = microtime(true);
+		$this->getLogger()->debug('Начинаем обработку тарифа');
+
 		try
 		{
 			$datetime_interval = $this->getDeliveryDateTimeInterval($tariff_info, $point->getSchedule());
@@ -378,6 +467,30 @@ trait Calculator
 		);
 		$est_delivery = DateTimeLocaleFormatter::formatInterval($datetime_interval);
 
+		$raw_rate = ($tariff_info->getTotalRate() + $tariff_info->getTotalNds()) / 100;
+		$rate = $raw_rate;
+
+		if ($fixed_extra_coeff === null)
+		{
+			$extra_coeff = $this->getExtraCoeff();
+		}
+		else
+		{
+			$extra_coeff = $fixed_extra_coeff;
+		}
+
+		if ($fixed_extra_charge === null)
+		{
+			$extra_charge = $this->getExtraCharge($raw_rate);
+		}
+		else
+		{
+			$extra_charge = $fixed_extra_charge;
+		}
+
+		$rate = $rate + $extra_charge;
+		$rate = $rate * $extra_coeff;
+
 		$tariff = [
 			'name' => $point->getLocation()->getAddress(),
 			'description' => $point->getLocation()->getFullAddress(),
@@ -385,7 +498,7 @@ trait Calculator
 			'delivery_date' => $delivery_interval,
 			'timezone' => date_default_timezone_get(),
 			'currency' => Config::CURRENCY,
-			'rate' => ($tariff_info->getTotalRate() + $tariff_info->getTotalNds()) / 100,
+			'rate' => $rate,
 			'type' => \waShipping::TYPE_PICKUP,
 			'service' => $point->getName(),
 
@@ -406,9 +519,61 @@ trait Calculator
 			],
 		];
 
-		$this->getLogger()->debug('Расчитан тариф', $tariff);
+		$time = microtime(true) - $start;
+		$this->getLogger()->details(
+			sprintf(
+				'Обработан тариф (исходная %s, наценка %s, коэффициент %s)',
+				$raw_rate,
+				$extra_charge,
+				$extra_coeff
+			),
+			$tariff
+		);
+		$this->getLogger()->debug(sprintf('Тариф обработан за %.4F сек.', $time));
 
 		return $tariff;
+	}
+
+	/**
+	 * @return float
+	 */
+	private function getExtraCoeff()
+	{
+		$extra_coeff = (float)$this->extra_coeff;
+		if (!$extra_coeff)
+		{
+			$extra_coeff = 1;
+		}
+
+		return $extra_coeff;
+	}
+
+	/**
+	 * @param float $rate
+	 * @return float
+	 */
+	private function getExtraCharge($rate)
+	{
+		$extra_charge = 0;
+		if ($this->extra_charge)
+		{
+			try
+			{
+				$view = wa()->getView();
+				$view->assign('order', 1000);
+				$view->assign('shipping', $rate);
+
+				$extra_charge = (float)@$view->fetch('string:' . $this->extra_charge);
+			}
+			catch (\Exception $e)
+			{
+				$this->getLogger()->error(
+					"Получено исключение при попытке применить наценку: " . $e->getMessage()
+				);
+			}
+		}
+
+		return $extra_charge;
 	}
 
 	/**
@@ -473,6 +638,7 @@ trait Calculator
 	}
 
 	/**
+	 * @param TariffInfo $tariff
 	 * @param IPointSchedule $schedule
 	 * @return \DateTime[]
 	 * @throws \Exception
@@ -499,7 +665,7 @@ trait Calculator
 
 		$datetime_interval = [];
 
-		if ($interval[0])
+		if (!empty($interval[0]))
 		{
 			$from_datetime = clone $datetime;
 			$from_datetime->modify("+{$interval[0]} day");
@@ -509,7 +675,7 @@ trait Calculator
 			$datetime_interval[] = $from_datetime;
 		}
 
-		if ($interval[1])
+		if (!empty($interval[1]))
 		{
 			$to_datetime = clone $datetime;
 			$to_datetime->modify("+{$interval[1]} day");

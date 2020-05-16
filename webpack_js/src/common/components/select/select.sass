@@ -14,3 +14,21 @@
 
 	&_size_auto
 		width: auto
+
+	&__explanation, &__details
+		margin-top: 15px
+
+	&__details-item
+		&:not(:last-child)
+			margin-bottom: 10px
+
+		&_selected:before
+			content: ''
+			background-image: url('./select.detail-selected.png')
+			background-size: contain
+			background-repeat: no-repeat
+			background-position: 0 0
+			width: 10px
+			height: 10px
+			margin: 4px 0 0 -15px
+			position: absolute

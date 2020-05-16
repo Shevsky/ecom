@@ -31,6 +31,18 @@ interface IPointStorage
 	public function filterByCashPaymentAvailability($availability);
 
 	/**
+	 * @param $availability
+	 * @return self
+	 */
+	public function filterByDeliveryPointTypeAvailability($availability);
+
+	/**
+	 * @param $availability
+	 * @return self
+	 */
+	public function filterByPickupPointTypeAvailability($availability);
+
+	/**
 	 * @return IPoint[]
 	 */
 	public function receive();

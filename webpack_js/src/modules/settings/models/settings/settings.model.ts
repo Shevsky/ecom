@@ -46,6 +46,11 @@ export class SettingsModel implements TSettingsModel {
 	is_debug: BehaviorSubject<ISettings['is_debug']>;
 	is_debug_calculator: BehaviorSubject<ISettings['is_debug_calculator']>;
 	is_debug_tarifficator: BehaviorSubject<ISettings['is_debug_tarifficator']>;
+	calculation_mode: BehaviorSubject<ISettings['calculation_mode']>;
+	delivery_point_type: BehaviorSubject<ISettings['delivery_point_type']>;
+	pickup_point_type: BehaviorSubject<ISettings['pickup_point_type']>;
+	extra_charge: BehaviorSubject<ISettings['extra_charge']>;
+	extra_coeff: BehaviorSubject<ISettings['extra_coeff']>;
 
 	constructor(settings: ISettings) {
 		Object.entries(settings).forEach(

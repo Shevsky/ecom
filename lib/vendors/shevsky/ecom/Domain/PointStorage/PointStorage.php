@@ -74,6 +74,28 @@ class PointStorage implements IPointStorage
 		return $this;
 	}
 
+	/**
+	 * @param $availability
+	 * @return self
+	 */
+	public function filterByDeliveryPointTypeAvailability($availability)
+	{
+		$this->filters['delivery_point_type'] = $availability;
+
+		return $this;
+	}
+
+	/**
+	 * @param $availability
+	 * @return self
+	 */
+	public function filterByPickupPointTypeAvailability($availability)
+	{
+		$this->filters['pickup_point_type'] = $availability;
+
+		return $this;
+	}
+
 
 	/**
 	 * @return Point[]
@@ -144,6 +166,16 @@ class PointStorage implements IPointStorage
 		if (!empty($this->filters['cash_payment']))
 		{
 			$model_conditions['cash_payment'] = 1;
+		}
+
+		$model_conditions['type'] = [];
+		if (!empty($this->filters['delivery_point_type']))
+		{
+			$model_conditions['type'][] = 'DELIVERY_POINT';
+		}
+		if (!empty($this->filters['pickup_point_type']))
+		{
+			$model_conditions['type'][] = 'PICKUP_POINT';
 		}
 
 		return $model_conditions;

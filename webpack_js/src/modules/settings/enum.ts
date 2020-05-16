@@ -1,3 +1,5 @@
+import exp = require('constants');
+
 export enum UNDEFINED_DIMENSION_CASE {
 	DISABLE_SHIPPING = 'disable_shipping',
 	FIXED_DIMENSION_TYPE = 'fixed_dimension_type'
@@ -72,5 +74,17 @@ export enum ORDER_PAYMENT_TYPE {
 
 export enum DEBUG_MODE {
 	ERRORS = 'errors',
+	DETAILS = 'details',
 	DEBUG = 'debug'
+}
+
+export enum CALCULATION_MODE {
+	EACH_POINT = 'each_point',
+	FIRST_IN_CITY_POINT = 'first_in_city_point',
+	GROUP_BY_NAME = 'group_by_name'
+}
+
+export enum POINT_TYPE {
+	DELIVERY = 'DELIVERY_POINT',
+	PICKUP = 'PICKUP_POINT'
 }

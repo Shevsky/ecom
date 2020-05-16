@@ -5,6 +5,7 @@ import { bem } from 'util/bem';
 import { Tabs } from 'common/components';
 import {
 	ApiScreen,
+	FilterScreen,
 	DepartureScreen,
 	PointsHandbookScreen,
 	PaymentScreen,
@@ -47,6 +48,10 @@ export function MainScreen(): JSX.Element {
 					{
 						title: 'Параметры оплаты',
 						component: PaymentScreen
+					},
+					{
+						title: 'Фильтры и параметры расчета',
+						component: FilterScreen
 					},
 					{
 						title: 'Справочник ПВЗ',

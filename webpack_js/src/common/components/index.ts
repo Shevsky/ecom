@@ -4,6 +4,7 @@ export * from './header';
 export * from './checkbox';
 export * from './checkbox-group';
 export * from './input';
+export * from './inline-code';
 export * from './inline-link';
 export * from './paragraph';
 export * from './select';

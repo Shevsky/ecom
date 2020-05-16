@@ -27,6 +27,8 @@ class SettingsValidator implements ISettingsValidator
 			'region_code_from' => new RegionCodeFromSettingValidator(),
 			'city_name_from' => new CityNameFromSettingValidator(),
 			'default_weight' => new DefaultWeightSettingValidator(),
+			'extra_charge' => new ExtraChargeSettingValidator(),
+			'extra_coeff' => new ExtraCoeffSettingValidator()
 		];
 	}
 

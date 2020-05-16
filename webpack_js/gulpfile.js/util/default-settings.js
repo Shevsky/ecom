@@ -17,5 +17,10 @@ module.exports = {
 	entries_type: "'SALE_OF_GOODS'",
 	pre_payment: "'1'",
 	calculator_debug_mode: "'ERRORS'",
-	tarifficator_debug_mode: "'ERRORS'"
+	tarifficator_debug_mode: "'ERRORS'",
+	calculation_mode: "'group_by_name'",
+	delivery_point_type: "'1'",
+	pickup_point_type: "'1'",
+	extra_charge: "''",
+	extra_coeff: "''",
 };
