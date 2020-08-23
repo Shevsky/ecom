@@ -55,6 +55,11 @@ class PointFormatter
 			throw new \Exception('Данные о пункте выдачи некорректны');
 		}
 
+		if (empty(ifset($point['address'], 'street', '')) || empty(ifset($point['address'], 'house', '')))
+		{
+			throw new \Exception('Не указана улица или номер дома');
+		}
+
 		$region_code = RegionFormatter::getRegionCode($point['address']['region']);
 		$city_name = RegionFormatter::getCityName($point['address']['place']);
 
