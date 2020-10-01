@@ -178,6 +178,11 @@ class PointStorage implements IPointStorage
 			$model_conditions['type'][] = 'PICKUP_POINT';
 		}
 
+		if (empty($model_conditions['type']))
+		{
+			unset($model_conditions['type']);
+		}
+
 		return $model_conditions;
 	}
 }
