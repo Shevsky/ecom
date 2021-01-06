@@ -10,7 +10,7 @@
 	"dependencies": {
 		"@bem-react/classname": "^1.5.6",
 		"@types/axios": "^0.14.0",
-		"axios": "^0.19.1",
+		"axios": "^0.21.1",
 		"cellx": "^1.9.16",
 		"cellx-decorators": "^1.5.4",
 		"cellx-react": "^0.3.1",
